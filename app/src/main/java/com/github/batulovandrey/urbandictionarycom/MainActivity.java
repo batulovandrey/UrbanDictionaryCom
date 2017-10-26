@@ -3,6 +3,10 @@ package com.github.batulovandrey.urbandictionarycom;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**
+ * @author Andrey Batulov on 26/10/2017
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
