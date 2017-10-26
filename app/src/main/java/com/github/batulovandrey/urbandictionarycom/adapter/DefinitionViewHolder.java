@@ -14,14 +14,18 @@ public class DefinitionViewHolder extends RecyclerView.ViewHolder implements Vie
 
     TextView mDefinitionTextView;
     TextView mWordTextView;
+    TextView mExampleTextView;
+    TextView mAuthorTextView;
 
     private DefinitionClickListener mClickListener;
 
-    public DefinitionViewHolder(View itemView, DefinitionClickListener listener) {
+    DefinitionViewHolder(View itemView, DefinitionClickListener listener) {
         super(itemView);
         mClickListener = listener;
         mDefinitionTextView = itemView.findViewById(R.id.definition_text_view);
         mWordTextView = itemView.findViewById(R.id.word_text_view);
+        mExampleTextView = itemView.findViewById(R.id.example_text_view);
+        mAuthorTextView = itemView.findViewById(R.id.author_text_view);
         itemView.setOnClickListener(this);
     }
 

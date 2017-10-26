@@ -27,7 +27,7 @@ public class DefinitionAdapter extends RecyclerView.Adapter<DefinitionViewHolder
 
     @Override
     public DefinitionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.definition_layout, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.definition_item, null);
         return new DefinitionViewHolder(view, mClickListener);
     }
 
@@ -36,6 +36,8 @@ public class DefinitionAdapter extends RecyclerView.Adapter<DefinitionViewHolder
         DefinitionResponse definition = mDefinitions.get(position);
         holder.mDefinitionTextView.setText(definition.getDefinition());
         holder.mWordTextView.setText(definition.getWord());
+        holder.mExampleTextView.setText(definition.getExample());
+        holder.mAuthorTextView.setText(definition.getAuthor());
     }
 
     @Override

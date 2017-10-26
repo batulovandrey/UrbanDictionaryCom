@@ -51,49 +51,6 @@ public class MainActivity extends AppCompatActivity
         initIU();
     }
 
-    private void initIU() {
-        initToolbar();
-        initSearchView();
-        mListView = findViewById(R.id.list_view);
-        mListView.setAdapter(mUserQueriesAdapter);
-        mRecyclerView = findViewById(R.id.recycler_view);
-    }
-
-    private void initToolbar() {
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-    }
-
-    private void initSearchView() {
-        mSearchView = findViewById(R.id.search_view);
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        mSearchView.setSearchableInfo(searchManager != null ?
-                searchManager.getSearchableInfo(getComponentName()) : null);
-        mSearchView.setFocusable(true);
-        mSearchView.setIconified(false);
-        mSearchView.setOnQueryTextListener(this);
-    }
-
-    private void getData(String query, final DefinitionClickListener clickListener) {
-        UrbanDictionaryService service = ApiClient.getRetrofit().create(UrbanDictionaryService.class);
-        Call<BaseResponse> call = service.getDefine(query);
-        call.enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if (response.body() != null) {
-                    mDefinitions = response.body().getDefinitionResponses();
-                    mDefinitionAdapter = new DefinitionAdapter(mDefinitions, clickListener);
-                    mRecyclerView.setAdapter(mDefinitionAdapter);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
-    }
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         if (query.length() > 0) {
@@ -141,5 +98,48 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemClick(int position) {
         Toast.makeText(this, mDefinitions.get(position).getDefinition(), Toast.LENGTH_LONG).show();
+    }
+
+    private void initIU() {
+        initToolbar();
+        initSearchView();
+        mListView = findViewById(R.id.list_view);
+        mListView.setAdapter(mUserQueriesAdapter);
+        mRecyclerView = findViewById(R.id.recycler_view);
+    }
+
+    private void initToolbar() {
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+    }
+
+    private void initSearchView() {
+        mSearchView = findViewById(R.id.search_view);
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager != null ?
+                searchManager.getSearchableInfo(getComponentName()) : null);
+        mSearchView.setFocusable(true);
+        mSearchView.setIconified(false);
+        mSearchView.setOnQueryTextListener(this);
+    }
+
+    private void getData(String query, final DefinitionClickListener clickListener) {
+        UrbanDictionaryService service = ApiClient.getRetrofit().create(UrbanDictionaryService.class);
+        Call<BaseResponse> call = service.getDefine(query);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.body() != null) {
+                    mDefinitions = response.body().getDefinitionResponses();
+                    mDefinitionAdapter = new DefinitionAdapter(mDefinitions, clickListener);
+                    mRecyclerView.setAdapter(mDefinitionAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
     }
 }
