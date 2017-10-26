@@ -1,12 +1,18 @@
 package com.github.batulovandrey.urbandictionarycom.bean;
 
+import io.realm.RealmObject;
+
 /**
  * @author Andrey Batulov on 26/10/2017
  */
 
-public class UserQuery {
+public class UserQuery extends RealmObject {
 
     private String query;
+
+    public UserQuery() {
+        // needed by Realm
+    }
 
     public UserQuery(String query) {
         this.query = query;
@@ -14,5 +20,9 @@ public class UserQuery {
 
     public String getQuery() {
         return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }
