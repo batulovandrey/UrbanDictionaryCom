@@ -15,5 +15,5 @@ public interface UrbanDictionaryService {
 
     @GET("/define")
     @Headers({"X-Mashape-Key: KYRWCyThbMmsh4z6Ep7dNEa61bDip1asxIkjsnfhWID3QOEUk4", "Accept: text/plain"})
-    public Call<BaseResponse> getDefine(@Query("term") String term);
+    Call<BaseResponse> getDefine(@Query("term") String term);
 }

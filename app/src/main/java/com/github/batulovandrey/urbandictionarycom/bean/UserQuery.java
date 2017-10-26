@@ -14,10 +14,6 @@ public class UserQuery extends RealmObject {
         // needed by Realm
     }
 
-    public UserQuery(String query) {
-        this.query = query;
-    }
-
     public String getQuery() {
         return query;
     }
