@@ -16,14 +16,14 @@ import java.util.TreeMap;
 
 public class PopularWords {
 
-    private Map<Character, List<String>> dictionary;
+    private Map<String, List<String>> dictionary;
 
     public PopularWords(Context context) {
         dictionary = new TreeMap<>();
         fillDictionary(context);
     }
 
-    public Map<Character, List<String>> getDictionary() {
+    public Map<String, List<String>> getDictionary() {
         return dictionary;
     }
 
@@ -37,7 +37,7 @@ public class PopularWords {
                 while ((temp = reader.readLine()) != null) {
                     tempList.add(temp);
                 }
-                dictionary.put(anAlphabet, tempList);
+                dictionary.put(String.valueOf(anAlphabet), tempList);
                 reader.close();
             }
         } catch (IOException e) {

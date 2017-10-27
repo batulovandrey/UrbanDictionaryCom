@@ -9,6 +9,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity
     private String mSearchQuery;
     private RecyclerView mRecyclerView;
     private MainPresenter mMainPresenter;
+
+    // TODO: 27.10.2017 delete later
+    private TextView mTitleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +126,15 @@ public class MainActivity extends AppCompatActivity
         mListView = findViewById(R.id.list_view);
         mListView.setAdapter(mUserQueriesAdapter);
         mRecyclerView = findViewById(R.id.recycler_view);
+
+        // TODO: 27.10.2017 delete later
+        mTitleTextView = findViewById(R.id.title);
+        mTitleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), PopularWordsActivity.class));
+            }
+        });
     }
 
     private void initToolbar() {
