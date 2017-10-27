@@ -2,6 +2,7 @@ package com.github.batulovandrey.urbandictionarycom.presenter;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
+import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.model.MainModel;
 import com.github.batulovandrey.urbandictionarycom.view.MainView;
 
@@ -52,5 +53,10 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void showToast(int resId) {
         mMainView.showToast(resId);
+    }
+
+    @Override
+    public DefinitionResponse getDefinitionById(int position) {
+        return mMainModel.getDefinitionById(position);
     }
 }

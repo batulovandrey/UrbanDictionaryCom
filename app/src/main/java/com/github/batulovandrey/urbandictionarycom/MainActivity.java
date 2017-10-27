@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
 import com.github.batulovandrey.urbandictionarycom.adapter.UserQueriesAdapter;
+import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenter;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenterImpl;
 import com.github.batulovandrey.urbandictionarycom.view.MainView;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity
         implements SearchView.OnQueryTextListener, DefinitionClickListener, MainView {
 
     private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
+    private static final String EXTRA_DEFINITION = "extra_definition";
 
     private Toolbar mToolbar;
     private SearchView mSearchView;
@@ -81,7 +83,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
-        // TODO: 27.10.2017 go to another activity
+        DefinitionResponse definition = mMainPresenter.getDefinitionById(position);
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(EXTRA_DEFINITION, definition);
+        startActivity(intent);
     }
 
     @Override

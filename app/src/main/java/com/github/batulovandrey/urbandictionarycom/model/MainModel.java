@@ -63,4 +63,8 @@ public class MainModel {
             }
         });
     }
+
+    public DefinitionResponse getDefinitionById(int position) {
+        return mDefinitions.get(position);
+    }
 }
