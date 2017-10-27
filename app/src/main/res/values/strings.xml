@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">UrbanDictionaryCom</string>
     <string name="search_hint">type any word...</string>
+    <string name="error">Something went wrong...</string>
 </resources>

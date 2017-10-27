@@ -14,23 +14,16 @@ import android.widget.Toast;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
 import com.github.batulovandrey.urbandictionarycom.adapter.UserQueriesAdapter;
-import com.github.batulovandrey.urbandictionarycom.bean.BaseResponse;
-import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
-import com.github.batulovandrey.urbandictionarycom.service.ApiClient;
-import com.github.batulovandrey.urbandictionarycom.service.UrbanDictionaryService;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenter;
+import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenterImpl;
+import com.github.batulovandrey.urbandictionarycom.view.MainView;
 
 /**
  * @author Andrey Batulov on 26/10/2017
  */
 
 public class MainActivity extends AppCompatActivity
-        implements SearchView.OnQueryTextListener, DefinitionClickListener {
+        implements SearchView.OnQueryTextListener, DefinitionClickListener, MainView {
 
     private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
 
@@ -40,8 +33,7 @@ public class MainActivity extends AppCompatActivity
     private UserQueriesAdapter mUserQueriesAdapter;
     private String mSearchQuery;
     private RecyclerView mRecyclerView;
-    private DefinitionAdapter mDefinitionAdapter;
-    private List<DefinitionResponse> mDefinitions;
+    private MainPresenter mMainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +41,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mUserQueriesAdapter = new UserQueriesAdapter(this);
         initIU();
+        mMainPresenter = new MainPresenterImpl(this);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         if (query.length() > 0) {
-            getData(query, this);
+            mMainPresenter.getData(query, this);
             mUserQueriesAdapter.saveQueryToRealm(query);
-            mListView.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+            showDataInRecycler();
             return true;
         }
         return false;
@@ -65,15 +57,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextChange(final String newText) {
-        if (mDefinitions != null && mDefinitions.size() > 0 && newText.length() == 0) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.GONE);
-        } else {
-            mListView.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.INVISIBLE);
-            mUserQueriesAdapter.filter(newText);
-        }
-        return false;
+        return mMainPresenter.textChanged(newText);
     }
 
     @Override
@@ -97,7 +81,34 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this, mDefinitions.get(position).getDefinition(), Toast.LENGTH_LONG).show();
+        // TODO: 27.10.2017 go to another activity
+    }
+
+    @Override
+    public void showDataInRecycler() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showQueriesInListView() {
+        mListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void filterText(String text) {
+        mUserQueriesAdapter.filter(text);
+    }
+
+    @Override
+    public void setAdapterToRecycler(DefinitionAdapter definitionAdapter) {
+        mRecyclerView.setAdapter(definitionAdapter);
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
     }
 
     private void initIU() {
@@ -121,25 +132,5 @@ public class MainActivity extends AppCompatActivity
         mSearchView.setFocusable(true);
         mSearchView.setIconified(false);
         mSearchView.setOnQueryTextListener(this);
-    }
-
-    private void getData(String query, final DefinitionClickListener clickListener) {
-        UrbanDictionaryService service = ApiClient.getRetrofit().create(UrbanDictionaryService.class);
-        Call<BaseResponse> call = service.getDefine(query);
-        call.enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if (response.body() != null) {
-                    mDefinitions = response.body().getDefinitionResponses();
-                    mDefinitionAdapter = new DefinitionAdapter(mDefinitions, clickListener);
-                    mRecyclerView.setAdapter(mDefinitionAdapter);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
     }
 }
