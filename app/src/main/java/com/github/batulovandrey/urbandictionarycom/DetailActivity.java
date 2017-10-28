@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -28,7 +30,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mPermalinkTextView;
     private Toolbar mToolbar;
     private ImageView mFavImageView;
-    private Realm mRealm;
+    private Realm mDefinitionsRealm;
+    private Realm mFavoriteDefinitionsRealm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,8 @@ public class DetailActivity extends AppCompatActivity {
         initViews();
         Intent intent = getIntent();
         long definitionId = intent.getLongExtra(EXTRA_DEFINITION_ID, 0);
-        mRealm = new RealmManager(this, "definitions").getRealm();
+        mDefinitionsRealm = new RealmManager(this, "definitions").getRealm();
+        mFavoriteDefinitionsRealm = new RealmManager(this, "favorites").getRealm();
         setValuesToViews(definitionId);
     }
 
@@ -69,23 +73,71 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setValuesToViews(long definitionId) {
-        List<DefinitionResponse> list = mRealm.where(DefinitionResponse.class).findAll();
-        for (DefinitionResponse definition : list) {
-            if (definition.getDefid() == definitionId) {
-                mWordTextView.setText(definition.getWord());
-                mDefinitionTextView.setText(definition.getDefinition());
-                mExampleTextView.setText(definition.getExample());
-                mAuthorTextView.setText(definition.getAuthor());
-                mThumbsUpTextView.setText(String.valueOf(definition.getThumbsUp()));
-                mThumbsDownTextView.setText(String.valueOf(definition.getThumbsDown()));
-                mPermalinkTextView.setText(definition.getPermalink());
-                mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.fav : R.drawable.unfav);
-            }
+    private void setValuesToViews(final long definitionId) {
+        final DefinitionResponse definition = mDefinitionsRealm
+                .where(DefinitionResponse.class).equalTo("defid", definitionId).findFirst();
+        if (definition != null) {
+            mWordTextView.setText(definition.getWord());
+            mDefinitionTextView.setText(definition.getDefinition());
+            mExampleTextView.setText(definition.getExample());
+            mAuthorTextView.setText(definition.getAuthor());
+            mThumbsUpTextView.setText(String.valueOf(definition.getThumbsUp()));
+            mThumbsDownTextView.setText(String.valueOf(definition.getThumbsDown()));
+            mPermalinkTextView.setText(definition.getPermalink());
+            mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
+            mFavImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DefinitionResponse temp = mFavoriteDefinitionsRealm
+                            .where(DefinitionResponse.class).equalTo("defid", definitionId).findFirst();
+                    if (temp == null) {
+                        saveToFavorites(definition);
+                    } else {
+                        deleteFromFavorites(definition);
+                    }
+                }
+            });
         }
     }
 
+    private void saveToFavorites(final DefinitionResponse definition) {
+        mFavoriteDefinitionsRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DefinitionResponse newDefinition = realm.createObject(DefinitionResponse.class);
+                newDefinition.setWord(definition.getWord());
+                newDefinition.setThumbsUp(definition.getThumbsUp());
+                newDefinition.setThumbsDown(definition.getThumbsDown());
+                newDefinition.setPermalink(definition.getPermalink());
+                newDefinition.setExample(definition.getExample());
+                newDefinition.setDefinition(definition.getDefinition());
+                newDefinition.setDefid(definition.getDefid());
+                newDefinition.setAuthor(definition.getAuthor());
+            }
+        });
+        mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
+    }
+
+    private void deleteFromFavorites(final DefinitionResponse definition) {
+        mFavoriteDefinitionsRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<DefinitionResponse> rows = realm
+                        .where(DefinitionResponse.class)
+                        .equalTo("defid", definition.getDefid())
+                        .findAll();
+                rows.deleteAllFromRealm();
+            }
+        });
+        mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
+    }
+
     private boolean isFavorite(DefinitionResponse definition) {
-        return definition.getDefid() == mRealm.where(DefinitionResponse.class).findFirst().getDefid();
+        List<DefinitionResponse> list = mFavoriteDefinitionsRealm.where(DefinitionResponse.class).findAll();
+        for (DefinitionResponse def : list) {
+            if (def.getDefid() == definition.getDefid())
+                return true;
+        }
+        return false;
     }
 }
