@@ -3,6 +3,8 @@ package com.github.batulovandrey.urbandictionarycom;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
@@ -18,6 +20,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mThumbsUpTextView;
     private TextView mThumbsDownTextView;
     private TextView mPermalinkTextView;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,18 @@ public class DetailActivity extends AppCompatActivity {
         setValuesToViews(definition);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return false;
+    }
+
     private void initViews() {
+        initToolbar();
         mWordTextView = findViewById(R.id.word_text_view);
         mDefinitionTextView = findViewById(R.id.definition_text_view);
         mExampleTextView = findViewById(R.id.example_text_view);
@@ -37,6 +51,12 @@ public class DetailActivity extends AppCompatActivity {
         mThumbsUpTextView = findViewById(R.id.thumbs_up_text_view);
         mThumbsDownTextView = findViewById(R.id.thumbs_down_text_view);
         mPermalinkTextView = findViewById(R.id.permalink_text_view);
+    }
+
+    private void initToolbar() {
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setValuesToViews(DefinitionResponse definition) {

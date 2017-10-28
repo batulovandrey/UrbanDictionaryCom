@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
@@ -18,6 +19,7 @@ import com.github.batulovandrey.urbandictionarycom.adapter.UserQueriesAdapter;
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenter;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenterImpl;
+import com.github.batulovandrey.urbandictionarycom.utils.Utils;
 import com.github.batulovandrey.urbandictionarycom.view.MainView;
 
 /**
@@ -38,9 +40,6 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private MainPresenter mMainPresenter;
 
-    // TODO: 27.10.2017 delete later
-    private TextView mTitleTextView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +50,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.go_to_alphabet:
+                startActivity(new Intent(getApplicationContext(), PopularWordsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         if (query.length() > 0) {
             mMainPresenter.getData(query, this);
             mUserQueriesAdapter.saveQueryToRealm(query);
             showDataInRecycler();
+            Utils.hideKeyboard(mSearchView, this);
             return true;
         }
         return false;
@@ -77,12 +94,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 if (mSearchQuery != null) {
-                    mSearchView.setQuery(mSearchQuery, true);
+                    // put the value in SearchView, but don't submit
+                    mSearchView.setQuery(mSearchQuery, false);
                 }
             }
         });
-        mSearchView.setFocusable(true);
-        mSearchView.setIconified(false);
     }
 
     @Override
@@ -126,15 +142,6 @@ public class MainActivity extends AppCompatActivity
         mListView = findViewById(R.id.list_view);
         mListView.setAdapter(mUserQueriesAdapter);
         mRecyclerView = findViewById(R.id.recycler_view);
-
-        // TODO: 27.10.2017 delete later
-        mTitleTextView = findViewById(R.id.title);
-        mTitleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), PopularWordsActivity.class));
-            }
-        });
     }
 
     private void initToolbar() {

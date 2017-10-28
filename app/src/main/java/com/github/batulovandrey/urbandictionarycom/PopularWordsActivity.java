@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.github.batulovandrey.urbandictionarycom.data.PopularWords;
 
@@ -25,24 +26,20 @@ public class PopularWordsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_words);
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initToolbar();
         PopularWords popularWords = new PopularWords(this);
         mDictionary = popularWords.getDictionary();
-        ArrayList<String> alphabet = new ArrayList<>();
-        ArrayList<String> words = new ArrayList<>();
-        for (Map.Entry<String, List<String>> map : mDictionary.entrySet()) {
-            alphabet.add(map.getKey());
-            if (map.getKey().equals("a")) {
-                words.addAll(map.getValue());
-            }
+        initFragments();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home :
+                finish();
+                return true;
         }
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.alphabet_frame_layout, AlphabetFragment.newInstance(alphabet));
-        transaction.add(R.id.words_frame_layout, WordsFragment.newInstance(words));
-        transaction.commit();
+        return false;
     }
 
     @Override
@@ -63,6 +60,28 @@ public class PopularWordsActivity extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.words_frame_layout, WordsFragment.newInstance(words));
+        transaction.commit();
+    }
+
+    private void initToolbar() {
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initFragments() {
+        ArrayList<String> alphabet = new ArrayList<>();
+        ArrayList<String> words = new ArrayList<>();
+        for (Map.Entry<String, List<String>> map : mDictionary.entrySet()) {
+            alphabet.add(map.getKey());
+            if (map.getKey().equals("a")) {
+                words.addAll(map.getValue());
+            }
+        }
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.alphabet_frame_layout, AlphabetFragment.newInstance(alphabet));
+        transaction.add(R.id.words_frame_layout, WordsFragment.newInstance(words));
         transaction.commit();
     }
 }
