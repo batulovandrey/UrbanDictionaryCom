@@ -1,6 +1,7 @@
 package com.github.batulovandrey.urbandictionarycom;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
 import com.github.batulovandrey.urbandictionarycom.adapter.UserQueriesAdapter;
-import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenter;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenterImpl;
 import com.github.batulovandrey.urbandictionarycom.utils.Utils;
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         implements SearchView.OnQueryTextListener, DefinitionClickListener, MainView {
 
     private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
-    private static final String EXTRA_DEFINITION = "extra_definition";
+    private static final String EXTRA_DEFINITION_ID = "extra_definition_id";
 
     private Toolbar mToolbar;
     private SearchView mSearchView;
@@ -103,9 +103,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
-        DefinitionResponse definition = mMainPresenter.getDefinitionById(position);
+        long definitionId = mMainPresenter.getDefinitionId(position);
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra(EXTRA_DEFINITION, definition);
+        intent.putExtra(EXTRA_DEFINITION_ID, definitionId);
         startActivity(intent);
     }
 
@@ -134,6 +134,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showToast(int resId) {
         Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     private void initIU() {

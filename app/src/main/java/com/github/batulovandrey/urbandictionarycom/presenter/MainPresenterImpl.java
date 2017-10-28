@@ -2,9 +2,11 @@ package com.github.batulovandrey.urbandictionarycom.presenter;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
-import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.model.MainModel;
+import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 import com.github.batulovandrey.urbandictionarycom.view.MainView;
+
+import io.realm.Realm;
 
 /**
  * @author Andrey Batulov on 27/10/2017
@@ -56,7 +58,12 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     @Override
-    public DefinitionResponse getDefinitionById(int position) {
-        return mMainModel.getDefinitionById(position);
+    public long getDefinitionId(int position) {
+        return mMainModel.getDefinitionId(position);
+    }
+
+    @Override
+    public Realm getRealm(String nameDb) {
+        return new RealmManager(mMainView.getContext(), nameDb).getRealm();
     }
 }

@@ -13,6 +13,7 @@ import com.github.batulovandrey.urbandictionarycom.service.UrbanDictionaryServic
 
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,12 +25,13 @@ import retrofit2.Response;
 public class MainModel {
 
     private final MainPresenter mMainPresenter;
-
+    private Realm mRealm;
     private DefinitionAdapter mDefinitionAdapter;
     private List<DefinitionResponse> mDefinitions;
 
     public MainModel(MainPresenter mainPresenter) {
         mMainPresenter = mainPresenter;
+        mRealm = mMainPresenter.getRealm("definitions");
     }
 
     public boolean textChanged(String text) {
@@ -59,12 +61,36 @@ public class MainModel {
             @Override
             public void onFailure(@NonNull Call<BaseResponse> call,
                                   @NonNull Throwable t) {
+                System.out.println(call.toString());
+                System.out.println(t.getMessage());
                 mMainPresenter.showToast(R.string.error);
             }
         });
     }
 
-    public DefinitionResponse getDefinitionById(int position) {
-        return mDefinitions.get(position);
+    public long getDefinitionId(final int position) {
+        saveDefinitionToRealm(position);
+        return mDefinitions.get(position).getDefid();
+    }
+
+    private void saveDefinitionToRealm(final int position) {
+        long defId = mDefinitions.get(position).getDefid();
+        DefinitionResponse checkDef = mRealm.where(DefinitionResponse.class).equalTo("defid", defId).findFirst();
+        if (checkDef == null) {
+            mRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    DefinitionResponse definition = realm.createObject(DefinitionResponse.class);
+                    definition.setAuthor(mDefinitions.get(position).getAuthor());
+                    definition.setDefid(mDefinitions.get(position).getDefid());
+                    definition.setDefinition(mDefinitions.get(position).getDefinition());
+                    definition.setExample(mDefinitions.get(position).getExample());
+                    definition.setPermalink(mDefinitions.get(position).getPermalink());
+                    definition.setThumbsDown(mDefinitions.get(position).getThumbsDown());
+                    definition.setThumbsUp(mDefinitions.get(position).getThumbsUp());
+                    definition.setWord(mDefinitions.get(position).getWord());
+                }
+            });
+        }
     }
 }
