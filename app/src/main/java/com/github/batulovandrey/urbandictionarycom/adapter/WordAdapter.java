@@ -16,15 +16,17 @@ import java.util.List;
 public class WordAdapter extends RecyclerView.Adapter<WordViewHolder> {
 
     private List<String> mWords;
+    private WordClickListener mClickListener;
 
-    public WordAdapter(List<String> words) {
+    public WordAdapter(List<String> words, WordClickListener listener) {
         mWords = words;
+        mClickListener = listener;
     }
 
     @Override
     public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.word_item, null);
-        return new WordViewHolder(view);
+        return new WordViewHolder(view, mClickListener);
     }
 
     @Override

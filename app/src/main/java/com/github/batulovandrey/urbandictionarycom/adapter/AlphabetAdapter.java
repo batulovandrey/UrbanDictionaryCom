@@ -16,15 +16,17 @@ import java.util.List;
 public class AlphabetAdapter extends RecyclerView.Adapter<AlphabetViewHolder> {
 
     private List<String> mAlphabet;
+    private AlphabetClickListener mClickListener;
 
-    public AlphabetAdapter(List<String> alphabet) {
+    public AlphabetAdapter(List<String> alphabet, AlphabetClickListener listener) {
         this.mAlphabet = alphabet;
+        mClickListener = listener;
     }
 
     @Override
     public AlphabetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.alphabet_item, null);
-        return new AlphabetViewHolder(view);
+        return new AlphabetViewHolder(view, mClickListener);
     }
 
     @Override

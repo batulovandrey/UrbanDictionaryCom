@@ -1,11 +1,11 @@
 package com.github.batulovandrey.urbandictionarycom;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.github.batulovandrey.urbandictionarycom.data.PopularWords;
 
@@ -16,7 +16,10 @@ import java.util.Map;
 public class PopularWordsActivity extends AppCompatActivity
         implements AlphabetFragment.OnLetterClickListener, WordsFragment.OnWordClickListener {
 
+    private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
+
     private Toolbar mToolbar;
+    private Map<String, List<String>> mDictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +29,10 @@ public class PopularWordsActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         PopularWords popularWords = new PopularWords(this);
-        Map<String, List<String>> dictionary = popularWords.getDictionary();
+        mDictionary = popularWords.getDictionary();
         ArrayList<String> alphabet = new ArrayList<>();
         ArrayList<String> words = new ArrayList<>();
-        for (Map.Entry<String, List<String>> map : dictionary.entrySet()) {
+        for (Map.Entry<String, List<String>> map : mDictionary.entrySet()) {
             alphabet.add(map.getKey());
             if (map.getKey().equals("a")) {
                 words.addAll(map.getValue());
@@ -44,11 +47,22 @@ public class PopularWordsActivity extends AppCompatActivity
 
     @Override
     public void onWordClick(String word) {
-        Toast.makeText(this, word, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(EXTRA_SEARCH_QUERY, word);
+        startActivity(intent);
     }
 
     @Override
     public void onLetterClick(String letter) {
-        Toast.makeText(this, letter, Toast.LENGTH_LONG).show();
+        ArrayList<String> words = new ArrayList<>();
+        for (Map.Entry<String, List<String>> map : mDictionary.entrySet()) {
+            if (map.getKey().equals(letter)) {
+                words.addAll(map.getValue());
+            }
+        }
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.words_frame_layout, WordsFragment.newInstance(words));
+        transaction.commit();
     }
 }

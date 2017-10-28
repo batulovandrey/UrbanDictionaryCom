@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.AlphabetAdapter;
+import com.github.batulovandrey.urbandictionarycom.adapter.AlphabetClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlphabetFragment extends Fragment {
+public class AlphabetFragment extends Fragment implements AlphabetClickListener {
 
     private static final String EXTRA_ALPHABET_LIST = "extra_alphabet_list";
 
@@ -54,11 +55,10 @@ public class AlphabetFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new AlphabetAdapter(mAlphabetList);
+        mAdapter = new AlphabetAdapter(mAlphabetList, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(String letter) {
         if (mListener != null) {
             mListener.onLetterClick(letter);
@@ -80,6 +80,11 @@ public class AlphabetFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        mListener.onLetterClick(mAlphabetList.get(position));
     }
 
     public interface OnLetterClickListener {

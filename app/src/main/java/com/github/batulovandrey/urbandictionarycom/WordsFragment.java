@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.WordAdapter;
+import com.github.batulovandrey.urbandictionarycom.adapter.WordClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WordsFragment extends Fragment {
+public class WordsFragment extends Fragment implements WordClickListener {
 
     private static final String EXTRA_WORDS_LIST = "extra_words_list";
 
@@ -54,7 +55,7 @@ public class WordsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mWordAdapter = new WordAdapter(mWords);
+        mWordAdapter = new WordAdapter(mWords, this);
         mRecyclerView.setAdapter(mWordAdapter);
     }
 
@@ -79,6 +80,11 @@ public class WordsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        mListener.onWordClick(mWords.get(position));
     }
 
     public interface OnWordClickListener {
