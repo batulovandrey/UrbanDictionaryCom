@@ -37,18 +37,13 @@ android {
 
 dependencies {
 
-    // Jackson
-    implementation(
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.2'],
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.2'],
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.2']
-    )
-
     // Guava
     implementation 'com.google.guava:guava:22.0-android'
 
     // Retrofit2
-    implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.3.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'

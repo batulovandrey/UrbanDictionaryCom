@@ -1,8 +1,9 @@
 package com.github.batulovandrey.urbandictionarycom.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -12,20 +13,24 @@ import java.util.List;
 
 public class BaseResponse {
 
-    @JsonProperty("tags")
+    @SerializedName("tags")
+    @Expose
     private List<String> mTags;
 
-    @JsonProperty("result_type")
+    @SerializedName("result_type")
+    @Expose
     private String mResultType;
 
-    @JsonProperty("list")
+    @SerializedName("list")
+    @Expose
     private List<DefinitionResponse> mDefinitionResponses;
 
-    @JsonProperty("sounds")
+    @SerializedName("sounds")
+    @Expose
     private List<String> mSounds;
 
     public BaseResponse() {
-        // needed by Jackson
+        // needed by GSON
     }
 
     public List<String> getTags() {

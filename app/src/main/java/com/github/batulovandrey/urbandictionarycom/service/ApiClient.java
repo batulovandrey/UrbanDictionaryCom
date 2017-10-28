@@ -1,7 +1,7 @@
 package com.github.batulovandrey.urbandictionarycom.service;
 
 import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author Andrey Batulov on 26/10/2017
@@ -20,7 +20,7 @@ public class ApiClient {
         if (sRetrofit == null) {
             sRetrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(JacksonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         return sRetrofit;

@@ -1,152 +1,117 @@
 package com.github.batulovandrey.urbandictionarycom.bean;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import io.realm.RealmObject;
 
 /**
  * @author Andrey Batulov on 26/10/2017
  */
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DefinitionResponse implements Parcelable {
+public class DefinitionResponse extends RealmObject {
 
-    public static final ClassCreator CREATOR = new ClassCreator();
+    @SerializedName("definition")
+    @Expose
+    private String definition;
 
-    @JsonProperty("definition")
-    private String mDefinition;
+    @SerializedName("permalink")
+    @Expose
+    private String permalink;
 
-    @JsonProperty("permalink")
-    private String mPermalink;
+    @SerializedName("thumbs_up")
+    @Expose
+    private int thumbsUp;
 
-    @JsonProperty("thumbs_up")
-    private int mThumbsUp;
+    @SerializedName("author")
+    @Expose
+    private String author;
 
-    @JsonProperty("author")
-    private String mAuthor;
+    @SerializedName("word")
+    @Expose
+    private String word;
 
-    @JsonProperty("word")
-    private String mWord;
+    @SerializedName("defid")
+    @Expose
+    private long defid;
 
-    @JsonProperty("defid")
-    private long mDefId;
+    @SerializedName("example")
+    @Expose
+    private String example;
 
-    @JsonProperty("example")
-    private String mExample;
-
-    @JsonProperty("thumbs_down")
-    private int mThumbsDown;
-
-    private static final class ClassCreator implements Creator<DefinitionResponse> {
-        @Override
-        public DefinitionResponse createFromParcel(Parcel in) {
-            return new DefinitionResponse(in);
-        }
-
-        @Override
-        public DefinitionResponse[] newArray(int size) {
-            return new DefinitionResponse[size];
-        }
-    }
+    @SerializedName("thumbs_down")
+    @Expose
+    private int thumbsDown;
 
     public DefinitionResponse() {
-        // needed by Jackson
-    }
-
-    protected DefinitionResponse(Parcel in) {
-        mDefinition = in.readString();
-        mPermalink = in.readString();
-        mThumbsUp = in.readInt();
-        mAuthor = in.readString();
-        mWord = in.readString();
-        mDefId = in.readLong();
-        mExample = in.readString();
-        mThumbsDown = in.readInt();
+        // needed by Realm
     }
 
     public String getDefinition() {
-        return mDefinition;
+        return definition;
     }
 
     public void setDefinition(String definition) {
-        mDefinition = definition;
+        this.definition = definition;
     }
 
     public String getPermalink() {
-        return mPermalink;
+        return permalink;
     }
 
     public void setPermalink(String permalink) {
-        mPermalink = permalink;
+        this.permalink = permalink;
     }
 
     public int getThumbsUp() {
-        return mThumbsUp;
+        return thumbsUp;
     }
 
     public void setThumbsUp(int thumbsUp) {
-        mThumbsUp = thumbsUp;
+        this.thumbsUp = thumbsUp;
     }
 
     public String getAuthor() {
-        return mAuthor;
+        return author;
     }
 
     public void setAuthor(String author) {
-        mAuthor = author;
+        this.author = author;
     }
 
     public String getWord() {
-        return mWord;
+        return word;
     }
 
     public void setWord(String word) {
-        mWord = word;
+        this.word = word;
     }
 
-    public long getDefId() {
-        return mDefId;
+    public long getDefid() {
+        return defid;
     }
 
-    public void setDefId(long defId) {
-        mDefId = defId;
+    public void setDefid(long defid) {
+        this.defid = defid;
     }
 
     public String getExample() {
-        return mExample;
+        return example;
     }
 
     public void setExample(String example) {
-        mExample = example;
+        this.example = example;
     }
 
     public int getThumbsDown() {
-        return mThumbsDown;
+        return thumbsDown;
     }
 
     public void setThumbsDown(int thumbsDown) {
-        mThumbsDown = thumbsDown;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mDefinition);
-        parcel.writeString(mPermalink);
-        parcel.writeInt(mThumbsUp);
-        parcel.writeString(mAuthor);
-        parcel.writeString(mWord);
-        parcel.writeLong(mDefId);
-        parcel.writeString(mExample);
-        parcel.writeInt(mThumbsDown);
+        this.thumbsDown = thumbsDown;
     }
 
     @Override
@@ -154,40 +119,39 @@ public class DefinitionResponse implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefinitionResponse that = (DefinitionResponse) o;
-        return mThumbsUp == that.mThumbsUp &&
-                mDefId == that.mDefId &&
-                mThumbsDown == that.mThumbsDown &&
-                Objects.equal(mDefinition, that.mDefinition) &&
-                Objects.equal(mPermalink, that.mPermalink) &&
-                Objects.equal(mAuthor, that.mAuthor) &&
-                Objects.equal(mWord, that.mWord) &&
-                Objects.equal(mExample, that.mExample);
+        return thumbsUp == that.thumbsUp &&
+                defid == that.defid &&
+                thumbsDown == that.thumbsDown &&
+                Objects.equal(definition, that.definition) &&
+                Objects.equal(permalink, that.permalink) &&
+                Objects.equal(author, that.author) &&
+                Objects.equal(word, that.word) &&
+                Objects.equal(example, that.example);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(
-                mDefinition,
-                mPermalink,
-                mThumbsUp,
-                mAuthor,
-                mWord,
-                mDefId,
-                mExample,
-                mThumbsDown);
+        return Objects.hashCode(definition,
+                permalink,
+                thumbsUp,
+                author,
+                word,
+                defid,
+                example,
+                thumbsDown);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("mDefinition", mDefinition)
-                .add("mPermalink", mPermalink)
-                .add("mThumbsUp", mThumbsUp)
-                .add("mAuthor", mAuthor)
-                .add("mWord", mWord)
-                .add("mDefId", mDefId)
-                .add("mExample", mExample)
-                .add("mThumbsDown", mThumbsDown)
+                .add("definition", definition)
+                .add("permalink", permalink)
+                .add("thumbsUp", thumbsUp)
+                .add("author", author)
+                .add("word", word)
+                .add("defid", defid)
+                .add("example", example)
+                .add("thumbsDown", thumbsDown)
                 .toString();
     }
 }
