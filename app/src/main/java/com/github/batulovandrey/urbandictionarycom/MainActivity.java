@@ -22,15 +22,15 @@ import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenterImpl;
 import com.github.batulovandrey.urbandictionarycom.utils.Utils;
 import com.github.batulovandrey.urbandictionarycom.view.MainView;
 
+import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_DEFINITION_ID;
+import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_SEARCH_QUERY;
+
 /**
  * @author Andrey Batulov on 26/10/2017
  */
 
 public class MainActivity extends AppCompatActivity
         implements SearchView.OnQueryTextListener, DefinitionClickListener, MainView {
-
-    private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
-    private static final String EXTRA_DEFINITION_ID = "extra_definition_id";
 
     private Toolbar mToolbar;
     private SearchView mSearchView;
@@ -162,8 +162,6 @@ public class MainActivity extends AppCompatActivity
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager != null ?
                 searchManager.getSearchableInfo(getComponentName()) : null);
-        mSearchView.setFocusable(true);
-        mSearchView.setIconified(false);
         mSearchView.setOnQueryTextListener(this);
     }
 }

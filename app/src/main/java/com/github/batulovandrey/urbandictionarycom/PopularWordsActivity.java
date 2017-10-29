@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_SEARCH_QUERY;
+
 public class PopularWordsActivity extends AppCompatActivity
         implements AlphabetFragment.OnLetterClickListener, WordsFragment.OnWordClickListener {
-
-    private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
 
     private Toolbar mToolbar;
     private Map<String, List<String>> mDictionary;
@@ -35,7 +35,7 @@ public class PopularWordsActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home :
+            case android.R.id.home:
                 finish();
                 return true;
         }

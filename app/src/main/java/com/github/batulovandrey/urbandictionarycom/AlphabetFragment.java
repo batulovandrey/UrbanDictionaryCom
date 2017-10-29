@@ -15,9 +15,9 @@ import com.github.batulovandrey.urbandictionarycom.adapter.AlphabetClickListener
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlphabetFragment extends Fragment implements AlphabetClickListener {
+import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_ALPHABET_LIST;
 
-    private static final String EXTRA_ALPHABET_LIST = "extra_alphabet_list";
+public class AlphabetFragment extends Fragment implements AlphabetClickListener {
 
     private List<String> mAlphabetList;
     private OnLetterClickListener mListener;

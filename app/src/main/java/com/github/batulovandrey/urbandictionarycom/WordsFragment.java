@@ -15,14 +15,13 @@ import com.github.batulovandrey.urbandictionarycom.adapter.WordClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WordsFragment extends Fragment implements WordClickListener {
+import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_WORDS_LIST;
 
-    private static final String EXTRA_WORDS_LIST = "extra_words_list";
+public class WordsFragment extends Fragment implements WordClickListener {
 
     private List<String> mWords;
     private OnWordClickListener mListener;
     private RecyclerView mRecyclerView;
-    private WordAdapter mWordAdapter;
 
     public WordsFragment() {
         // Required empty public constructor
@@ -55,8 +54,8 @@ public class WordsFragment extends Fragment implements WordClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mWordAdapter = new WordAdapter(mWords, this);
-        mRecyclerView.setAdapter(mWordAdapter);
+        WordAdapter wordAdapter = new WordAdapter(mWords, this);
+        mRecyclerView.setAdapter(wordAdapter);
     }
 
     public void onButtonPressed(String word) {

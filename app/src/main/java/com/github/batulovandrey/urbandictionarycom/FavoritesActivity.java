@@ -20,9 +20,9 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class FavoritesActivity extends AppCompatActivity implements DefinitionClickListener {
+import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_DEFINITION_ID;
 
-    private static final String EXTRA_DEFINITION_ID = "extra_definition_id";
+public class FavoritesActivity extends AppCompatActivity implements DefinitionClickListener {
 
     private DefinitionAdapter mDefinitionAdapter;
     private List<DefinitionResponse> mFavorites;
