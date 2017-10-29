@@ -1,10 +1,13 @@
 package com.github.batulovandrey.urbandictionarycom;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
@@ -15,6 +18,7 @@ import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class FavoritesActivity extends AppCompatActivity implements DefinitionClickListener {
 
@@ -45,15 +49,23 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.favorites_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.clear_favorites:
+                clearFavoriteList();
+                return true;
             default:
-                super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -68,5 +80,26 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void clearFavoriteList() {
+        new AlertDialog.Builder(this)
+                .setTitle("Clear list of favorites")
+                .setMessage("All items from favorite list will be removed. Are you sure?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mRealm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                RealmResults<DefinitionResponse> rows = realm
+                                        .where(DefinitionResponse.class).findAll();
+                                rows.deleteAllFromRealm();
+                            }
+
+                        });
+                        mDefinitionAdapter.notifyDataSetChanged();
+                    }
+                }).show();
     }
 }

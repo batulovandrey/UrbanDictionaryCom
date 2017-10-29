@@ -4,4 +4,5 @@
     <string name="error">Something went wrong...</string>
     <string name="alphabet">alphabet</string>
     <string name="favorites">favorites</string>
+    <string name="clear_favorites">clear favorites</string>
 </resources>
