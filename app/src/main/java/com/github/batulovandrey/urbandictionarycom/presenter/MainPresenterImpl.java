@@ -66,4 +66,14 @@ public class MainPresenterImpl implements MainPresenter {
     public Realm getRealm(String nameDb) {
         return new RealmManager(mMainView.getContext(), nameDb).getRealm();
     }
+
+    @Override
+    public void showProgressbar() {
+        mMainView.showProgressbar();
+    }
+
+    @Override
+    public void hideProgressbar() {
+        mMainView.hideProgressbar();
+    }
 }

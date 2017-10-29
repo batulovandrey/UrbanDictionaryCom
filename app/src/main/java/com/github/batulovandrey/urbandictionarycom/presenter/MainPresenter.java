@@ -28,4 +28,8 @@ public interface MainPresenter {
     long getDefinitionId(int position);
 
     Realm getRealm(String nameDb);
+
+    void showProgressbar();
+
+    void hideProgressbar();
 }

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
 
     private UserQueriesAdapter mUserQueriesAdapter;
     private String mSearchQuery;
@@ -154,6 +158,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void showProgressbar() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressbar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void initIU() {

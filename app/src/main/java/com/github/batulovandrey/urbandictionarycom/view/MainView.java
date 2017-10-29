@@ -21,4 +21,8 @@ public interface MainView {
     void showToast(int resId);
 
     Context getContext();
+
+    void showProgressbar();
+
+    void hideProgressbar();
 }

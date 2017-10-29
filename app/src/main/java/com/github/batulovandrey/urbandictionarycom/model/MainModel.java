@@ -45,6 +45,7 @@ public class MainModel {
     }
 
     public void getData(String query, final DefinitionClickListener listener) {
+        mMainPresenter.showProgressbar();
         UrbanDictionaryService service = ApiClient.getRetrofit().create(UrbanDictionaryService.class);
         Call<BaseResponse> call = service.getDefine(query);
         call.enqueue(new Callback<BaseResponse>() {
@@ -55,6 +56,7 @@ public class MainModel {
                     mDefinitions = response.body().getDefinitionResponses();
                     mDefinitionAdapter = new DefinitionAdapter(mDefinitions, listener);
                     mMainPresenter.setAdapterToRecycler(mDefinitionAdapter);
+                    mMainPresenter.hideProgressbar();
                 }
             }
 
@@ -64,6 +66,7 @@ public class MainModel {
                 System.out.println(call.toString());
                 System.out.println(t.getMessage());
                 mMainPresenter.showToast(R.string.error);
+                mMainPresenter.hideProgressbar();
             }
         });
     }
