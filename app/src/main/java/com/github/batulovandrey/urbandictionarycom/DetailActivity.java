@@ -121,6 +121,7 @@ public class DetailActivity extends AppCompatActivity {
                 newDefinition.setAuthor(definition.getAuthor());
             }
         });
+        mFavImageView.animate().rotationBy(360).setDuration(500);
         mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
     }
 
@@ -135,6 +136,7 @@ public class DetailActivity extends AppCompatActivity {
                 rows.deleteAllFromRealm();
             }
         });
+        mFavImageView.animate().rotationBy(-360).setDuration(500);
         mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
     }
 

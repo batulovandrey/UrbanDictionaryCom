@@ -36,9 +36,11 @@
         </activity>
         <activity
             android:name=".PopularWordsActivity"
+            android:configChanges="screenSize|orientation"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         </activity>
-        <activity android:name=".FavoritesActivity"
+        <activity
+            android:name=".FavoritesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         </activity>
     </application>
