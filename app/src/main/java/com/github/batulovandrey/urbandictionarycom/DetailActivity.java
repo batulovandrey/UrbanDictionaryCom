@@ -1,5 +1,6 @@
 package com.github.batulovandrey.urbandictionarycom;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,18 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
-import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
-
-import java.util.List;
+import com.github.batulovandrey.urbandictionarycom.presenter.DetailPresenter;
+import com.github.batulovandrey.urbandictionarycom.presenter.DetailPresenterImpl;
+import com.github.batulovandrey.urbandictionarycom.view.DetailView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_DEFINITION_ID;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements DetailView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -49,18 +48,16 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.fav_image_view)
     ImageView mFavImageView;
 
-    private Realm mDefinitionsRealm;
-    private Realm mFavoriteDefinitionsRealm;
+    private DetailPresenter mDetailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        mDetailPresenter = new DetailPresenterImpl(this);
         initToolbar();
         long definitionId = getIntent().getLongExtra(EXTRA_DEFINITION_ID, 0);
-        mDefinitionsRealm = new RealmManager(this, "definitions").getRealm();
-        mFavoriteDefinitionsRealm = new RealmManager(this, "favorites").getRealm();
         setValuesToViews(definitionId);
     }
 
@@ -80,8 +77,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setValuesToViews(final long definitionId) {
-        final DefinitionResponse definition = mDefinitionsRealm
-                .where(DefinitionResponse.class).equalTo("defid", definitionId).findFirst();
+        final DefinitionResponse definition = mDetailPresenter.getDefinitionByDefIf(definitionId);
         if (definition != null) {
             mWordTextView.setText(definition.getWord());
             mDefinitionTextView.setText(definition.getDefinition());
@@ -90,62 +86,29 @@ public class DetailActivity extends AppCompatActivity {
             mThumbsUpTextView.setText(String.valueOf(definition.getThumbsUp()));
             mThumbsDownTextView.setText(String.valueOf(definition.getThumbsDown()));
             mPermalinkTextView.setText(definition.getPermalink());
-            mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
+            mFavImageView.setImageResource(mDetailPresenter
+                    .isFavoriteDefinition(definition) ? R.drawable.unfav : R.drawable.fav);
             mFavImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DefinitionResponse temp = mFavoriteDefinitionsRealm
-                            .where(DefinitionResponse.class).equalTo("defid", definitionId).findFirst();
-                    if (temp == null) {
-                        saveToFavorites(definition);
-                    } else {
-                        deleteFromFavorites(definition);
-                    }
+                    mDetailPresenter.isAddedToFav(definitionId);
                 }
             });
         }
     }
 
-    private void saveToFavorites(final DefinitionResponse definition) {
-        mFavoriteDefinitionsRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DefinitionResponse newDefinition = realm.createObject(DefinitionResponse.class);
-                newDefinition.setWord(definition.getWord());
-                newDefinition.setThumbsUp(definition.getThumbsUp());
-                newDefinition.setThumbsDown(definition.getThumbsDown());
-                newDefinition.setPermalink(definition.getPermalink());
-                newDefinition.setExample(definition.getExample());
-                newDefinition.setDefinition(definition.getDefinition());
-                newDefinition.setDefid(definition.getDefid());
-                newDefinition.setAuthor(definition.getAuthor());
-            }
-        });
-        mFavImageView.animate().rotationBy(360).setDuration(500);
-        mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
-    }
-
-    private void deleteFromFavorites(final DefinitionResponse definition) {
-        mFavoriteDefinitionsRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmResults<DefinitionResponse> rows = realm
-                        .where(DefinitionResponse.class)
-                        .equalTo("defid", definition.getDefid())
-                        .findAll();
-                rows.deleteAllFromRealm();
-            }
-        });
-        mFavImageView.animate().rotationBy(-360).setDuration(500);
-        mFavImageView.setImageResource(isFavorite(definition) ? R.drawable.unfav : R.drawable.fav);
-    }
-
-    private boolean isFavorite(DefinitionResponse definition) {
-        List<DefinitionResponse> list = mFavoriteDefinitionsRealm.where(DefinitionResponse.class).findAll();
-        for (DefinitionResponse def : list) {
-            if (def.getDefid() == definition.getDefid())
-                return true;
+    @Override
+    public void setImageResToImageView(int resId) {
+        mFavImageView.setImageResource(resId);
+        if (resId == R.drawable.fav) {
+            mFavImageView.animate().rotationBy(-360).setDuration(500);
+        } else {
+            mFavImageView.animate().rotationBy(360).setDuration(500);
         }
-        return false;
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }
