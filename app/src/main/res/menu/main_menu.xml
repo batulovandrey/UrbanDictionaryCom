@@ -2,10 +2,19 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
+
     <item
         android:id="@+id/go_to_alphabet"
-        android:icon="@drawable/letter"
+        android:icon="@drawable/menu_letter"
         android:orderInCategory="100"
         android:title="@string/alphabet"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/go_to_favorites"
+        android:icon="@drawable/menu_fav"
+        android:orderInCategory="100"
+        android:title="@string/favorites"
+        app:showAsAction="ifRoom"/>
+
 </menu>

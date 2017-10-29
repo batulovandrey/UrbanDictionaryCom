@@ -59,7 +59,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.go_to_alphabet:
-                startActivity(new Intent(getApplicationContext(), PopularWordsActivity.class));
+                startActivity(new Intent(getContext(), PopularWordsActivity.class));
+                return true;
+            case R.id.go_to_favorites:
+                startActivity(new Intent(getContext(), FavoritesActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
