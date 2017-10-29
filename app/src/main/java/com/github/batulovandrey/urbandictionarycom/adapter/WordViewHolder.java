@@ -6,12 +6,16 @@ import android.widget.TextView;
 
 import com.github.batulovandrey.urbandictionarycom.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * @author Andrey Batulov on 27/10/2017
  */
 
 public class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+    @BindView(R.id.word_text_view)
     TextView mWordTextView;
 
     private WordClickListener mClickListener;
@@ -19,7 +23,7 @@ public class WordViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     WordViewHolder(View itemView, WordClickListener listener) {
         super(itemView);
         mClickListener = listener;
-        mWordTextView = itemView.findViewById(R.id.word_text_view);
+        ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(this);
     }
 

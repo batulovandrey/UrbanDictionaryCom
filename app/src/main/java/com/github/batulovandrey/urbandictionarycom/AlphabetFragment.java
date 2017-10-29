@@ -15,14 +15,20 @@ import com.github.batulovandrey.urbandictionarycom.adapter.AlphabetClickListener
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_ALPHABET_LIST;
 
 public class AlphabetFragment extends Fragment implements AlphabetClickListener {
 
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
     private List<String> mAlphabetList;
     private OnLetterClickListener mListener;
-    private RecyclerView mRecyclerView;
-    private AlphabetAdapter mAdapter;
+    private Unbinder mUnbinder;
 
     public AlphabetFragment() {
         // Required empty public constructor
@@ -48,15 +54,15 @@ public class AlphabetFragment extends Fragment implements AlphabetClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment, container, false);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mUnbinder = ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new AlphabetAdapter(mAlphabetList, this);
-        mRecyclerView.setAdapter(mAdapter);
+        AlphabetAdapter adapter = new AlphabetAdapter(mAlphabetList, this);
+        mRecyclerView.setAdapter(adapter);
     }
 
     public void onButtonPressed(String letter) {
@@ -80,6 +86,12 @@ public class AlphabetFragment extends Fragment implements AlphabetClickListener 
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     @Override

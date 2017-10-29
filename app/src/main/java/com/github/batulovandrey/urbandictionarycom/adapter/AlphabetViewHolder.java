@@ -6,12 +6,16 @@ import android.widget.TextView;
 
 import com.github.batulovandrey.urbandictionarycom.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * @author Andrey Batulov on 27/10/2017
  */
 
 public class AlphabetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+    @BindView(R.id.alphabet_text_view)
     TextView mAlphabetTextView;
 
     private AlphabetClickListener mClickListener;
@@ -19,7 +23,7 @@ public class AlphabetViewHolder extends RecyclerView.ViewHolder implements View.
     AlphabetViewHolder(View itemView, AlphabetClickListener listener) {
         super(itemView);
         mClickListener = listener;
-        mAlphabetTextView = itemView.findViewById(R.id.alphabet_text_view);
+        ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(this);
     }
 

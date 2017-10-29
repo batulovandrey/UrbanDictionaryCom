@@ -1,6 +1,5 @@
 package com.github.batulovandrey.urbandictionarycom;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +13,8 @@ import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -21,15 +22,33 @@ import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView mWordTextView;
-    private TextView mDefinitionTextView;
-    private TextView mExampleTextView;
-    private TextView mAuthorTextView;
-    private TextView mThumbsUpTextView;
-    private TextView mThumbsDownTextView;
-    private TextView mPermalinkTextView;
-    private Toolbar mToolbar;
-    private ImageView mFavImageView;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.word_text_view)
+    TextView mWordTextView;
+
+    @BindView(R.id.definition_text_view)
+    TextView mDefinitionTextView;
+
+    @BindView(R.id.example_text_view)
+    TextView mExampleTextView;
+
+    @BindView(R.id.author_text_view)
+    TextView mAuthorTextView;
+
+    @BindView(R.id.thumbs_up_text_view)
+    TextView mThumbsUpTextView;
+
+    @BindView(R.id.thumbs_down_text_view)
+    TextView mThumbsDownTextView;
+
+    @BindView(R.id.permalink_text_view)
+    TextView mPermalinkTextView;
+
+    @BindView(R.id.fav_image_view)
+    ImageView mFavImageView;
+
     private Realm mDefinitionsRealm;
     private Realm mFavoriteDefinitionsRealm;
 
@@ -37,9 +56,9 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        initViews();
-        Intent intent = getIntent();
-        long definitionId = intent.getLongExtra(EXTRA_DEFINITION_ID, 0);
+        ButterKnife.bind(this);
+        initToolbar();
+        long definitionId = getIntent().getLongExtra(EXTRA_DEFINITION_ID, 0);
         mDefinitionsRealm = new RealmManager(this, "definitions").getRealm();
         mFavoriteDefinitionsRealm = new RealmManager(this, "favorites").getRealm();
         setValuesToViews(definitionId);
@@ -55,20 +74,7 @@ public class DetailActivity extends AppCompatActivity {
         return false;
     }
 
-    private void initViews() {
-        initToolbar();
-        mWordTextView = findViewById(R.id.word_text_view);
-        mDefinitionTextView = findViewById(R.id.definition_text_view);
-        mExampleTextView = findViewById(R.id.example_text_view);
-        mAuthorTextView = findViewById(R.id.author_text_view);
-        mThumbsUpTextView = findViewById(R.id.thumbs_up_text_view);
-        mThumbsDownTextView = findViewById(R.id.thumbs_down_text_view);
-        mPermalinkTextView = findViewById(R.id.permalink_text_view);
-        mFavImageView = findViewById(R.id.fav_image_view);
-    }
-
     private void initToolbar() {
-        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

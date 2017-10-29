@@ -22,6 +22,9 @@ import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenterImpl;
 import com.github.batulovandrey.urbandictionarycom.utils.Utils;
 import com.github.batulovandrey.urbandictionarycom.view.MainView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_DEFINITION_ID;
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_SEARCH_QUERY;
 
@@ -32,18 +35,27 @@ import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_
 public class MainActivity extends AppCompatActivity
         implements SearchView.OnQueryTextListener, DefinitionClickListener, MainView {
 
-    private Toolbar mToolbar;
-    private SearchView mSearchView;
-    private ListView mListView;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.search_view)
+    SearchView mSearchView;
+
+    @BindView(R.id.list_view)
+    ListView mListView;
+
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
     private UserQueriesAdapter mUserQueriesAdapter;
     private String mSearchQuery;
-    private RecyclerView mRecyclerView;
     private MainPresenter mMainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         mUserQueriesAdapter = new UserQueriesAdapter(this);
         initIU();
         mMainPresenter = new MainPresenterImpl(this);
@@ -147,21 +159,19 @@ public class MainActivity extends AppCompatActivity
     private void initIU() {
         initToolbar();
         initSearchView();
-        mListView = findViewById(R.id.list_view);
         mListView.setAdapter(mUserQueriesAdapter);
-        mRecyclerView = findViewById(R.id.recycler_view);
     }
 
     private void initToolbar() {
-        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
     }
 
     private void initSearchView() {
-        mSearchView = findViewById(R.id.search_view);
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager != null ?
                 searchManager.getSearchableInfo(getComponentName()) : null);
+        mSearchView.setFocusable(true);
+        mSearchView.setIconified(false);
         mSearchView.setOnQueryTextListener(this);
     }
 }

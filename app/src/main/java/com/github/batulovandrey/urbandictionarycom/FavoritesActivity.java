@@ -17,6 +17,8 @@ import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -24,18 +26,22 @@ import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_
 
 public class FavoritesActivity extends AppCompatActivity implements DefinitionClickListener {
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
     private DefinitionAdapter mDefinitionAdapter;
     private List<DefinitionResponse> mFavorites;
     private Realm mRealm;
-    private RecyclerView mRecyclerView;
-    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
+        ButterKnife.bind(this);
         initToolbar();
-        mRecyclerView = findViewById(R.id.recycler_view);
         mRealm = new RealmManager(this, "favorites").getRealm();
         mFavorites = mRealm.where(DefinitionResponse.class).findAll();
         mDefinitionAdapter = new DefinitionAdapter(mFavorites, this);
@@ -77,7 +83,6 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
     }
 
     private void initToolbar() {
-        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

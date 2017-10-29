@@ -14,18 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_SEARCH_QUERY;
 
 public class PopularWordsActivity extends AppCompatActivity
         implements AlphabetFragment.OnLetterClickListener, WordsFragment.OnWordClickListener {
 
-    private Toolbar mToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
     private Map<String, List<String>> mDictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_words);
+        ButterKnife.bind(this);
         initToolbar();
         PopularWords popularWords = new PopularWords(this);
         mDictionary = popularWords.getDictionary();
@@ -64,7 +70,6 @@ public class PopularWordsActivity extends AppCompatActivity
     }
 
     private void initToolbar() {
-        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

@@ -15,13 +15,20 @@ import com.github.batulovandrey.urbandictionarycom.adapter.WordClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_WORDS_LIST;
 
 public class WordsFragment extends Fragment implements WordClickListener {
 
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
     private List<String> mWords;
     private OnWordClickListener mListener;
-    private RecyclerView mRecyclerView;
+    private Unbinder mUnbinder;
 
     public WordsFragment() {
         // Required empty public constructor
@@ -47,7 +54,7 @@ public class WordsFragment extends Fragment implements WordClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment, container, false);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mUnbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -79,6 +86,12 @@ public class WordsFragment extends Fragment implements WordClickListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     @Override
