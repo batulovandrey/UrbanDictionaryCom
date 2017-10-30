@@ -9,24 +9,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
-import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
-
-import java.util.List;
-
-import javax.inject.Inject;
+import com.github.batulovandrey.urbandictionarycom.presenter.FavoritesPresenter;
+import com.github.batulovandrey.urbandictionarycom.presenter.FavoritesPresenterImpl;
+import com.github.batulovandrey.urbandictionarycom.view.FavoritesView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 import static com.github.batulovandrey.urbandictionarycom.utils.Constants.EXTRA_DEFINITION_ID;
 
-public class FavoritesActivity extends AppCompatActivity implements DefinitionClickListener {
+public class FavoritesActivity extends AppCompatActivity
+        implements DefinitionClickListener, FavoritesView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -34,23 +32,17 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @Inject
-    RealmManager mRealmManager;
-
     private DefinitionAdapter mDefinitionAdapter;
-    private List<DefinitionResponse> mFavorites;
-    private Realm mRealm;
+    private FavoritesPresenter mFavoritesPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
+        mFavoritesPresenter = new FavoritesPresenterImpl(this);
         ButterKnife.bind(this);
-        UrbanDictionaryComApp.getNetComponent().inject(this);
         initToolbar();
-        mRealm = mRealmManager.getRealmFavorites();
-        mFavorites = mRealm.where(DefinitionResponse.class).findAll();
-        mDefinitionAdapter = new DefinitionAdapter(mFavorites, this);
+        mDefinitionAdapter = new DefinitionAdapter(mFavoritesPresenter.getFavorites(), this);
         mRecyclerView.setAdapter(mDefinitionAdapter);
     }
 
@@ -73,7 +65,7 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
                 finish();
                 return true;
             case R.id.clear_favorites:
-                clearFavoriteList();
+                mFavoritesPresenter.showAlertDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -82,35 +74,33 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
 
     @Override
     public void onItemClick(int position) {
-        DefinitionResponse definition = mFavorites.get(position);
+        DefinitionResponse definition = mFavoritesPresenter.getFavorites().get(position);
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(EXTRA_DEFINITION_ID, definition.getDefid());
         startActivity(intent);
     }
 
-    private void initToolbar() {
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void clearFavoriteList() {
+    @Override
+    public void showAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Clear list of favorites")
                 .setMessage("All items from favorite list will be removed. Are you sure?")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                RealmResults<DefinitionResponse> rows = realm
-                                        .where(DefinitionResponse.class).findAll();
-                                rows.deleteAllFromRealm();
-                            }
-
-                        });
+                        mFavoritesPresenter.clearList();
                         mDefinitionAdapter.notifyDataSetChanged();
                     }
                 }).show();
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

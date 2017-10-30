@@ -1,7 +1,7 @@
 package com.github.batulovandrey.urbandictionarycom.dagger;
 
-import com.github.batulovandrey.urbandictionarycom.FavoritesActivity;
 import com.github.batulovandrey.urbandictionarycom.model.DetailModel;
+import com.github.batulovandrey.urbandictionarycom.model.FavoritesModel;
 import com.github.batulovandrey.urbandictionarycom.model.MainModel;
 
 import javax.inject.Singleton;
@@ -20,5 +20,5 @@ public interface NetComponent {
 
     void inject(DetailModel model);
 
-    void inject(FavoritesActivity activity);
+    void inject(FavoritesModel model);
 }
