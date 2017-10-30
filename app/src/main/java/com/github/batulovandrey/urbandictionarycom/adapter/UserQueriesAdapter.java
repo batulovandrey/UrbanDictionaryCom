@@ -33,7 +33,7 @@ public class UserQueriesAdapter extends BaseAdapter {
     public UserQueriesAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mRealm = new RealmManager(context, "queries").getRealm();
+        mRealm = new RealmManager(context).getRealmDefinitions();
         mQueries = mRealm.where(UserQuery.class).findAll();
     }
 

@@ -3,15 +3,18 @@ package com.github.batulovandrey.urbandictionarycom.model;
 import android.support.annotation.NonNull;
 
 import com.github.batulovandrey.urbandictionarycom.R;
+import com.github.batulovandrey.urbandictionarycom.UrbanDictionaryComApp;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
 import com.github.batulovandrey.urbandictionarycom.bean.BaseResponse;
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.presenter.MainPresenter;
-import com.github.batulovandrey.urbandictionarycom.service.ApiClient;
+import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 import com.github.batulovandrey.urbandictionarycom.service.UrbanDictionaryService;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -24,6 +27,12 @@ import retrofit2.Response;
 
 public class MainModel {
 
+    @Inject
+    RealmManager mRealmManager;
+
+    @Inject
+    UrbanDictionaryService mService;
+
     private final MainPresenter mMainPresenter;
     private Realm mRealm;
     private DefinitionAdapter mDefinitionAdapter;
@@ -31,7 +40,8 @@ public class MainModel {
 
     public MainModel(MainPresenter mainPresenter) {
         mMainPresenter = mainPresenter;
-        mRealm = mMainPresenter.getRealm("definitions");
+        UrbanDictionaryComApp.getNetComponent().inject(this);
+        mRealm = mRealmManager.getRealmDefinitions();
     }
 
     public boolean textChanged(String text) {
@@ -46,8 +56,7 @@ public class MainModel {
 
     public void getData(String query, final DefinitionClickListener listener) {
         mMainPresenter.showProgressbar();
-        UrbanDictionaryService service = ApiClient.getRetrofit().create(UrbanDictionaryService.class);
-        Call<BaseResponse> call = service.getDefine(query);
+        Call<BaseResponse> call = mService.getDefine(query);
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(@NonNull Call<BaseResponse> call,

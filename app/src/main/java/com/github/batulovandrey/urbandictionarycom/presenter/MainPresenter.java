@@ -3,8 +3,6 @@ package com.github.batulovandrey.urbandictionarycom.presenter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionClickListener;
 
-import io.realm.Realm;
-
 /**
  * @author Andrey Batulov on 27/10/2017
  */
@@ -26,8 +24,6 @@ public interface MainPresenter {
     void showToast(int resId);
 
     long getDefinitionId(int position);
-
-    Realm getRealm(String nameDb);
 
     void showProgressbar();
 

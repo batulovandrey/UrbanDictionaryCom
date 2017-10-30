@@ -17,6 +17,8 @@ import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -32,6 +34,9 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    @Inject
+    RealmManager mRealmManager;
+
     private DefinitionAdapter mDefinitionAdapter;
     private List<DefinitionResponse> mFavorites;
     private Realm mRealm;
@@ -41,8 +46,9 @@ public class FavoritesActivity extends AppCompatActivity implements DefinitionCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
         ButterKnife.bind(this);
+        UrbanDictionaryComApp.getNetComponent().inject(this);
         initToolbar();
-        mRealm = new RealmManager(this, "favorites").getRealm();
+        mRealm = mRealmManager.getRealmFavorites();
         mFavorites = mRealm.where(DefinitionResponse.class).findAll();
         mDefinitionAdapter = new DefinitionAdapter(mFavorites, this);
         mRecyclerView.setAdapter(mDefinitionAdapter);

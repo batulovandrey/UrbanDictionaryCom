@@ -1,14 +1,9 @@
 package com.github.batulovandrey.urbandictionarycom.presenter;
 
-import android.content.Context;
-
 import com.github.batulovandrey.urbandictionarycom.R;
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.model.DetailModel;
-import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 import com.github.batulovandrey.urbandictionarycom.view.DetailView;
-
-import io.realm.Realm;
 
 /**
  * @author Andrey Batulov on 29/10/2017
@@ -46,15 +41,5 @@ public class DetailPresenterImpl implements DetailPresenter {
     @Override
     public void isAddedToFav(long defId) {
         mDetailModel.isAddedToFav(defId);
-    }
-
-    @Override
-    public Context getContext() {
-        return mDetailView.getContext();
-    }
-
-    @Override
-    public Realm getRealm(String nameDb) {
-        return new RealmManager(getContext(), nameDb).getRealm();
     }
 }

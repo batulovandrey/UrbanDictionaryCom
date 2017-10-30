@@ -1,7 +1,5 @@
 package com.github.batulovandrey.urbandictionarycom.view;
 
-import android.content.Context;
-
 import com.github.batulovandrey.urbandictionarycom.adapter.DefinitionAdapter;
 
 /**
@@ -19,8 +17,6 @@ public interface MainView {
     void setAdapterToRecycler(DefinitionAdapter definitionAdapter);
 
     void showToast(int resId);
-
-    Context getContext();
 
     void showProgressbar();
 

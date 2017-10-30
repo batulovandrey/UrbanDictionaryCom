@@ -1,7 +1,6 @@
 package com.github.batulovandrey.urbandictionarycom;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -75,10 +74,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.go_to_alphabet:
-                startActivity(new Intent(getContext(), PopularWordsActivity.class));
+                startActivity(new Intent(this, PopularWordsActivity.class));
                 return true;
             case R.id.go_to_favorites:
-                startActivity(new Intent(getContext(), FavoritesActivity.class));
+                startActivity(new Intent(this, FavoritesActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -153,11 +152,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showToast(int resId) {
         Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override

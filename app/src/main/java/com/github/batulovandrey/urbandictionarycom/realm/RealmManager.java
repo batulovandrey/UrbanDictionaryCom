@@ -11,18 +11,31 @@ import io.realm.RealmConfiguration;
 
 public class RealmManager {
 
-    private Realm mRealm;
-
-    public RealmManager(Context context, String nameDb) {
+    public RealmManager(Context context) {
         Realm.init(context);
-        RealmConfiguration config = new RealmConfiguration.Builder()
-                .name(nameDb + ".realm")
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        mRealm = Realm.getInstance(config);
     }
 
-    public Realm getRealm() {
-        return mRealm;
+    public Realm getRealmDefinitions() {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("definitions.realm")
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        return Realm.getInstance(config);
+    }
+
+    public Realm getRealmFavorites() {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("favorites.realm")
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        return Realm.getInstance(config);
+    }
+
+    public Realm getRealmQuieries() {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("queries.realm")
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        return Realm.getInstance(config);
     }
 }

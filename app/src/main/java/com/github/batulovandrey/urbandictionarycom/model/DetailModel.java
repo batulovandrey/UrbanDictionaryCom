@@ -1,9 +1,13 @@
 package com.github.batulovandrey.urbandictionarycom.model;
 
+import com.github.batulovandrey.urbandictionarycom.UrbanDictionaryComApp;
 import com.github.batulovandrey.urbandictionarycom.bean.DefinitionResponse;
 import com.github.batulovandrey.urbandictionarycom.presenter.DetailPresenter;
+import com.github.batulovandrey.urbandictionarycom.realm.RealmManager;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -14,6 +18,9 @@ import io.realm.RealmResults;
 
 public class DetailModel {
 
+    @Inject
+    RealmManager mRealmManager;
+
     private Realm mDefinitionsRealm;
     private Realm mFavoriteDefinitionsRealm;
 
@@ -21,6 +28,7 @@ public class DetailModel {
 
     public DetailModel(DetailPresenter detailPresenter) {
         mDetailPresenter = detailPresenter;
+        UrbanDictionaryComApp.getNetComponent().inject(this);
         initRealm();
     }
 
@@ -51,8 +59,8 @@ public class DetailModel {
     }
 
     private void initRealm() {
-        mDefinitionsRealm = mDetailPresenter.getRealm("definitions");
-        mFavoriteDefinitionsRealm = mDetailPresenter.getRealm("favorites");
+        mDefinitionsRealm = mRealmManager.getRealmDefinitions();
+        mFavoriteDefinitionsRealm = mRealmManager.getRealmFavorites();
     }
 
     private void saveToFavorites(final DefinitionResponse definition) {
