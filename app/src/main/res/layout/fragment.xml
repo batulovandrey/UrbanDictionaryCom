@@ -8,5 +8,5 @@
     android:padding="4dp"
     android:paddingLeft="30dp"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context="com.github.batulovandrey.urbandictionarycom.AlphabetFragment"
+    tools:context="com.github.batulovandrey.unofficialurbandictionary.AlphabetFragment"
     android:paddingStart="30dp"/>

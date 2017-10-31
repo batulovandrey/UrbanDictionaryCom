@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UrbanDictionaryCom</string>
+    <string name="app_name">Urban Dictionary (Unofficial)</string>
     <string name="search_hint">type any word...</string>
     <string name="error">Something went wrong...</string>
     <string name="alphabet">alphabet</string>

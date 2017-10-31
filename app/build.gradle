@@ -4,7 +4,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.github.batulovandrey.urbandictionarycom"
+        applicationId "com.github.batulovandrey.unofficialurbandictionary"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
