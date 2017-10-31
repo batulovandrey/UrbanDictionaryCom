@@ -2,6 +2,7 @@ package com.github.batulovandrey.unofficialurbandictionary.dagger;
 
 import android.app.Application;
 
+import com.github.batulovandrey.unofficialurbandictionary.data.PopularWords;
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager;
 import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService;
 
@@ -29,6 +30,12 @@ public class NetModule {
     @Singleton
     RealmManager provideRealmManager(Application application) {
         return new RealmManager(application.getApplicationContext());
+    }
+
+    @Provides
+    @Singleton
+    PopularWords providePopularWords(Application application) {
+        return new PopularWords(application.getApplicationContext());
     }
 
     @Provides

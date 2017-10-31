@@ -3,6 +3,7 @@ package com.github.batulovandrey.unofficialurbandictionary.dagger;
 import com.github.batulovandrey.unofficialurbandictionary.model.DetailModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.MainModel;
+import com.github.batulovandrey.unofficialurbandictionary.model.PopularWordsModel;
 
 import javax.inject.Singleton;
 
@@ -21,4 +22,6 @@ public interface NetComponent {
     void inject(DetailModel model);
 
     void inject(FavoritesModel model);
+
+    void inject(PopularWordsModel model);
 }

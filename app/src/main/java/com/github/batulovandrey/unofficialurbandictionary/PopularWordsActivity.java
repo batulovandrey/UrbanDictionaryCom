@@ -8,11 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.github.batulovandrey.unofficialurbandictionary.data.PopularWords;
+import com.github.batulovandrey.unofficialurbandictionary.presenter.PopularWordsPresenter;
+import com.github.batulovandrey.unofficialurbandictionary.presenter.PopularWordsPresenterImpl;
+import com.github.batulovandrey.unofficialurbandictionary.view.PopularWordsView;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,21 +20,21 @@ import butterknife.ButterKnife;
 import static com.github.batulovandrey.unofficialurbandictionary.utils.Constants.EXTRA_SEARCH_QUERY;
 
 public class PopularWordsActivity extends AppCompatActivity
-        implements AlphabetFragment.OnLetterClickListener, WordsFragment.OnWordClickListener {
+        implements AlphabetFragment.OnLetterClickListener,
+        WordsFragment.OnWordClickListener, PopularWordsView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    private Map<String, List<String>> mDictionary;
+    private PopularWordsPresenter mPopularWordsPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_words);
         ButterKnife.bind(this);
+        mPopularWordsPresenter = new PopularWordsPresenterImpl(this);
         initToolbar();
-        PopularWords popularWords = new PopularWords(this);
-        mDictionary = popularWords.getDictionary();
         initFragments();
     }
 
@@ -57,12 +57,7 @@ public class PopularWordsActivity extends AppCompatActivity
 
     @Override
     public void onLetterClick(String letter) {
-        ArrayList<String> words = new ArrayList<>();
-        for (Map.Entry<String, List<String>> map : mDictionary.entrySet()) {
-            if (map.getKey().equals(letter)) {
-                words.addAll(map.getValue());
-            }
-        }
+        ArrayList<String> words = mPopularWordsPresenter.getWords(letter);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.words_frame_layout, WordsFragment.newInstance(words));
@@ -75,14 +70,8 @@ public class PopularWordsActivity extends AppCompatActivity
     }
 
     private void initFragments() {
-        ArrayList<String> alphabet = new ArrayList<>();
-        ArrayList<String> words = new ArrayList<>();
-        for (Map.Entry<String, List<String>> map : mDictionary.entrySet()) {
-            alphabet.add(map.getKey());
-            if (map.getKey().equals("a")) {
-                words.addAll(map.getValue());
-            }
-        }
+        ArrayList<String> alphabet = mPopularWordsPresenter.getAlphabet();
+        ArrayList<String> words = mPopularWordsPresenter.getWords("a");
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.alphabet_frame_layout, AlphabetFragment.newInstance(alphabet));
