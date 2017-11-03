@@ -65,6 +65,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mSearchView.clearFocus();
+        Utils.hideKeyboard(mSearchView, this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
@@ -112,8 +119,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 if (mSearchQuery != null) {
-                    // put the value in SearchView, but don't submit
-                    mSearchView.setQuery(mSearchQuery, false);
+                    mSearchView.setQuery(mSearchQuery, true);
                 }
             }
         });

@@ -51,6 +51,8 @@
     <com.southernbox.parallaxrecyclerview.ParallaxRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
+        android:visibility="invisible"
+        tools:visibility="visible"
         android:layout_height="match_parent"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
