@@ -1,60 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.github.batulovandrey.unofficialurbandictionary.MainActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:gravity="center_horizontal"
-        android:padding="2dp"
-        android:text="@string/app_name"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-        android:textColor="@color/yellow"/>
+        android:layout_height="?attr/actionBarSize">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:background="@color/background"
-        android:padding="4dp">
-
-        <android.support.v7.widget.SearchView
-            android:id="@+id/search_view"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/cardview_light_background"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:background="@color/background"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:padding="4dp">
 
-    </android.support.v7.widget.Toolbar>
+            <android.support.v7.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/cardview_light_background"/>
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
         android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
         android:indeterminateDrawable="@drawable/spinner_ring"
         android:visibility="gone"
+        app:layout_behavior="@string/bottom_sheet_behavior"
         tools:visibility="visible"/>
 
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <com.southernbox.parallaxrecyclerview.ParallaxRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

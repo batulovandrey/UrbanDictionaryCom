@@ -79,6 +79,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         final DefinitionResponse definition = mDetailPresenter.getDefinitionByDefIf(definitionId);
         if (definition != null) {
             mWordTextView.setText(definition.getWord());
+            getSupportActionBar().setTitle("Definition of " + definition.getWord());
             mDefinitionTextView.setText(definition.getDefinition());
             mExampleTextView.setText(definition.getExample());
             mAuthorTextView.setText(definition.getAuthor());
