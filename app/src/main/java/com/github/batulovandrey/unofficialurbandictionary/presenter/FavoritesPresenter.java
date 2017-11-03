@@ -1,5 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.presenter;
 
+import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter;
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse;
 
 import java.util.List;
@@ -17,4 +18,12 @@ public interface FavoritesPresenter {
     void showAlertDialog();
 
     void showToast(int resId);
+
+    DefinitionAdapter createNewDefinitionAdapter(List<DefinitionResponse> favorites);
+
+    DefinitionAdapter getDefinitionAdapter();
+
+    void hideRecycler();
+
+    void showRecycler();
 }

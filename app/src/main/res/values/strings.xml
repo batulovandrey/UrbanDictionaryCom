@@ -6,4 +6,5 @@
     <string name="favorites">favorites</string>
     <string name="clear_favorites">clear favorites</string>
     <string name="list_clear">list of favorites is clear now</string>
+    <string name="empty_favorites_list">your list of favorites is empty</string>
 </resources>

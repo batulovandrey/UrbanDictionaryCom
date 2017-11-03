@@ -2,6 +2,7 @@ package com.github.batulovandrey.unofficialurbandictionary.model;
 
 import com.github.batulovandrey.unofficialurbandictionary.R;
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp;
+import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter;
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse;
 import com.github.batulovandrey.unofficialurbandictionary.presenter.FavoritesPresenter;
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager;
@@ -24,6 +25,7 @@ public class FavoritesModel {
 
     private final FavoritesPresenter mFavoritesPresenter;
     private List<DefinitionResponse> mFavorites;
+    private DefinitionAdapter mDefinitionAdapter;
     private Realm mRealm;
 
     public FavoritesModel(FavoritesPresenter favoritesPresenter) {
@@ -31,6 +33,7 @@ public class FavoritesModel {
         UrbanDictionaryApp.getNetComponent().inject(this);
         mRealm = mRealmManager.getRealmFavorites();
         mFavorites = mRealm.where(DefinitionResponse.class).findAll();
+        mDefinitionAdapter = mFavoritesPresenter.createNewDefinitionAdapter(mFavorites);
     }
 
 
@@ -48,5 +51,15 @@ public class FavoritesModel {
             }
         });
         mFavoritesPresenter.showToast(R.string.list_clear);
+        mDefinitionAdapter.notifyDataSetChanged();
+    }
+
+    public DefinitionAdapter getDefinitionAdapter() {
+        if (getFavorites().isEmpty()) {
+            mFavoritesPresenter.hideRecycler();
+        } else {
+            mFavoritesPresenter.showRecycler();
+        }
+        return mDefinitionAdapter;
     }
 }

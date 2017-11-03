@@ -1,5 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.presenter;
 
+import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter;
+import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener;
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse;
 import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel;
 import com.github.batulovandrey.unofficialurbandictionary.view.FavoritesView;
@@ -38,5 +40,25 @@ public class FavoritesPresenterImpl implements FavoritesPresenter {
     @Override
     public void showToast(int resId) {
         mFavoritesView.showToast(resId);
+    }
+
+    @Override
+    public DefinitionAdapter createNewDefinitionAdapter(List<DefinitionResponse> favorites) {
+        return new DefinitionAdapter(favorites, (DefinitionClickListener) mFavoritesView);
+    }
+
+    @Override
+    public DefinitionAdapter getDefinitionAdapter() {
+        return mFavoritesModel.getDefinitionAdapter();
+    }
+
+    @Override
+    public void hideRecycler() {
+        mFavoritesView.hideRecycler();
+    }
+
+    @Override
+    public void showRecycler() {
+        mFavoritesView.showRecycler();
     }
 }

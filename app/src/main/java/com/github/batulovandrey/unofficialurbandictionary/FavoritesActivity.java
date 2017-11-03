@@ -9,9 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter;
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener;
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse;
 import com.github.batulovandrey.unofficialurbandictionary.presenter.FavoritesPresenter;
@@ -32,24 +33,25 @@ public class FavoritesActivity extends AppCompatActivity
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    private DefinitionAdapter mDefinitionAdapter;
+    @BindView(R.id.empty_fav_text_view)
+    TextView mEmptyFavTextView;
+
     private FavoritesPresenter mFavoritesPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
-        mFavoritesPresenter = new FavoritesPresenterImpl(this);
         ButterKnife.bind(this);
+        mFavoritesPresenter = new FavoritesPresenterImpl(this);
         initToolbar();
-        mDefinitionAdapter = new DefinitionAdapter(mFavoritesPresenter.getFavorites(), this);
-        mRecyclerView.setAdapter(mDefinitionAdapter);
+        mRecyclerView.setAdapter(mFavoritesPresenter.getDefinitionAdapter());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mDefinitionAdapter.notifyDataSetChanged();
+        mRecyclerView.setAdapter(mFavoritesPresenter.getDefinitionAdapter());
     }
 
     @Override
@@ -89,7 +91,7 @@ public class FavoritesActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mFavoritesPresenter.clearList();
-                        mDefinitionAdapter.notifyDataSetChanged();
+                        mRecyclerView.setAdapter(mFavoritesPresenter.getDefinitionAdapter());
                     }
                 }).show();
     }
@@ -97,6 +99,18 @@ public class FavoritesActivity extends AppCompatActivity
     @Override
     public void showToast(int resId) {
         Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void hideRecycler() {
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyFavTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showRecycler() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyFavTextView.setVisibility(View.GONE);
     }
 
     private void initToolbar() {

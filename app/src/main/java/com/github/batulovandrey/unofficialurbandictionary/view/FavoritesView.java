@@ -9,4 +9,8 @@ public interface FavoritesView {
     void showAlertDialog();
 
     void showToast(int resId);
+
+    void hideRecycler();
+
+    void showRecycler();
 }
