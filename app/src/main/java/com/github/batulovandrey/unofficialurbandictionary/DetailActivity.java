@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +15,10 @@ import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionRespons
 import com.github.batulovandrey.unofficialurbandictionary.presenter.DetailPresenter;
 import com.github.batulovandrey.unofficialurbandictionary.presenter.DetailPresenterImpl;
 import com.github.batulovandrey.unofficialurbandictionary.view.DetailView;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,10 +107,22 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @Override
     public void setImageResToImageView(int resId) {
         mFavImageView.setImageResource(resId);
+        final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        RotateAnimation animation;
         if (resId == R.drawable.fav) {
-            mFavImageView.animate().rotationBy(-360).setDuration(500);
+            animation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         } else {
-            mFavImageView.animate().rotationBy(360).setDuration(500);
+            animation = new RotateAnimation(0f, -360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         }
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setDuration(300);
+        mFavImageView.startAnimation(animation);
+        executorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                mFavImageView.setAnimation(null);
+            }
+        }, 300, TimeUnit.MILLISECONDS);
     }
 }
