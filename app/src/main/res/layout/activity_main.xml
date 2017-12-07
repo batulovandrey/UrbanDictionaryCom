@@ -19,8 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:background="@color/background"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:padding="4dp">
+            app:layout_scrollFlags="scroll|enterAlways">
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/search_view"
