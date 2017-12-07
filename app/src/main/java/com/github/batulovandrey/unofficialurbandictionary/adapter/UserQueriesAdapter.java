@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.batulovandrey.unofficialurbandictionary.MainActivity;
@@ -68,6 +69,13 @@ public class UserQueriesAdapter extends BaseAdapter {
                     mContext.startActivity(intent);
                 }
             });
+            holder.deleteButton = view.findViewById(R.id.query_delete_button);
+            holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteQueryFromRealm(holder.query.getText().toString());
+                }
+            });
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -105,7 +113,19 @@ public class UserQueriesAdapter extends BaseAdapter {
         }
     }
 
+    private void deleteQueryFromRealm(final String query) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                UserQuery result = realm.where(UserQuery.class).equalTo("query", query).findFirst();
+                result.deleteFromRealm();
+            }
+        });
+        notifyDataSetChanged();
+    }
+
     class ViewHolder {
         TextView query;
+        ImageView deleteButton;
     }
 }
