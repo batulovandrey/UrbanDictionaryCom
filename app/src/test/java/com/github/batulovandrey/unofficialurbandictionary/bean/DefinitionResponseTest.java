@@ -41,16 +41,16 @@ public class DefinitionResponseTest {
 
     private DefinitionResponse initExpectedDefinitionResponse() {
         DefinitionResponse definitionResponse = new DefinitionResponse();
-        definitionResponse.setAuthor("Krackpipe");
-        definitionResponse.setDefid(397462);
         definitionResponse.setDefinition("Means hello, anything new in your life? " +
                 "Identical to [wagwaan] and [wagwan], but is spelt wag1 on chat websites, " +
                 "because it is quicker to type.");
-        definitionResponse.setExample("Wag1, meh bedrins?");
         definitionResponse.setPermalink("http://wag1.urbanup.com/397462");
-        definitionResponse.setWord("Wag1");
-        definitionResponse.setThumbsDown(291);
         definitionResponse.setThumbsUp(618);
+        definitionResponse.setAuthor("Krackpipe");
+        definitionResponse.setWord("Wag1");
+        definitionResponse.setDefid(397462);
+        definitionResponse.setExample("Wag1, meh bedrins?");
+        definitionResponse.setThumbsDown(291);
         return definitionResponse;
     }
 }

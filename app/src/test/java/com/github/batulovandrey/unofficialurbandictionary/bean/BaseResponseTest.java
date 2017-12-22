@@ -41,11 +41,7 @@ public class BaseResponseTest {
     }
 
     private BaseResponse getExpectedBaseResponse() {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setDefinitionResponses(getDefinitionResponses());
-        baseResponse.setResultType("exact");
-        baseResponse.setTags(getTags());
-        return baseResponse;
+        return new BaseResponse(getTags(), "exact", getDefinitionResponses());
     }
 
     private List<DefinitionResponse> getDefinitionResponses() {
