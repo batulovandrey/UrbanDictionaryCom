@@ -26,7 +26,6 @@ class DetailActivity : AppCompatActivity(), DetailView {
     private val mToolbar: Toolbar by bindView(R.id.toolbar)
     private val mWordTextView: TextView by bindView(R.id.word_text_view)
     private val mDefinitionTextView: TextView by bindView(R.id.definition_text_view)
-    private val mExampleTextView: TextView by bindView(R.id.example_text_view)
     private val mAuthorTextView: TextView by bindView(R.id.author_text_view)
     private val mThumbsUpTextView: TextView by bindView(R.id.thumbs_up_text_view)
     private val mThumbsDownTextView: TextView by bindView(R.id.thumbs_down_text_view)
@@ -64,7 +63,7 @@ class DetailActivity : AppCompatActivity(), DetailView {
         mWordTextView.text = definition.word
         supportActionBar!!.title = "Definition of " + definition.word
         mDefinitionTextView.text = definition.definition
-        mExampleTextView.text = definition.example
+        mDefinitionTextView.append("\n\n" + definition.example)
         mAuthorTextView.text = definition.author
         mThumbsUpTextView.text = definition.thumbsUp.toString()
         mThumbsDownTextView.text = definition.thumbsDown.toString()

@@ -33,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/word_text_view"
+                android:maxLength="500"
                 tools:text="definition"/>
 
             <TextView
@@ -40,6 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/definition_text_view"
+                android:maxLength="200"
                 tools:text="some example"/>
 
             <TextView

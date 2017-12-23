@@ -16,8 +16,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"
             android:background="@color/background"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Small"
             app:titleTextColor="@color/yellow"/>
 
@@ -49,20 +49,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/word_text_view"
+                android:textIsSelectable="true"
                 tools:text="some definition"/>
-
-            <TextView
-                android:id="@+id/example_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/definition_text_view"
-                tools:text="example"/>
 
             <TextView
                 android:id="@+id/author_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/example_text_view"
+                android:layout_below="@id/definition_text_view"
                 android:gravity="right"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
@@ -106,6 +100,7 @@
                 android:autoLink="web"
                 android:gravity="center_horizontal"
                 android:textColor="@color/colorPrimaryDark"
+                android:textIsSelectable="true"
                 tools:text="some permalink"/>
 
             <ImageView
