@@ -13,7 +13,7 @@ import com.github.batulovandrey.unofficialurbandictionary.dagger.NetModule;
 
 public class UrbanDictionaryApp extends Application {
 
-    private static final String BASE_URL = "https://mashape-community-urban-dictionary.p.mashape.com";
+    private static final String BASE_URL = "http://api.urbandictionary.com/";
     private static NetComponent sNetComponent;
 
     @Override
