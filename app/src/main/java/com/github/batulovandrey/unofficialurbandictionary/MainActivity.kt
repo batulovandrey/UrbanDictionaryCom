@@ -4,6 +4,9 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -29,13 +32,18 @@ import kotterknife.bindView
  * @author Andrey Batulov on 22/12/2017
  */
 
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, DefinitionClickListener, MainView {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, DefinitionClickListener, MainView, NavigationView.OnNavigationItemSelectedListener {
 
     private val mToolbar: Toolbar by bindView(R.id.toolbar)
     private val mSearchView: SearchView by bindView(R.id.search_view)
     private val mListView: ListView by bindView(R.id.list_view)
     private val mRecyclerView: RecyclerView by bindView(R.id.recycler_view)
     private val mProgressBar: ProgressBar by bindView(R.id.progress_bar)
+
+    // new views
+    private val mDrawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
+    private val mNavigationView: NavigationView by bindView(R.id.navigation_view)
+    private lateinit var mToogle: ActionBarDrawerToggle
 
     private var mUserQueriesAdapter: UserQueriesAdapter? = null
     private var mSearchQuery: String? = null
@@ -55,12 +63,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Defini
         Utils.hideKeyboard(mSearchView, this)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (mToogle.onOptionsItemSelected(item)) {
+            return true
+        }
         return when (item.itemId) {
             R.id.go_to_alphabet -> {
                 startActivity(Intent(this, PopularWordsActivity::class.java))
@@ -139,14 +145,38 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Defini
         mProgressBar.visibility = View.GONE
     }
 
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_item -> {
+                true
+            }
+            R.id.favorites_item -> {
+                startActivity(Intent(this, FavoritesActivity::class.java))
+                return true
+            }
+            R.id.popular_item -> {
+                startActivity(Intent(this, PopularWordsActivity::class.java))
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun initIU() {
         initToolbar()
         initSearchView()
         mListView.adapter = mUserQueriesAdapter
+
+        // new init views
+        mToogle = ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close)
+        mDrawerLayout.addDrawerListener(mToogle)
+        mNavigationView.setNavigationItemSelectedListener(this)
+        mToogle.syncState()
     }
 
     private fun initToolbar() {
-        setSupportActionBar(mToolbar)
+//        setSupportActionBar(mToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initSearchView() {

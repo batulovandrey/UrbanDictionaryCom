@@ -17,7 +17,7 @@
             android:name="com.github.batulovandrey.unofficialurbandictionary.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/UrbanTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
