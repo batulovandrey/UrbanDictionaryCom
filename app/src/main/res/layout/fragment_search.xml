@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
+        android:indeterminateDrawable="@drawable/spinner_ring"
+        android:visibility="gone"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        tools:visibility="visible" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/user_queries_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_view"
+        android:visibility="visible"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+    <com.southernbox.parallaxrecyclerview.ParallaxRecyclerView
+        android:id="@+id/definitions_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_view"
+        android:visibility="invisible"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:visibility="visible" />
+
+</RelativeLayout>

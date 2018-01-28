@@ -26,7 +26,7 @@ import kotterknife.bindView
 class FavoritesActivity : AppCompatActivity(), DefinitionClickListener, FavoritesView {
 
     private val mToolbar: Toolbar by bindView(R.id.toolbar)
-    private val mRecyclerView: RecyclerView by bindView(R.id.recycler_view)
+    private val mRecyclerView: RecyclerView by bindView(R.id.definitions_recycler_view)
     private val mEmptyFavTextView: TextView by bindView(R.id.empty_fav_text_view)
 
     lateinit var mFavoritesPresenter: FavoritesPresenter

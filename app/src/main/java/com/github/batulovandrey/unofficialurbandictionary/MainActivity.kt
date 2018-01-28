@@ -1,70 +1,35 @@
 package com.github.batulovandrey.unofficialurbandictionary
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ListView
-import android.widget.ProgressBar
-import android.widget.Toast
-import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
-import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
-import com.github.batulovandrey.unofficialurbandictionary.adapter.UserQueriesAdapter
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenterImpl
-import com.github.batulovandrey.unofficialurbandictionary.utils.Constants.EXTRA_DEFINITION_ID
-import com.github.batulovandrey.unofficialurbandictionary.utils.Constants.EXTRA_SEARCH_QUERY
-import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
-import com.github.batulovandrey.unofficialurbandictionary.view.MainView
+import com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment
 import kotterknife.bindView
 
 /**
  * @author Andrey Batulov on 22/12/2017
  */
 
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, DefinitionClickListener, MainView, NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val mToolbar: Toolbar by bindView(R.id.toolbar)
-    private val mSearchView: SearchView by bindView(R.id.search_view)
-    private val mListView: ListView by bindView(R.id.list_view)
-    private val mRecyclerView: RecyclerView by bindView(R.id.recycler_view)
-    private val mProgressBar: ProgressBar by bindView(R.id.progress_bar)
-
-    // new views
     private val mDrawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val mNavigationView: NavigationView by bindView(R.id.navigation_view)
-    private lateinit var mToogle: ActionBarDrawerToggle
-
-    private var mUserQueriesAdapter: UserQueriesAdapter? = null
-    private var mSearchQuery: String? = null
-    private var mMainPresenter: MainPresenter? = null
+    private lateinit var mToggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mUserQueriesAdapter = UserQueriesAdapter(this)
         initIU()
-        mMainPresenter = MainPresenterImpl(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mSearchView.clearFocus()
-        Utils.hideKeyboard(mSearchView, this)
+        showSearchFragment()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (mToogle.onOptionsItemSelected(item)) {
+        if (mToggle.onOptionsItemSelected(item)) {
             return true
         }
         return when (item.itemId) {
@@ -80,74 +45,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Defini
         }
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean {
-        if (query.isNotEmpty()) {
-            mMainPresenter!!.getData(query, this)
-            mUserQueriesAdapter!!.saveQueryToRealm(query)
-            showDataInRecycler()
-            Utils.hideKeyboard(mSearchView, this)
-            return true
-        }
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-        return mMainPresenter!!.textChanged(newText)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        if (intent.extras != null) {
-            mSearchQuery = intent.extras!!.getString(EXTRA_SEARCH_QUERY)
-        }
-        mSearchView.post {
-            if (mSearchQuery != null) {
-                mSearchView.setQuery(mSearchQuery, true)
-            }
-        }
-    }
-
-    override fun onItemClick(position: Int) {
-        val definitionId = mMainPresenter!!.getDefinitionId(position)
-        val intent = Intent(this, DetailActivity::class.java)
-        intent.putExtra(EXTRA_DEFINITION_ID, definitionId)
-        startActivity(intent)
-    }
-
-    override fun showDataInRecycler() {
-        mRecyclerView.visibility = View.VISIBLE
-        mListView.visibility = View.GONE
-    }
-
-    override fun showQueriesInListView() {
-        mListView.visibility = View.VISIBLE
-        mRecyclerView.visibility = View.GONE
-    }
-
-    override fun filterText(text: String) {
-        mUserQueriesAdapter!!.filter(text)
-    }
-
-    override fun setAdapterToRecycler(definitionAdapter: DefinitionAdapter) {
-        mRecyclerView.adapter = definitionAdapter
-    }
-
-    override fun showToast(resId: Int) {
-        Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show()
-    }
-
-    override fun showProgressbar() {
-        mProgressBar.visibility = View.VISIBLE
-    }
-
-    override fun hideProgressbar() {
-        mProgressBar.visibility = View.GONE
-    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_item -> {
+                mDrawerLayout.closeDrawer(GravityCompat.START)
+                showSearchFragment()
                 true
             }
             R.id.favorites_item -> {
@@ -162,28 +64,24 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Defini
         }
     }
 
+
     private fun initIU() {
         initToolbar()
-        initSearchView()
-        mListView.adapter = mUserQueriesAdapter
-
-        // new init views
-        mToogle = ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close)
-        mDrawerLayout.addDrawerListener(mToogle)
+        mToggle = ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close)
+        mDrawerLayout.addDrawerListener(mToggle)
         mNavigationView.setNavigationItemSelectedListener(this)
-        mToogle.syncState()
+        mToggle.syncState()
     }
 
     private fun initToolbar() {
-//        setSupportActionBar(mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun initSearchView() {
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        mSearchView.isFocusable = true
-        mSearchView.isIconified = false
-        mSearchView.setOnQueryTextListener(this)
+    private fun showSearchFragment() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val searchFragment = SearchFragment()
+        fragmentTransaction.replace(R.id.frame_layout, searchFragment)
+        fragmentTransaction.commit()
     }
 }

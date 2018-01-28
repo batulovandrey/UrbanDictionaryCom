@@ -2,6 +2,7 @@ package com.github.batulovandrey.unofficialurbandictionary.presenter
 
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
+import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
 
 /**
  * @author Andrey Batulov on 22/12/2017
@@ -9,15 +10,15 @@ import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClic
 
 interface MainPresenter {
 
-    fun showDataInRecycler()
+    fun showDefinitionsInRecycler()
 
-    fun showQueriesInListView()
+    fun showQueriesInRecycler()
 
     fun textChanged(text: String): Boolean
 
-    fun filterText(text: String)
+    fun setAdapterToDefinitionsRecycler(definitionAdapter: DefinitionAdapter)
 
-    fun setAdapterToRecycler(definitionAdapter: DefinitionAdapter)
+    fun setAdapterToQueriesRecycler(queriesAdapter: QueriesAdapter)
 
     fun getData(query: String, listener: DefinitionClickListener)
 
@@ -28,4 +29,8 @@ interface MainPresenter {
     fun showProgressbar()
 
     fun hideProgressbar()
+
+    fun saveQueryToRealm(query: String)
+
+    fun initializeQueryToServer(query: String)
 }

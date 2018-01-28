@@ -20,7 +20,7 @@ import java.util.*
 
 class AlphabetFragment : Fragment(), AlphabetClickListener {
 
-    private val mRecyclerView: RecyclerView by bindView(R.id.recycler_view)
+    private val mRecyclerView: RecyclerView by bindView(R.id.definitions_recycler_view)
 
     private lateinit var mAlphabetList: List<String>
     private var mListener: OnLetterClickListener? = null

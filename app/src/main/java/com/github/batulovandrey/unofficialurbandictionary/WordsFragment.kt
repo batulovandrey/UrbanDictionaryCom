@@ -20,7 +20,7 @@ import java.util.*
 
 class WordsFragment : Fragment(), WordClickListener {
 
-    private val mRecyclerView: RecyclerView by bindView(R.id.recycler_view)
+    private val mRecyclerView: RecyclerView by bindView(R.id.definitions_recycler_view)
 
     private lateinit var mWords: List<String>
     private var mListener: OnWordClickListener? = null

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Urban Dictionary (Unofficial)</string>
-    <string name="search_hint">type any word...</string>
-    <string name="error">Something went wrong...</string>
+    <string name="search_hint">type any word</string>
+    <string name="error">Something went wrong</string>
     <string name="alphabet">alphabet</string>
     <string name="favorites">favorites</string>
     <string name="popular">popular words</string>
@@ -11,4 +11,5 @@
     <string name="search">search</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="delete_button">delete button</string>
 </resources>

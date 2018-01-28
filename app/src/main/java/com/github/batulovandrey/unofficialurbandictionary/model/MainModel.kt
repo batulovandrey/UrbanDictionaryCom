@@ -2,10 +2,10 @@ package com.github.batulovandrey.unofficialurbandictionary.model
 
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
-import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
-import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
+import com.github.batulovandrey.unofficialurbandictionary.adapter.*
 import com.github.batulovandrey.unofficialurbandictionary.bean.BaseResponse
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
+import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager
 import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService
@@ -19,8 +19,7 @@ import javax.inject.Inject
  * @author Andrey Batulov on 22/12/2017
  */
 
-
-class MainModel(private val mMainPresenter: MainPresenter) {
+class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListener {
 
     @Inject
     lateinit var mRealmManager: RealmManager
@@ -28,21 +27,39 @@ class MainModel(private val mMainPresenter: MainPresenter) {
     @Inject
     lateinit var mService: UrbanDictionaryService
 
-    private val mRealm: Realm
-    private var mDefinitionAdapter: DefinitionAdapter? = null
+    private val mDefinitionsRealm: Realm
+    private val mUserQueriesRealm: Realm
+    private lateinit var mDefinitionAdapter: DefinitionAdapter
     private var mDefinitions: List<DefinitionResponse>? = null
+    private var mUserQueriesAdapter: QueriesAdapter
+    private var mQueries: List<UserQuery>
 
     init {
         UrbanDictionaryApp.getNetComponent().inject(this)
-        mRealm = mRealmManager.realmDefinitions
+        mDefinitionsRealm = mRealmManager.realmDefinitions
+        mUserQueriesRealm = mRealmManager.realmQuieries
+        mQueries = mUserQueriesRealm.where(UserQuery::class.java).findAll()
+        mUserQueriesAdapter = QueriesAdapter(mQueries, this)
+    }
+
+    override fun onQueryClick(position: Int) {
+        val query = mQueries[position]
+        mMainPresenter.initializeQueryToServer(query.query)
+    }
+
+    override fun deleteQueryFromRealm(position: Int) {
+        mUserQueriesRealm.executeTransaction({ realm ->
+            val result = realm.where(UserQuery::class.java).equalTo("query", mQueries[position].query).findFirst()
+            result.deleteFromRealm()
+        })
+        mUserQueriesAdapter.notifyDataSetChanged()
     }
 
     fun textChanged(text: String): Boolean {
         if (mDefinitions != null && mDefinitions!!.isNotEmpty() && text.isEmpty()) {
-            mMainPresenter.showDataInRecycler()
+            mMainPresenter.showDefinitionsInRecycler()
         } else {
-            mMainPresenter.showQueriesInListView()
-            mMainPresenter.filterText(text)
+            filterUserQueries(text)
         }
         return false
     }
@@ -56,7 +73,7 @@ class MainModel(private val mMainPresenter: MainPresenter) {
                 if (response.body() != null) {
                     mDefinitions = response.body()!!.definitionResponses
                     mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
-                    mMainPresenter.setAdapterToRecycler(mDefinitionAdapter!!)
+                    mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter)
                     mMainPresenter.hideProgressbar()
                 }
             }
@@ -76,11 +93,33 @@ class MainModel(private val mMainPresenter: MainPresenter) {
         return mDefinitions!![position].defid
     }
 
+    fun saveQueryToRealm(query: String) {
+        val isExist = mQueries.any { it.query == query.toLowerCase() }
+        if (!isExist) {
+            mUserQueriesRealm.executeTransaction({ realm ->
+                val userQuery = realm.createObject(UserQuery::class.java)
+                userQuery.query = query.toLowerCase()
+            })
+            mUserQueriesAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun filterUserQueries(text: String) {
+        mQueries = if (text.isNotEmpty()) {
+            mUserQueriesRealm.where(UserQuery::class.java).contains("query", text.toLowerCase()).findAll()
+        } else {
+            mUserQueriesRealm.where(UserQuery::class.java).findAll()
+        }
+        mUserQueriesAdapter = QueriesAdapter(mQueries, this)
+        mMainPresenter.setAdapterToQueriesRecycler(mUserQueriesAdapter)
+        mMainPresenter.showQueriesInRecycler()
+    }
+
     private fun saveDefinitionToRealm(position: Int) {
         val defId = mDefinitions!![position].defid
-        val checkDef = mRealm.where(DefinitionResponse::class.java).equalTo("defid", defId).findFirst()
+        val checkDef = mDefinitionsRealm.where(DefinitionResponse::class.java).equalTo("defid", defId).findFirst()
         if (checkDef == null) {
-            mRealm.executeTransaction { realm ->
+            mDefinitionsRealm.executeTransaction { realm ->
                 val definition = realm.createObject(DefinitionResponse::class.java)
                 definition.author = mDefinitions!![position].author
                 definition.defid = mDefinitions!![position].defid
