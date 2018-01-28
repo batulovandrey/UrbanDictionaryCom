@@ -8,6 +8,8 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.github.batulovandrey.unofficialurbandictionary.view.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment
 import kotterknife.bindView
 
@@ -37,10 +39,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this, PopularWordsActivity::class.java))
                 true
             }
-            R.id.go_to_favorites -> {
-                startActivity(Intent(this, FavoritesActivity::class.java))
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -53,7 +51,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 true
             }
             R.id.favorites_item -> {
-                startActivity(Intent(this, FavoritesActivity::class.java))
+                mDrawerLayout.closeDrawer(GravityCompat.START)
+                Utils.hideKeyboard(mNavigationView, this)
+                showFavoritesFragment()
                 return true
             }
             R.id.popular_item -> {
@@ -82,6 +82,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragmentTransaction = fragmentManager.beginTransaction()
         val searchFragment = SearchFragment()
         fragmentTransaction.replace(R.id.frame_layout, searchFragment)
+        fragmentTransaction.commit()
+    }
+
+    private fun showFavoritesFragment() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val favoritesFragment = FavoritesFragment()
+        fragmentTransaction.replace(R.id.frame_layout, favoritesFragment)
         fragmentTransaction.commit()
     }
 }

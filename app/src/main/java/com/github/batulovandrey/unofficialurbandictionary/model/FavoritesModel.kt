@@ -22,6 +22,13 @@ class FavoritesModel(private val mFavoritesPresenter: FavoritesPresenter) {
     private val mDefinitionAdapter: DefinitionAdapter
     private val mRealm: Realm
 
+    init {
+        UrbanDictionaryApp.getNetComponent().inject(this)
+        mRealm = mRealmManager.realmFavorites
+        favorites = mRealm.where(DefinitionResponse::class.java).findAll()
+        mDefinitionAdapter = mFavoritesPresenter.createNewDefinitionAdapter(favorites)
+    }
+
     val definitionAdapter: DefinitionAdapter
         get() {
             if (favorites.isEmpty()) {
@@ -31,13 +38,6 @@ class FavoritesModel(private val mFavoritesPresenter: FavoritesPresenter) {
             }
             return mDefinitionAdapter
         }
-
-    init {
-        UrbanDictionaryApp.getNetComponent().inject(this)
-        mRealm = mRealmManager.realmFavorites
-        favorites = mRealm.where(DefinitionResponse::class.java).findAll()
-        mDefinitionAdapter = mFavoritesPresenter.createNewDefinitionAdapter(favorites)
-    }
 
     fun clearList() {
         mRealm.executeTransaction { realm ->

@@ -40,10 +40,6 @@
             android:configChanges="screenSize|orientation"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         </activity>
-        <activity
-            android:name="com.github.batulovandrey.unofficialurbandictionary.FavoritesActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        </activity>
     </application>
 
 </manifest>
