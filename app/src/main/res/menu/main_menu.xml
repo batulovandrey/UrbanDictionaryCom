@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/go_to_favorites"
-        android:icon="@drawable/menu_fav"
+        android:icon="@drawable/favorite_black"
         android:orderInCategory="100"
         android:title="@string/favorites"
         app:showAsAction="ifRoom"/>

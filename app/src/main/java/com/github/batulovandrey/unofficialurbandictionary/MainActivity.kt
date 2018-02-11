@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-
     private fun initIU() {
         initToolbar()
         mToggle = ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close)

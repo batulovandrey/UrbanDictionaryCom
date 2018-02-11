@@ -109,7 +109,15 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     }
 
     override fun onItemClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val definitionId = mMainPresenter?.getDefinitionId(position)
+        if (definitionId != null) {
+            val detailFragment = DetailFragment.newInstance(definitionId)
+            val fragmentManager = activity.supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, detailFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
 
     override fun initializeQueryToServer(query: String) {

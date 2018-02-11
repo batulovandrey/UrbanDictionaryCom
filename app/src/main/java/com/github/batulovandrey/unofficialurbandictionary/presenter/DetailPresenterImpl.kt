@@ -15,9 +15,9 @@ class DetailPresenterImpl(private val mDetailView: DetailView) : DetailPresenter
 
     override fun setImageResToImageView(definition: DefinitionResponse) {
         if (mDetailModel.isFavoriteDefinition(definition)) {
-            mDetailView.setImageResToImageView(R.drawable.unfav)
+            mDetailView.setImageResToImageView(R.drawable.favorite_black)
         } else {
-            mDetailView.setImageResToImageView(R.drawable.fav)
+            mDetailView.setImageResToImageView(R.drawable.favorite_white)
         }
     }
 

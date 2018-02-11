@@ -32,10 +32,6 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name="com.github.batulovandrey.unofficialurbandictionary.DetailActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        </activity>
-        <activity
             android:name="com.github.batulovandrey.unofficialurbandictionary.PopularWordsActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">

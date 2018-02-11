@@ -1,0 +1,95 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.github.batulovandrey.unofficialurbandictionary.view.DetailFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/word_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="12dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+            android:textColor="@color/colorPrimaryDark"
+            tools:text="some word" />
+
+        <TextView
+            android:id="@+id/definition_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/word_text_view"
+            android:textIsSelectable="true"
+            tools:text="some definition" />
+
+        <TextView
+            android:id="@+id/author_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/definition_text_view"
+            android:gravity="right"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            tools:text="some author" />
+
+        <ImageView
+            android:id="@+id/thumbs_up_image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/author_text_view"
+            android:padding="8dp"
+            android:src="@drawable/thumbs_up_down"
+            android:contentDescription="@string/thumbs_up_down" />
+
+        <TextView
+            android:id="@+id/thumbs_down_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/author_text_view"
+            android:layout_toEndOf="@id/thumbs_up_image_view"
+            android:layout_toRightOf="@id/thumbs_up_image_view"
+            android:paddingTop="2dp"
+            android:textColor="@color/colorRed"
+            tools:text="thumbs down" />
+
+        <TextView
+            android:id="@+id/thumbs_up_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/thumbs_down_text_view"
+            android:layout_toEndOf="@id/thumbs_up_image_view"
+            android:layout_toRightOf="@id/thumbs_up_image_view"
+            android:paddingTop="8dp"
+            android:textColor="@color/colorGreen"
+            tools:text="thumbs down" />
+
+        <TextView
+            android:id="@+id/permalink_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/thumbs_up_text_view"
+            android:autoLink="web"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorPrimaryDark"
+            android:textIsSelectable="true"
+            tools:text="some permalink" />
+
+        <ImageView
+            android:id="@+id/fav_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/permalink_text_view"
+            android:layout_centerHorizontal="true"
+            android:padding="4dp"
+            tools:src="@drawable/favorite_white"
+            android:contentDescription="@string/favorites" />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>
