@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
@@ -59,10 +60,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
+        val manager = supportFragmentManager
+        val currentFragment = manager.findFragmentById(R.id.frame_layout)
+        if (currentFragment is DetailFragment) {
             supportFragmentManager.popBackStack()
         } else {
-            finish()
+            showAlertDialog()
         }
     }
 
@@ -93,5 +96,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val transaction = manager.beginTransaction()
         transaction.replace(R.id.frame_layout, fragment)
         transaction.commit()
+    }
+
+    private fun showAlertDialog() {
+        AlertDialog.Builder(this)
+                .setTitle(R.string.exit)
+                .setMessage(R.string.are_you_sure)
+                .setPositiveButton(R.string.yeap, { _, _ -> finish() })
+                .setNegativeButton(R.string.nope, { dialogInterface, _ -> dialogInterface.dismiss() })
+                .show()
     }
 }
