@@ -1,4 +1,4 @@
-package com.github.batulovandrey.unofficialurbandictionary
+package com.github.batulovandrey.unofficialurbandictionary.view
 
 import android.content.Context
 import android.os.Bundle
@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.batulovandrey.unofficialurbandictionary.adapter.WordAdapter
-import com.github.batulovandrey.unofficialurbandictionary.adapter.WordClickListener
-import com.github.batulovandrey.unofficialurbandictionary.utils.Constants.EXTRA_WORDS_LIST
+import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.adapter.AlphabetAdapter
+import com.github.batulovandrey.unofficialurbandictionary.adapter.AlphabetClickListener
 import kotterknife.bindView
 import java.util.*
 
@@ -17,18 +17,17 @@ import java.util.*
  * @author Andrey Batulov on 22/12/2017
  */
 
-
-class WordsFragment : Fragment(), WordClickListener {
+class AlphabetFragment : Fragment(), AlphabetClickListener {
 
     private val mRecyclerView: RecyclerView by bindView(R.id.definitions_recycler_view)
 
-    private lateinit var mWords: List<String>
-    private var mListener: OnWordClickListener? = null
+    private lateinit var mAlphabetList: List<String>
+    private var mListener: OnLetterClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            mWords = arguments.getStringArrayList(EXTRA_WORDS_LIST)
+            mAlphabetList = arguments.getStringArrayList(EXTRA_ALPHABET_LIST)
         }
     }
 
@@ -39,22 +38,16 @@ class WordsFragment : Fragment(), WordClickListener {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val wordAdapter = WordAdapter(mWords, this)
-        mRecyclerView.adapter = wordAdapter
-    }
-
-    fun onButtonPressed(word: String) {
-        if (mListener != null) {
-            mListener!!.onWordClick(word)
-        }
+        val adapter = AlphabetAdapter(mAlphabetList, this)
+        mRecyclerView.adapter = adapter
     }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnWordClickListener) {
+        if (context is OnLetterClickListener) {
             mListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnWordClickListener")
+            throw RuntimeException(context!!.toString() + " must implement OnLetterClickListener")
         }
     }
 
@@ -64,21 +57,22 @@ class WordsFragment : Fragment(), WordClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        mListener!!.onWordClick(mWords[position])
+        mListener!!.onLetterClick(mAlphabetList[position])
     }
 
-    interface OnWordClickListener {
+    interface OnLetterClickListener {
 
-        fun onWordClick(word: String)
+        fun onLetterClick(letter: String)
     }
 
     companion object {
 
-        @JvmStatic
-        fun newInstance(list: ArrayList<String>): WordsFragment {
-            val fragment = WordsFragment()
+        private val EXTRA_ALPHABET_LIST = "extra_alphabet_list"
+
+        fun newInstance(list: ArrayList<String>): AlphabetFragment {
+            val fragment = AlphabetFragment()
             val args = Bundle()
-            args.putStringArrayList(EXTRA_WORDS_LIST, list)
+            args.putStringArrayList(EXTRA_ALPHABET_LIST, list)
             fragment.arguments = args
             return fragment
         }

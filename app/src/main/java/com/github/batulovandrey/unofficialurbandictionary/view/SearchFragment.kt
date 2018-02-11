@@ -29,20 +29,24 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     private var mListenerSearch: OnSearchFragmentInteractionListener? = null
     private var mMainPresenter: MainPresenter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mMainPresenter = MainPresenterImpl(this)
-    }
+    private var mQuery: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_search, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-
+    override fun onStart() {
+        super.onStart()
+        mMainPresenter = MainPresenterImpl(this)
+        if (arguments != null) {
+            mQuery = arguments.getString(EXTRA_QUERY)
+            when (mQuery) {
+                null -> {
+                }
+                else -> initializeQueryToServer(mQuery!!)
+            }
+        }
     }
 
     override fun onAttach(context: Context?) {
@@ -139,6 +143,14 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     companion object {
 
-        fun newInstance(): SearchFragment = SearchFragment()
+        private val EXTRA_QUERY = "extra_query"
+
+        fun newInstance(query: String): SearchFragment {
+            val fragment = SearchFragment()
+            val args = Bundle()
+            args.putString(EXTRA_QUERY, query)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

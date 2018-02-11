@@ -1,7 +1,5 @@
 package com.github.batulovandrey.unofficialurbandictionary.view
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +14,6 @@ import android.widget.TextView
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.presenter.DetailPresenter
 import com.github.batulovandrey.unofficialurbandictionary.presenter.DetailPresenterImpl
-import com.github.batulovandrey.unofficialurbandictionary.utils.Constants.EXTRA_DEFINITION_ID
 import kotterknife.bindView
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -34,7 +31,6 @@ class DetailFragment : Fragment(), DetailView {
     private val mFavImageView: ImageView by bindView(R.id.fav_image_view)
 
     private lateinit var mDetailPresenter: DetailPresenter
-    private var mListener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,27 +48,6 @@ class DetailFragment : Fragment(), DetailView {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setValuesToViews(mDefinitionId!!)
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-//            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
     }
 
     override fun setImageResToImageView(resId: Int) {
@@ -106,13 +81,9 @@ class DetailFragment : Fragment(), DetailView {
         mFavImageView.setOnClickListener { mDetailPresenter.isAddedToFav(definitionId) }
     }
 
-
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
     companion object {
+
+        private val EXTRA_DEFINITION_ID = "extra_definition_id"
 
         fun newInstance(definitionId: Long): DetailFragment {
             val fragment = DetailFragment()

@@ -44,13 +44,6 @@ class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
         mClearFavFAB.setOnClickListener({ mFavoritesPresenter.showAlertDialog() })
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
@@ -96,10 +89,5 @@ class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
-    }
-
-    companion object {
-        //
-        fun newInstance(param1: String, param2: String): FavoritesFragment = FavoritesFragment()
     }
 }
