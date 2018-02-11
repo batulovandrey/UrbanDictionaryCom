@@ -51,6 +51,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
                 else -> initializeQueryToServer(mQuery!!)
             }
         }
+        mSearchView.clearFocus()
     }
 
     override fun onAttach(context: Context?) {
