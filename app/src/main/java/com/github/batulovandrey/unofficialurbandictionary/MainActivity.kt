@@ -2,6 +2,7 @@ package com.github.batulovandrey.unofficialurbandictionary
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initIU()
-        showSearchFragment()
+        showFragment(SearchFragment())
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -41,23 +42,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Utils.hideKeyboard(mNavigationView, this)
         return when (item.itemId) {
             R.id.search_item -> {
-                showSearchFragment()
+                showFragment(SearchFragment())
                 true
             }
             R.id.favorites_item -> {
-                showFavoritesFragment()
+                showFragment(FavoritesFragment())
                 return true
             }
             R.id.popular_item -> {
-                showPopularWordsFragment()
+                showFragment(PopularWordsFragment())
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            finish()
+        }
+    }
+
     override fun onWordClick(word: String) {
-        showSearchFragment(word)
+        showFragment(SearchFragment.newInstance(word))
     }
 
     override fun onLetterClick(letter: String) {
@@ -78,35 +88,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun showSearchFragment() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val searchFragment = SearchFragment()
-        fragmentTransaction.replace(R.id.frame_layout, searchFragment)
-        fragmentTransaction.commit()
-    }
-
-    private fun showSearchFragment(word: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val searchFragment = SearchFragment.newInstance(word)
-        fragmentTransaction.replace(R.id.frame_layout, searchFragment)
-        fragmentTransaction.commit()
-    }
-
-    private fun showFavoritesFragment() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val favoritesFragment = FavoritesFragment()
-        fragmentTransaction.replace(R.id.frame_layout, favoritesFragment)
-        fragmentTransaction.commit()
-    }
-
-    private fun showPopularWordsFragment() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val popularWordsFragment = PopularWordsFragment()
-        fragmentTransaction.replace(R.id.frame_layout, popularWordsFragment)
-        fragmentTransaction.commit()
+    private fun showFragment(fragment: Fragment) {
+        val manager = supportFragmentManager
+        val transaction = manager.beginTransaction()
+        transaction.replace(R.id.frame_layout, fragment)
+        transaction.commit()
     }
 }

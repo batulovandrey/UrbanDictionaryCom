@@ -18,14 +18,13 @@ import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
 import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
 import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenterImpl
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
-import kotterknife.bindView
 
 class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, DefinitionClickListener {
 
-    private val mSearchView: SearchView by bindView(R.id.search_view)
-    private val mDefinitionsRecyclerView: RecyclerView by bindView(R.id.definitions_recycler_view)
-    private val mUserQueriesRecyclerView: RecyclerView by bindView(R.id.user_queries_recycler_view)
-    private val mProgressBar: ProgressBar by bindView(R.id.progress_bar)
+    private lateinit var mSearchView: SearchView
+    private lateinit var mDefinitionsRecyclerView: RecyclerView
+    private lateinit var mUserQueriesRecyclerView: RecyclerView
+    private lateinit var mProgressBar: ProgressBar
 
     private var mListenerSearch: OnSearchFragmentInteractionListener? = null
     private var mMainPresenter: MainPresenter? = null
@@ -33,7 +32,12 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_search, container, false)
+        val view = inflater!!.inflate(R.layout.fragment_search, container, false)
+        mSearchView = view.findViewById(R.id.search_view)
+        mDefinitionsRecyclerView = view.findViewById(R.id.definitions_recycler_view)
+        mUserQueriesRecyclerView = view.findViewById(R.id.user_queries_recycler_view)
+        mProgressBar = view.findViewById(R.id.progress_bar)
+        return view
     }
 
     override fun onStart() {

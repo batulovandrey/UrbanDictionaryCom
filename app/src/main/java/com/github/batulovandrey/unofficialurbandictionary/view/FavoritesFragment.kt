@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -17,16 +18,15 @@ import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.presenter.FavoritesPresenter
 import com.github.batulovandrey.unofficialurbandictionary.presenter.FavoritesPresenterImpl
-import kotterknife.bindView
 
 class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
 
-    private val mFavoritesDefinitionsRecyclerView: RecyclerView by bindView(R.id.definitions_recycler_view)
-    private val mEmptyFavTextView: TextView by bindView(R.id.empty_fav_text_view)
-    private val mClearFavFAB: FloatingActionButton by bindView(R.id.clear_favorites_action_button)
+    private lateinit var  mFavoritesDefinitionsRecyclerView: RecyclerView
+    private lateinit var  mEmptyFavTextView: TextView
+    private lateinit var mClearFavFAB: FloatingActionButton
 
     private lateinit var mFavoritesPresenter: FavoritesPresenter
-    private var mListener: OnFragmentInteractionListener? = null
+    private var mListenerFavorites: OnFavoritesFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,11 @@ class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_favorites, container, false)
+        val view = inflater!!.inflate(R.layout.fragment_favorites, container, false)
+        mFavoritesDefinitionsRecyclerView = view.findViewById(R.id.definitions_recycler_view)
+        mEmptyFavTextView = view.findViewById(R.id.empty_fav_text_view)
+        mClearFavFAB = view.findViewById(R.id.clear_favorites_action_button)
+        return view
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -46,16 +50,16 @@ class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
+        if (context is OnFavoritesFragmentInteractionListener) {
+            mListenerFavorites = context
         } else {
-//            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+//            throw RuntimeException(context!!.toString() + " must implement OnFavoritesFragmentInteractionListener")
         }
     }
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        mListenerFavorites = null
     }
 
     override fun showAlertDialog() {
@@ -83,11 +87,18 @@ class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val definition = mFavoritesPresenter.favorites[position]
+        val detailFragment = DetailFragment.newInstance(definition.defid)
+        val fragmentManager = activity.supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, detailFragment)
+        transaction.setTransition(TRANSIT_FRAGMENT_OPEN)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    interface OnFavoritesFragmentInteractionListener {
+
+        fun onFavoriteDefinitionClick(uri: Uri)
     }
 }
