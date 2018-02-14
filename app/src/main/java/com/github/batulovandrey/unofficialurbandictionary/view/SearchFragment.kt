@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.*
@@ -124,6 +125,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
             val fragmentManager = activity.supportFragmentManager
             val transaction = fragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, detailFragment)
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             transaction.addToBackStack(null)
             transaction.commit()
         }
