@@ -83,7 +83,7 @@ class DetailFragment : Fragment(), DetailView {
 
     companion object {
 
-        private val EXTRA_DEFINITION_ID = "extra_definition_id"
+        private const val EXTRA_DEFINITION_ID = "extra_definition_id"
 
         fun newInstance(definitionId: Long): DetailFragment {
             val fragment = DetailFragment()

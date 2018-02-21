@@ -2,20 +2,14 @@ package com.github.batulovandrey.unofficialurbandictionary.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.TextView
-import com.github.batulovandrey.unofficialurbandictionary.R
-import kotterknife.bindView
+import kotlinx.android.synthetic.main.definition_item.view.*
 
 /**
  * @author Andrey Batulov on 22/12/2017
  */
 
-class DefinitionViewHolder internal constructor(itemView: View, private val mClickListener: DefinitionClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-    private val mDefinitionTextView: TextView by bindView(R.id.definition_text_view)
-    private val mWordTextView: TextView by bindView(R.id.word_text_view)
-    private val mExampleTextView: TextView by bindView(R.id.example_text_view)
-    private val mAuthorTextView: TextView by bindView(R.id.author_text_view)
+class DefinitionViewHolder internal constructor(itemView: View, private val mClickListener: DefinitionClickListener) :
+        RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
     init {
         itemView.setOnClickListener(this)
@@ -26,18 +20,18 @@ class DefinitionViewHolder internal constructor(itemView: View, private val mCli
     }
 
     fun setDefinitionText(text: String) {
-        mDefinitionTextView.text = text
+        itemView.definition_text_view.text = text
     }
 
     fun setWordText(text: String) {
-        mWordTextView.text = text
+        itemView.word_text_view.text = text
     }
 
     fun setExampleText(text: String) {
-        mExampleTextView.text = text
+        itemView.example_text_view.text = text
     }
 
     fun setAuthorText(text: String) {
-        mAuthorTextView.text = text
+        itemView.author_text_view.text = text
     }
 }

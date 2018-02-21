@@ -1,6 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -40,25 +41,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        mDrawerLayout.closeDrawer(GravityCompat.START)
         Utils.hideKeyboard(mNavigationView, this)
+        Handler().postDelayed({ mDrawerLayout.closeDrawer(GravityCompat.START) }, 100)
+
         return when (item.itemId) {
             R.id.search_item -> {
-                showFragment(SearchFragment())
+                val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+                if (currentFragment !is SearchFragment)
+                    showFragment(SearchFragment())
                 true
             }
             R.id.favorites_item -> {
-                showFragment(FavoritesFragment())
+                val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+                if (currentFragment !is FavoritesFragment)
+                    showFragment(FavoritesFragment())
                 return true
             }
             R.id.popular_item -> {
-                showFragment(PopularWordsFragment())
+                val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+                if (currentFragment !is PopularWordsFragment)
+                    showFragment(PopularWordsFragment())
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 
     override fun onBackPressed() {
         val manager = supportFragmentManager
@@ -93,11 +100,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showFragment(fragment: Fragment) {
-        val manager = supportFragmentManager
-        val transaction = manager.beginTransaction()
-        transaction.replace(R.id.frame_layout, fragment)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        transaction.commit()
+        val handler = Handler()
+        handler.post({
+            val manager = supportFragmentManager
+            val transaction = manager.beginTransaction()
+            transaction.replace(R.id.frame_layout, fragment)
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            transaction.commit()
+        })
     }
 
     private fun showAlertDialog() {

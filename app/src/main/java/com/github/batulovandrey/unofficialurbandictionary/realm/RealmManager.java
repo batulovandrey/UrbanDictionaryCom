@@ -31,7 +31,7 @@ public class RealmManager {
         return Realm.getInstance(config);
     }
 
-    public Realm getRealmQuieries() {
+    public Realm getRealmQueries() {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("queries.realm")
                 .deleteRealmIfMigrationNeeded()

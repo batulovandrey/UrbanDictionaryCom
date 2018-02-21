@@ -2,7 +2,6 @@ package com.github.batulovandrey.unofficialurbandictionary.view
 
 import android.app.SearchManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -27,9 +26,8 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     private lateinit var mUserQueriesRecyclerView: RecyclerView
     private lateinit var mProgressBar: ProgressBar
 
-    private var mListenerSearch: OnSearchFragmentInteractionListener? = null
-    private var mMainPresenter: MainPresenter? = null
-    private var mQuery: String? = null
+    private lateinit var mMainPresenter: MainPresenter
+    private lateinit var mQuery: String
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -46,27 +44,11 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
         mMainPresenter = MainPresenterImpl(this)
         if (arguments != null) {
             mQuery = arguments.getString(EXTRA_QUERY)
-            when (mQuery) {
-                null -> {
-                }
-                else -> initializeQueryToServer(mQuery!!)
+            if (mQuery.isNotEmpty()) {
+                initializeQueryToServer(mQuery)
             }
         }
         mSearchView.clearFocus()
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnSearchFragmentInteractionListener) {
-            mListenerSearch = context
-        } else {
-//            throw RuntimeException(context!!.toString() + " must implement OnSearchFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListenerSearch = null
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -75,8 +57,8 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null && query.isNotEmpty()) {
-            mMainPresenter?.getData(query, this)
-            mMainPresenter?.saveQueryToRealm(query)
+            mMainPresenter.getData(query, this)
+            mMainPresenter.saveQueryToRealm(query)
             showDataInRecycler()
             Utils.hideKeyboard(mUserQueriesRecyclerView, context)
             return true
@@ -85,7 +67,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        return mMainPresenter!!.textChanged(newText)
+        return mMainPresenter.textChanged(newText)
     }
 
     override fun showDataInRecycler() {
@@ -119,16 +101,14 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     }
 
     override fun onItemClick(position: Int) {
-        val definitionId = mMainPresenter?.getDefinitionId(position)
-        if (definitionId != null) {
-            val detailFragment = DetailFragment.newInstance(definitionId)
-            val fragmentManager = activity.supportFragmentManager
-            val transaction = fragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, detailFragment)
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }
+        val definitionId = mMainPresenter.getDefinitionId(position)
+        val detailFragment = DetailFragment.newInstance(definitionId)
+        val fragmentManager = activity.supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, detailFragment)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun initializeQueryToServer(query: String) {
@@ -143,14 +123,9 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
         mSearchView.setOnQueryTextListener(this)
     }
 
-    interface OnSearchFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onSearchFragmentInteraction(uri: Uri)
-    }
-
     companion object {
 
-        private val EXTRA_QUERY = "extra_query"
+        private const val EXTRA_QUERY = "extra_query"
 
         fun newInstance(query: String): SearchFragment {
             val fragment = SearchFragment()

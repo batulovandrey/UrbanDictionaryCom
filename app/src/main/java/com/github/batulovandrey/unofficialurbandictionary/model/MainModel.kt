@@ -27,17 +27,17 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
     @Inject
     lateinit var mService: UrbanDictionaryService
 
-    private val mDefinitionsRealm: Realm
-    private val mUserQueriesRealm: Realm
     private lateinit var mDefinitionAdapter: DefinitionAdapter
     private var mDefinitions: List<DefinitionResponse>? = null
+    private val mDefinitionsRealm: Realm
+    private val mUserQueriesRealm: Realm
     private var mUserQueriesAdapter: QueriesAdapter
     private var mQueries: List<UserQuery>
 
     init {
         UrbanDictionaryApp.getNetComponent().inject(this)
         mDefinitionsRealm = mRealmManager.realmDefinitions
-        mUserQueriesRealm = mRealmManager.realmQuieries
+        mUserQueriesRealm = mRealmManager.realmQueries
         mQueries = mUserQueriesRealm.where(UserQuery::class.java).findAll()
         mUserQueriesAdapter = QueriesAdapter(mQueries, this)
     }
@@ -90,7 +90,7 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
 
     fun getDefinitionId(position: Int): Long {
         saveDefinitionToRealm(position)
-        return mDefinitions!![position].defid
+        return mDefinitions?.get(position)!!.defid
     }
 
     fun saveQueryToRealm(query: String) {
@@ -116,7 +116,7 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
     }
 
     private fun saveDefinitionToRealm(position: Int) {
-        val defId = mDefinitions!![position].defid
+        val defId = mDefinitions?.get(position)?.defid
         val checkDef = mDefinitionsRealm.where(DefinitionResponse::class.java).equalTo("defid", defId).findFirst()
         if (checkDef == null) {
             mDefinitionsRealm.executeTransaction { realm ->
