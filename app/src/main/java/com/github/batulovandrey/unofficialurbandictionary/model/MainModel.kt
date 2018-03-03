@@ -3,16 +3,14 @@ package com.github.batulovandrey.unofficialurbandictionary.model
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.*
-import com.github.batulovandrey.unofficialurbandictionary.bean.BaseResponse
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
 import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager
 import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService
 import io.realm.Realm
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -66,26 +64,19 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
 
     fun getData(query: String, listener: DefinitionClickListener) {
         mMainPresenter.showProgressbar()
-        val call = mService.getDefine(query)
-        call.enqueue(object : Callback<BaseResponse> {
-            override fun onResponse(call: Call<BaseResponse>,
-                                    response: Response<BaseResponse>) {
-                if (response.body() != null) {
-                    mDefinitions = response.body()!!.definitionResponses
+        mService.getDefineRx(query)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    mDefinitions = result.definitionResponses
                     mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
                     mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter)
                     mMainPresenter.hideProgressbar()
-                }
-            }
-
-            override fun onFailure(call: Call<BaseResponse>,
-                                   t: Throwable) {
-                println(call.toString())
-                println(t.message)
-                mMainPresenter.showToast(R.string.error)
-                mMainPresenter.hideProgressbar()
-            }
-        })
+                }, { error ->
+                    print(error.message)
+                    mMainPresenter.showToast(R.string.error)
+                    mMainPresenter.hideProgressbar()
+                })
     }
 
     fun getDefinitionId(position: Int): Long {
