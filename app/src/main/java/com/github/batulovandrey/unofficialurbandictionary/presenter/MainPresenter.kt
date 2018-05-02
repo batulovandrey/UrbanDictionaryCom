@@ -33,4 +33,6 @@ interface MainPresenter {
     fun saveQueryToRealm(query: String)
 
     fun initializeQueryToServer(query: String)
+
+    fun getDataFromCache()
 }

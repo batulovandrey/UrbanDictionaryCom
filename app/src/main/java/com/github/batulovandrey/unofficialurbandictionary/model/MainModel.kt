@@ -25,7 +25,7 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
     @Inject
     lateinit var mService: UrbanDictionaryService
 
-    private lateinit var mDefinitionAdapter: DefinitionAdapter
+    private var mDefinitionAdapter: DefinitionAdapter? = null
     private var mDefinitions: List<DefinitionResponse>? = ArrayList()
     private val mDefinitionsRealm: Realm
     private val mUserQueriesRealm: Realm
@@ -70,12 +70,18 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
                 .subscribe({ result ->
                     mDefinitions = result.definitionResponses
                     mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
-                    mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter)
+                    mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter!!)
                     mMainPresenter.hideProgressbar() },
                         { error ->
                     print(error.message)
                     mMainPresenter.showToast(R.string.error)
                     mMainPresenter.hideProgressbar()})
+    }
+
+    fun getDataFromCache() {
+        if(mDefinitionAdapter != null) {
+            mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter!!)
+        }
     }
 
     fun getDefinitionId(position: Int): Long {

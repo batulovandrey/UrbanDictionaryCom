@@ -29,6 +29,11 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     private lateinit var mMainPresenter: MainPresenter
     private lateinit var mQuery: String
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mMainPresenter = MainPresenterImpl(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_search, container, false)
@@ -41,12 +46,16 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     override fun onStart() {
         super.onStart()
-        mMainPresenter = MainPresenterImpl(this)
+
         if (arguments != null) {
             mQuery = arguments.getString(EXTRA_QUERY)
             if (mQuery.isNotEmpty()) {
                 initializeQueryToServer(mQuery)
+                arguments = null
             }
+        } else {
+            mMainPresenter.getDataFromCache()
+            showDataInRecycler()
         }
         mSearchView.clearFocus()
     }

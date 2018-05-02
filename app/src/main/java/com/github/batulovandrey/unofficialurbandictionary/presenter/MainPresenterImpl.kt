@@ -61,4 +61,8 @@ class MainPresenterImpl(private val mMainView: MainView) : MainPresenter {
     override fun initializeQueryToServer(query: String) {
         mMainView.initializeQueryToServer(query)
     }
+
+    override fun getDataFromCache() {
+        mMainModel.getDataFromCache()
+    }
 }
