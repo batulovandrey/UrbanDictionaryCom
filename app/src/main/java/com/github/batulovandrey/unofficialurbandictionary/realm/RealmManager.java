@@ -18,7 +18,7 @@ public class RealmManager {
     public Realm getRealmDefinitions() {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("definitions.realm")
-                .deleteRealmIfMigrationNeeded()
+//                .deleteRealmIfMigrationNeeded()
                 .build();
         return Realm.getInstance(config);
     }
@@ -26,7 +26,7 @@ public class RealmManager {
     public Realm getRealmFavorites() {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("favorites.realm")
-                .deleteRealmIfMigrationNeeded()
+//                .deleteRealmIfMigrationNeeded()
                 .build();
         return Realm.getInstance(config);
     }
@@ -34,7 +34,7 @@ public class RealmManager {
     public Realm getRealmQueries() {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("queries.realm")
-                .deleteRealmIfMigrationNeeded()
+//                .deleteRealmIfMigrationNeeded()
                 .build();
         return Realm.getInstance(config);
     }
