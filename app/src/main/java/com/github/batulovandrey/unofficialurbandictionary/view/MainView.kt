@@ -24,4 +24,6 @@ interface MainView {
     fun hideProgressbar()
 
     fun initializeQueryToServer(query: String)
+
+    fun showHint()
 }

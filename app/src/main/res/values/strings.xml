@@ -18,4 +18,6 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="yeap">yeap</string>
     <string name="nope">nope</string>
+    <string name="nothing_found">Nothing found</string>
+    <string name="hint">Input some word to the search view or use the list of popular words</string>
 </resources>

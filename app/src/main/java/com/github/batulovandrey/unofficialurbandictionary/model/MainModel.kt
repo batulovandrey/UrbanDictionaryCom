@@ -3,6 +3,7 @@ package com.github.batulovandrey.unofficialurbandictionary.model
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.*
+import com.github.batulovandrey.unofficialurbandictionary.bean.BaseResponse
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
 import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
@@ -65,22 +66,20 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
     fun getData(query: String, listener: DefinitionClickListener) {
         mMainPresenter.showProgressbar()
         mService.getDefineRx(query)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result ->
-                    mDefinitions = result.definitionResponses
-                    mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
-                    mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter!!)
-                    mMainPresenter.hideProgressbar() },
-                        { error ->
-                    print(error.message)
-                    mMainPresenter.showToast(R.string.error)
-                    mMainPresenter.hideProgressbar()})
+                .subscribe(
+                        { result -> handleResponse(result, listener) },
+                        { error -> handleError(error) }
+                )
     }
 
     fun getDataFromCache() {
-        if(mDefinitionAdapter != null) {
+        if (mDefinitionAdapter != null) {
             mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter!!)
+            mMainPresenter.showDefinitionsInRecycler()
+        } else {
+            mMainPresenter.showHint()
         }
     }
 
@@ -127,5 +126,22 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
                 definition.word = mDefinitions!![position].word
             }
         }
+    }
+
+    private fun handleResponse(result: BaseResponse, listener: DefinitionClickListener) {
+        mDefinitions = result.definitionResponses
+        if (mDefinitions != null && mDefinitions!!.isNotEmpty()) {
+            mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
+            mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter!!)
+        } else {
+            mMainPresenter.showToast(R.string.nothing_found)
+        }
+        mMainPresenter.hideProgressbar()
+    }
+
+    private fun handleError(error: Throwable) {
+        print(error.message)
+        mMainPresenter.showToast(R.string.error)
+        mMainPresenter.hideProgressbar()
     }
 }

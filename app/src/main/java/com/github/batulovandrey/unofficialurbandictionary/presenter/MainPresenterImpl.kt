@@ -65,4 +65,8 @@ class MainPresenterImpl(private val mMainView: MainView) : MainPresenter {
     override fun getDataFromCache() {
         mMainModel.getDataFromCache()
     }
+
+    override fun showHint() {
+        mMainView.showHint()
+    }
 }

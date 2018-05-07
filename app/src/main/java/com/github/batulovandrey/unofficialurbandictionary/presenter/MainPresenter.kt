@@ -35,4 +35,6 @@ interface MainPresenter {
     fun initializeQueryToServer(query: String)
 
     fun getDataFromCache()
+
+    fun showHint()
 }

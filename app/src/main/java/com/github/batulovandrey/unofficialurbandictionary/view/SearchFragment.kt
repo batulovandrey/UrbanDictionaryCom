@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 
 import com.github.batulovandrey.unofficialurbandictionary.R
@@ -25,6 +26,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     private lateinit var mDefinitionsRecyclerView: RecyclerView
     private lateinit var mUserQueriesRecyclerView: RecyclerView
     private lateinit var mProgressBar: ProgressBar
+    private lateinit var mHintTextView: TextView
 
     private lateinit var mMainPresenter: MainPresenter
     private lateinit var mQuery: String
@@ -41,21 +43,19 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
         mDefinitionsRecyclerView = view.findViewById(R.id.definitions_recycler_view)
         mUserQueriesRecyclerView = view.findViewById(R.id.user_queries_recycler_view)
         mProgressBar = view.findViewById(R.id.progress_bar)
+        mHintTextView = view.findViewById(R.id.hint_text_view)
         return view
     }
 
     override fun onStart() {
         super.onStart()
 
-        if (arguments != null) {
+        if (arguments != null && arguments.containsKey(EXTRA_QUERY)) {
             mQuery = arguments.getString(EXTRA_QUERY)
-            if (mQuery.isNotEmpty()) {
-                initializeQueryToServer(mQuery)
-                arguments = null
-            }
+            initializeQueryToServer(mQuery)
+            arguments = null
         } else {
             mMainPresenter.getDataFromCache()
-            showDataInRecycler()
         }
         mSearchView.clearFocus()
     }
@@ -82,11 +82,13 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     override fun showDataInRecycler() {
         mDefinitionsRecyclerView.visibility = View.VISIBLE
         mUserQueriesRecyclerView.visibility = View.GONE
+        mHintTextView.visibility = View.GONE
     }
 
     override fun showQueriesInListView() {
         mUserQueriesRecyclerView.visibility = View.VISIBLE
         mDefinitionsRecyclerView.visibility = View.GONE
+        mHintTextView.visibility = View.GONE
     }
 
     override fun setAdapterToDefinitionsRecycler(definitionsAdapter: DefinitionAdapter) {
@@ -107,6 +109,12 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     override fun hideProgressbar() {
         mProgressBar.visibility = View.GONE
+    }
+
+    override fun showHint() {
+        mHintTextView.visibility = View.VISIBLE
+        mUserQueriesRecyclerView.visibility = View.GONE
+        mDefinitionsRecyclerView.visibility = View.GONE
     }
 
     override fun onItemClick(position: Int) {
