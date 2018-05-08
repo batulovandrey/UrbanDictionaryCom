@@ -65,8 +65,8 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        if (query != null && query.isNotEmpty()) {
-            mMainPresenter.getData(query, this)
+        if (!query.isNullOrEmpty()) {
+            mMainPresenter.getData(query!!, this)
             mMainPresenter.saveQueryToRealm(query)
             showDataInRecycler()
             Utils.hideKeyboard(mUserQueriesRecyclerView, context)

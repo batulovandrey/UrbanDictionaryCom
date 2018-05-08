@@ -68,10 +68,8 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
         mService.getDefineRx(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { result -> handleResponse(result, listener) },
-                        { error -> handleError(error) }
-                )
+                .subscribe({ result -> handleResponse(result, listener) },
+                        { error -> handleError(error) } )
     }
 
     fun getDataFromCache() {
