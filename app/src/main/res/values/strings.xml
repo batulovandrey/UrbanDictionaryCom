@@ -20,4 +20,5 @@
     <string name="nope">nope</string>
     <string name="nothing_found">Nothing found</string>
     <string name="hint">Input some word to the search view or use the list of popular words</string>
+    <string name="share">Share</string>
 </resources>
