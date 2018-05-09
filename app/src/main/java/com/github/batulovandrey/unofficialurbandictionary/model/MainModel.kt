@@ -10,8 +10,9 @@ import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresente
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager
 import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService
 import io.realm.Realm
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 /**
@@ -65,11 +66,32 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
 
     fun getData(query: String, listener: DefinitionClickListener) {
         mMainPresenter.showProgressbar()
+        /*
         mService.getDefineRx(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result -> handleResponse(result, listener) },
-                        { error -> handleError(error) } )
+                        { error -> handleError(error) } )*/
+        val call = mService.getDefine(query)
+        call.enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(call: Call<BaseResponse>,
+                                    response: Response<BaseResponse>) {
+                if (response.body() != null) {
+                    mDefinitions = response.body()!!.definitionResponses
+                    mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
+                    mMainPresenter.setAdapterToDefinitionsRecycler(mDefinitionAdapter!!)
+                    mMainPresenter.hideProgressbar()
+                }
+            }
+
+            override fun onFailure(call: Call<BaseResponse>,
+                                   t: Throwable) {
+                println(call.toString())
+                println(t.message)
+                mMainPresenter.showToast(R.string.error)
+                mMainPresenter.hideProgressbar()
+            }
+        })
     }
 
     fun getDataFromCache() {
@@ -126,7 +148,7 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
         }
     }
 
-    private fun handleResponse(result: BaseResponse, listener: DefinitionClickListener) {
+   /* private fun handleResponse(result: BaseResponse, listener: DefinitionClickListener) {
         mDefinitions = result.definitionResponses
         if (mDefinitions != null && mDefinitions!!.isNotEmpty()) {
             mDefinitionAdapter = DefinitionAdapter(mDefinitions!!, listener)
@@ -141,5 +163,5 @@ class MainModel(private val mMainPresenter: MainPresenter) : QueriesClickListene
         print(error.message)
         mMainPresenter.showToast(R.string.error)
         mMainPresenter.hideProgressbar()
-    }
+    }*/
 }
