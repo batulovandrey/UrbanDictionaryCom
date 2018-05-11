@@ -8,8 +8,8 @@ android {
         applicationId "com.github.batulovandrey.unofficialurbandictionary"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 8
-        versionName "2.3.2"
+        versionCode 9
+        versionName "2.3.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
