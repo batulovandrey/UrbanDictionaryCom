@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.github.batulovandrey.unofficialurbandictionary.data.PopularWords;
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager;
-import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService;
+import com.github.batulovandrey.unofficialurbandictionary.api.UrbanDictionaryService;
 
 import javax.inject.Singleton;
 

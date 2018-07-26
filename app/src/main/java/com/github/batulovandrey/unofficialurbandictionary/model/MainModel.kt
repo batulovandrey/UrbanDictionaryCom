@@ -8,7 +8,7 @@ import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionRespons
 import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager
-import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService
+import com.github.batulovandrey.unofficialurbandictionary.api.UrbanDictionaryService
 import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
