@@ -1,4 +1,4 @@
-package com.github.batulovandrey.unofficialurbandictionary
+package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
 import com.github.batulovandrey.unofficialurbandictionary.view.*
 import kotterknife.bindView
