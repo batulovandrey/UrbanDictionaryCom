@@ -2,7 +2,8 @@ package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
-import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
+import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
+import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesClickListener
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,10 +14,11 @@ class MainPresenter<V : MainMvpView>(dataManager: DataManager,
                                      compositeDisposable: CompositeDisposable) :
         BasePresenter<V>(dataManager, compositeDisposable),
         MainMvpPresenter<V>,
-        DefinitionClickListener {
+        DefinitionClickListener,
+        QueriesClickListener {
 
     private var definitionAdapter: DefinitionAdapter? = null
-    private var activeDefinition: DefinitionResponse? = null
+    private var queriesAdapter: QueriesAdapter? = null
 
     override fun onViewInitialized() {
 
@@ -59,10 +61,40 @@ class MainPresenter<V : MainMvpView>(dataManager: DataManager,
         mvpView?.showDetailFragment()
     }
 
+    override fun filterQueries(text: String) {
+
+        compositeDisposable.add(dataManager.filterQueries(text).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (isViewAttached()) {
+
+                        queriesAdapter = QueriesAdapter(it, this)
+                        queriesAdapter?.let { adapter -> mvpView?.setQueriesAdapter(adapter) }
+                        mvpView?.showQueries()
+
+                    } else {
+
+                        return@subscribe
+
+                    }
+                })
+    }
+
     override fun onItemClick(position: Int) {
         compositeDisposable.add(dataManager.getDefinitions()
                 .subscribe {
-                    activeDefinition = it.get(position)
+                    dataManager.setActiveDefinition(it.get(position))
                 })
+    }
+
+    override fun onQueryClick(position: Int) {
+        val userQuery = queriesAdapter?.getQuery(position)
+        val text = userQuery?.query
+        text?.let { dataManager.getData(it) }
+    }
+
+    override fun deleteQueryFromRealm(position: Int) {
+        val userQuery = queriesAdapter?.getQuery(position)
+        userQuery?.let { dataManager.deleteQuery(it) }
     }
 }

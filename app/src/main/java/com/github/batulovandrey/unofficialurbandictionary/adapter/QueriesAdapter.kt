@@ -12,6 +12,7 @@ import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
 
 class QueriesAdapter(private val queries: List<UserQuery>,
                      private val clickListener: QueriesClickListener) : RecyclerView.Adapter<QueriesViewHolder>() {
+
     override fun getItemCount(): Int {
         return queries.size
     }
@@ -26,5 +27,9 @@ class QueriesAdapter(private val queries: List<UserQuery>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QueriesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.query_item, null)
         return QueriesViewHolder(view)
+    }
+
+    fun getQuery(position: Int): UserQuery {
+        return queries[position]
     }
 }

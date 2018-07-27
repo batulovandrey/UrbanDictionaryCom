@@ -13,4 +13,6 @@ interface MainMvpPresenter<V: MainMvpView>: MvpPresenter<V> {
     fun showFavorites()
 
     fun showDetail()
+
+    fun filterQueries(text: String)
 }
