@@ -1,10 +1,10 @@
 package com.github.batulovandrey.unofficialurbandictionary.api
 
 import com.github.batulovandrey.unofficialurbandictionary.bean.BaseResponse
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-import rx.Single
 
 /**
  * @author Andrey Batulov on 23/12/2017

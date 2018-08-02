@@ -1,9 +1,10 @@
 package com.github.batulovandrey.unofficialurbandictionary.dagger;
 
+import com.github.batulovandrey.unofficialurbandictionary.data.network.AppNetworkHelper;
 import com.github.batulovandrey.unofficialurbandictionary.model.DetailModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel;
-import com.github.batulovandrey.unofficialurbandictionary.model.MainModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.PopularWordsModel;
+import com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment;
 
 import javax.inject.Singleton;
 
@@ -17,11 +18,13 @@ import dagger.Component;
 @Component(modules = {AppModule.class, NetModule.class})
 public interface NetComponent {
 
-    void inject(MainModel model);
-
     void inject(DetailModel model);
 
     void inject(FavoritesModel model);
 
     void inject(PopularWordsModel model);
+
+    void inject(AppNetworkHelper appNetworkHelper);
+
+    void inject(SearchFragment fragment);
 }
