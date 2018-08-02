@@ -6,12 +6,13 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
+import io.reactivex.Flowable
 
 @Dao
 interface DefinitionDao {
 
     @Query("select * from definitions")
-    fun getAll(): List<Definition>
+    fun getAll(): Flowable<List<Definition>>
 
     @Insert(onConflict = REPLACE)
     fun insert(definition: Definition)
