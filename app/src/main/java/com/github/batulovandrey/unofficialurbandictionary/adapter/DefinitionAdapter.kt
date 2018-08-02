@@ -4,13 +4,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.batulovandrey.unofficialurbandictionary.R
-import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
+import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 
 /**
  * @author Andrey Batulov on 22/12/2017
  */
 
-class DefinitionAdapter(private val mDefinitions: List<DefinitionResponse>,
+class DefinitionAdapter(private val mDefinitions: List<Definition>,
                         private val mClickListener: DefinitionClickListener) : RecyclerView.Adapter<DefinitionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DefinitionViewHolder {

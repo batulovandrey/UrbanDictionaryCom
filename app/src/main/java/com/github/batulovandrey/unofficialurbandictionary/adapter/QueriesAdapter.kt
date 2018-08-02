@@ -4,13 +4,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.batulovandrey.unofficialurbandictionary.R
-import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
+import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 
 /**
  * author butul0ve on 28/01/2018
  */
 
-class QueriesAdapter(private val queries: List<UserQuery>,
+class QueriesAdapter(private val queries: List<SavedUserQuery>,
                      private val clickListener: QueriesClickListener) : RecyclerView.Adapter<QueriesViewHolder>() {
 
     override fun getItemCount(): Int {
@@ -19,7 +19,7 @@ class QueriesAdapter(private val queries: List<UserQuery>,
 
     override fun onBindViewHolder(holder: QueriesViewHolder, position: Int) {
         val userQuery = queries[position]
-        holder.mQueryTextView.text = userQuery.query
+        holder.mQueryTextView.text = userQuery.text
         holder.mQueryTextView.setOnClickListener({ clickListener.onQueryClick(position) })
         holder.mQueryImageButton.setOnClickListener({ clickListener.deleteQueryFromRealm(position) })
     }
@@ -29,7 +29,7 @@ class QueriesAdapter(private val queries: List<UserQuery>,
         return QueriesViewHolder(view)
     }
 
-    fun getQuery(position: Int): UserQuery {
+    fun getQuery(position: Int): SavedUserQuery {
         return queries[position]
     }
 }
