@@ -4,23 +4,29 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-
 import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenter
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MainPresenterImpl
+import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpPresenter
+import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpView
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import javax.inject.Inject
 
-class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, DefinitionClickListener {
+class SearchFragment : Fragment(), SearchView.OnQueryTextListener, DefinitionClickListener,
+        MainMvpView {
+
+    @Inject
+    lateinit var mPresenter: MainMvpPresenter<MainMvpView>
 
     private lateinit var mSearchView: SearchView
     private lateinit var mDefinitionsRecyclerView: RecyclerView
@@ -28,12 +34,12 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     private lateinit var mProgressBar: ProgressBar
     private lateinit var mHintTextView: TextView
 
-    private lateinit var mMainPresenter: MainPresenter
     private lateinit var mQuery: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mMainPresenter = MainPresenterImpl(this)
+        UrbanDictionaryApp.getNetComponent().inject(this)
+        mPresenter.onAttach(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -52,11 +58,11 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
         if (arguments != null && arguments.containsKey(EXTRA_QUERY)) {
             mQuery = arguments.getString(EXTRA_QUERY)
+            mPresenter.getData(mQuery)
             initializeQueryToServer(mQuery)
             arguments = null
-        } else {
-            mMainPresenter.getDataFromCache()
         }
+
         mSearchView.clearFocus()
     }
 
@@ -66,9 +72,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (!query.isNullOrEmpty()) {
-            mMainPresenter.getData(query!!, this)
-            mMainPresenter.saveQueryToRealm(query)
-            showDataInRecycler()
+            mPresenter.getData(query!!)
             Utils.hideKeyboard(mUserQueriesRecyclerView, context)
             return true
         }
@@ -76,39 +80,12 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        return mMainPresenter.textChanged(newText)
-    }
-
-    override fun showDataInRecycler() {
-        mDefinitionsRecyclerView.visibility = View.VISIBLE
-        mUserQueriesRecyclerView.visibility = View.GONE
-        mHintTextView.visibility = View.GONE
-    }
-
-    override fun showQueriesInListView() {
-        mUserQueriesRecyclerView.visibility = View.VISIBLE
-        mDefinitionsRecyclerView.visibility = View.GONE
-        mHintTextView.visibility = View.GONE
-    }
-
-    override fun setAdapterToDefinitionsRecycler(definitionsAdapter: DefinitionAdapter) {
-        mDefinitionsRecyclerView.adapter = definitionsAdapter
-    }
-
-    override fun setAdapterToQueriesRecycler(queriesAdapter: QueriesAdapter) {
-        mUserQueriesRecyclerView.adapter = queriesAdapter
+        mPresenter.filterQueries(newText)
+        return true
     }
 
     override fun showToast(resId: Int) {
         Toast.makeText(context, getString(resId), Toast.LENGTH_LONG).show()
-    }
-
-    override fun showProgressbar() {
-        mProgressBar.visibility = View.VISIBLE
-    }
-
-    override fun hideProgressbar() {
-        mProgressBar.visibility = View.GONE
     }
 
     override fun showHint() {
@@ -118,18 +95,56 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainView, Def
     }
 
     override fun onItemClick(position: Int) {
-        val definitionId = mMainPresenter.getDefinitionId(position)
-        val detailFragment = DetailFragment.newInstance(definitionId)
-        val fragmentManager = activity.supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.frame_layout, detailFragment)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        transaction.addToBackStack(null)
-        transaction.commit()
+
     }
 
     override fun initializeQueryToServer(query: String) {
         onQueryTextSubmit(query)
+    }
+
+    // mainMvpView's methods
+
+    override fun showDefinitions() {
+        mDefinitionsRecyclerView.visibility = View.VISIBLE
+        mUserQueriesRecyclerView.visibility = View.GONE
+        mHintTextView.visibility = View.GONE
+    }
+
+    override fun showQueries() {
+        mUserQueriesRecyclerView.visibility = View.VISIBLE
+        mDefinitionsRecyclerView.visibility = View.GONE
+        mHintTextView.visibility = View.GONE    }
+
+    override fun setDefinitionAdapter(definitionAdapter: DefinitionAdapter) {
+        mDefinitionsRecyclerView.adapter = definitionAdapter
+    }
+
+    override fun setQueriesAdapter(queriesAdapter: QueriesAdapter) {
+        mUserQueriesRecyclerView.adapter = queriesAdapter
+    }
+
+    override fun closeNavigationDrawer() {}
+
+    override fun showSearchFragment() {}
+
+    override fun showPopularWordsFragment() {}
+
+    override fun showFavoritesFragment() {}
+
+    override fun showDetailFragment() {}
+
+    override fun showLoading() {
+        mProgressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        mProgressBar.visibility = View.GONE
+    }
+
+    override fun hideKeyboard() {}
+
+    override fun isNetworkConnected(): Boolean {
+        return true
     }
 
     private fun initSearchView() {

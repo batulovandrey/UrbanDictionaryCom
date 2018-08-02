@@ -4,6 +4,7 @@ import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdap
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
 import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel
+import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
 import com.github.batulovandrey.unofficialurbandictionary.view.FavoritesView
 
 /**
@@ -33,7 +34,7 @@ class FavoritesPresenterImpl(private val mFavoritesView: FavoritesView) : Favori
     }
 
     override fun createNewDefinitionAdapter(favorites: List<DefinitionResponse>): DefinitionAdapter {
-        return DefinitionAdapter(favorites, mFavoritesView as DefinitionClickListener)
+        return DefinitionAdapter(favorites.convertToDefinitionList(), mFavoritesView as DefinitionClickListener)
     }
 
     override fun hideRecycler() {
