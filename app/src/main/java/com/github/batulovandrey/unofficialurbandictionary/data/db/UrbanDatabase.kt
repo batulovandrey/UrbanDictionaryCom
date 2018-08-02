@@ -6,9 +6,9 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.QueryDao
-import com.github.batulovandrey.unofficialurbandictionary.data.db.model.UserQuery
+import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 
-@Database(entities = arrayOf(Definition::class, UserQuery::class), version = 1)
+@Database(entities = arrayOf(Definition::class, SavedUserQuery::class), version = 1)
 abstract class UrbanDatabase: RoomDatabase() {
 
     abstract fun definitionDataDao(): DefinitionDao

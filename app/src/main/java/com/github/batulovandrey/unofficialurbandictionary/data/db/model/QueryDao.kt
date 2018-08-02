@@ -10,14 +10,14 @@ import android.arch.persistence.room.Query
 interface QueryDao {
 
     @Query("select * from userQuery")
-    fun getAll(): List<UserQuery>
+    fun getAll(): List<SavedUserQuery>
 
     @Insert(onConflict = REPLACE)
-    fun insert(userQuery: UserQuery)
+    fun insert(savedUserQuery: SavedUserQuery)
 
     @Query("delete from userQuery")
     fun deleteAll()
 
     @Delete
-    fun delete(userQuery: UserQuery)
+    fun delete(savedUserQuery: SavedUserQuery)
 }

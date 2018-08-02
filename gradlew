@@ -96,7 +96,7 @@ if [ "$cygwin" = "false" -a "$darwin" = "false" ] ; then
             warn "Could not set maximum file descriptor limit: $MAX_FD"
         fi
     else
-        warn "Could not userQuery maximum file descriptor limit: $MAX_FD_LIMIT"
+        warn "Could not savedUserQuery maximum file descriptor limit: $MAX_FD_LIMIT"
     fi
 fi
 
