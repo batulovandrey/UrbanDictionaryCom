@@ -5,7 +5,6 @@ import com.github.batulovandrey.unofficialurbandictionary.dagger.ApplicationCont
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,8 +16,12 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
     private val definitionDataDao = urbanDatabase?.definitionDataDao()
     private val queryDataDao = urbanDatabase?.queryDataDao()
 
-    override fun getDefinitions(): Flowable<List<Definition>>? {
-        return definitionDataDao?.getAll()
+    override fun getDefinitions(): Observable<List<Definition>> {
+        return Observable.fromCallable { definitionDataDao?.getAll() }
+    }
+
+    override fun getFavoritesDefinitions(): Observable<List<Definition>> {
+        return Observable.fromCallable { definitionDataDao?.getAllFavorites() }
     }
 
     override fun saveDefinition(definition: Definition): Completable {
@@ -32,21 +35,23 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
         }
     }
 
-    override fun deleteDefinition(definition: Definition) {
-        definitionDataDao?.delete(definition)
+    override fun deleteDefinition(definition: Definition): Completable {
+        return Completable.fromAction { definitionDataDao?.delete(definition) }
     }
 
     /**
      * There is no need to delete the definition at all,
      * so just change the flag and update the record in db
      */
-    override fun deleteDefinitionFromFavorites(definition: Definition) {
-        definition.favorite = 0
-        definitionDataDao?.insert(definition)
+    override fun deleteDefinitionFromFavorites(definition: Definition): Completable {
+        return Completable.fromAction {
+            definition.favorite = 0
+            definitionDataDao?.insert(definition)
+        }
     }
 
-    override fun deleteAllDefinitions() {
-        definitionDataDao?.deleteAll()
+    override fun deleteAllDefinitions(): Completable {
+        return Completable.fromAction { definitionDataDao?.deleteAll() }
     }
 
     override fun getQueries(): Observable<List<SavedUserQuery>> {
@@ -57,15 +62,15 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
         return Observable.fromCallable { queryDataDao?.getAll()?.filter { it.text.contains(text) } }
     }
 
-    override fun deleteQuery(query: SavedUserQuery) {
-        queryDataDao?.delete(query)
+    override fun deleteQuery(query: SavedUserQuery): Completable {
+        return Completable.fromAction { queryDataDao?.delete(query) }
     }
 
-    override fun deleteAllQueries() {
-        queryDataDao?.deleteAll()
+    override fun deleteAllQueries(): Completable {
+        return Completable.fromAction { queryDataDao?.deleteAll() }
     }
 
-    override fun saveQuery(savedUserQuery: SavedUserQuery) {
-        queryDataDao?.insert(savedUserQuery)
+    override fun saveQuery(savedUserQuery: SavedUserQuery): Completable {
+        return Completable.fromAction { queryDataDao?.insert(savedUserQuery) }
     }
 }

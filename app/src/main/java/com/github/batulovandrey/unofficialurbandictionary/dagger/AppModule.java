@@ -1,6 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.dagger;
 
 import android.app.Application;
+import android.content.Context;
 
 import javax.inject.Singleton;
 
@@ -14,15 +15,15 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
-    private Application mApplication;
+    private final Application application;
 
     public AppModule(Application application) {
-        mApplication = application;
+        this.application = application;
     }
 
     @Provides
     @Singleton
-    Application provideApplication() {
-        return mApplication;
+    Context provideApplicationContext() {
+        return application.getApplicationContext();
     }
 }

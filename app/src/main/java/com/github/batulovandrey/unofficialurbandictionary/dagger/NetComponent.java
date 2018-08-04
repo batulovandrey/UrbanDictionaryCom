@@ -4,6 +4,7 @@ import com.github.batulovandrey.unofficialurbandictionary.data.network.AppNetwor
 import com.github.batulovandrey.unofficialurbandictionary.model.DetailModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.PopularWordsModel;
+import com.github.batulovandrey.unofficialurbandictionary.service.MigrateService;
 import com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment;
 
 import javax.inject.Singleton;
@@ -15,8 +16,8 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {AppModule.class, NetModule.class})
-public interface NetComponent {
+@Component(modules = {AppModule.class, DataModule.class, NetModule.class})
+public interface NetComponent  {
 
     void inject(DetailModel model);
 
@@ -27,4 +28,6 @@ public interface NetComponent {
     void inject(AppNetworkHelper appNetworkHelper);
 
     void inject(SearchFragment fragment);
+
+    void inject(MigrateService service);
 }

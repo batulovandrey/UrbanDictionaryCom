@@ -28,9 +28,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun onViewInitialized() {
         dataManager.getDefinitions()
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
                     if (isViewAttached()) {
 
                         definitionAdapter = DefinitionAdapter(it, this)
@@ -113,9 +113,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun onItemClick(position: Int) {
         dataManager.getDefinitions()
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribeOn(Schedulers.io())
-                ?.subscribe(
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
                         { definitionsList -> dataManager.setActiveDefinition(definitionsList[position]) },
                         { error -> Log.d("click", error.message) }
                 )?.let { compositeDisposable.add(it) }

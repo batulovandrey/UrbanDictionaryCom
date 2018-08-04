@@ -15,15 +15,13 @@ import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
-import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpPresenter
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpView
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
 import javax.inject.Inject
 
-class SearchFragment : Fragment(), SearchView.OnQueryTextListener, DefinitionClickListener,
-        MainMvpView {
+class SearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpView {
 
     @Inject
     lateinit var mPresenter: MainMvpPresenter<MainMvpView>
@@ -92,10 +90,6 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener, DefinitionCli
         mHintTextView.visibility = View.VISIBLE
         mUserQueriesRecyclerView.visibility = View.GONE
         mDefinitionsRecyclerView.visibility = View.GONE
-    }
-
-    override fun onItemClick(position: Int) {
-
     }
 
     override fun initializeQueryToServer(query: String) {

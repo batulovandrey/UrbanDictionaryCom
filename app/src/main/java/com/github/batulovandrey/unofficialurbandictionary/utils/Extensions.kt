@@ -33,13 +33,13 @@ fun RealmResults<DefinitionResponse>.convertToDefinitionList(): List<Definition>
 
     for (item in this) {
         val definition = Definition(null,
-                item.definition,
-                item.permalink,
+                item.definition ?: "",
+                item.permalink ?: "",
                 item.thumbsUp,
                 item.thumbsDown,
-                item.author,
-                item.word,
-                item.example)
+                item.author ?: "",
+                item.word ?: "",
+                item.example ?: "")
 
         result.add(definition)
     }
