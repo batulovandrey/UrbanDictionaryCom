@@ -115,5 +115,12 @@ class DetailFragment : Fragment(), DetailView {
             fragment.arguments = args
             return fragment
         }
+
+        fun newInstance(): DetailFragment {
+            val fragment = DetailFragment()
+            val args = Bundle()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

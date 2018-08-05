@@ -15,6 +15,7 @@ import javax.inject.Singleton
 class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
                                          private val networkHelper: NetworkHelper) : DataManager {
 
+    private lateinit var currentListOfDefinition: List<Definition>
     private lateinit var activeDefinition: Definition
 
     override fun setActiveDefinition(definition: Definition) {
@@ -75,5 +76,13 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
 
     override fun saveQuery(savedUserQuery: SavedUserQuery): Completable {
         return dbHelper.saveQuery(savedUserQuery);
+    }
+
+    override fun saveCurrentListOfDefinition(list: List<Definition>?) {
+        list?.let { currentListOfDefinition = it }
+    }
+
+    override fun getSavedListOfDefinition(): List<Definition> {
+        return currentListOfDefinition
     }
 }

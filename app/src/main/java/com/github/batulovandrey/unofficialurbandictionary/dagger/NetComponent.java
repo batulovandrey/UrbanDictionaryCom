@@ -5,7 +5,7 @@ import com.github.batulovandrey.unofficialurbandictionary.model.DetailModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.PopularWordsModel;
 import com.github.batulovandrey.unofficialurbandictionary.service.MigrateService;
-import com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment;
+import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFragment;
 
 import javax.inject.Singleton;
 
@@ -27,7 +27,7 @@ public interface NetComponent  {
 
     void inject(AppNetworkHelper appNetworkHelper);
 
-    void inject(SearchFragment fragment);
+    void inject(MainSearchFragment fragment);
 
     void inject(MigrateService service);
 }

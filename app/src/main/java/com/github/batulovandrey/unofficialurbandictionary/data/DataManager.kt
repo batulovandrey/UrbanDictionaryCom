@@ -9,4 +9,8 @@ interface DataManager : DbHelper, NetworkHelper {
     fun setActiveDefinition(definition: Definition)
 
     fun getActiveDefinition(): Definition?
+
+    fun saveCurrentListOfDefinition(list: List<Definition>?)
+
+    fun getSavedListOfDefinition(): List<Definition>
 }

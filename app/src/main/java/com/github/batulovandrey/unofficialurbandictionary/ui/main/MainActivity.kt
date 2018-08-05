@@ -23,33 +23,33 @@ import kotterknife.bindView
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
         AlphabetFragment.OnLetterClickListener, WordsFragment.OnWordClickListener {
 
-    private val mDrawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
-    private val mNavigationView: NavigationView by bindView(R.id.navigation_view)
-    private lateinit var mToggle: ActionBarDrawerToggle
+    private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
+    private val navigationView: NavigationView by bindView(R.id.navigation_view)
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initIU()
-        showFragment(SearchFragment())
+        showFragment(MainSearchFragment())
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (mToggle.onOptionsItemSelected(item)) {
+        if (toggle.onOptionsItemSelected(item)) {
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Utils.hideKeyboard(mNavigationView, this)
-        Handler().postDelayed({ mDrawerLayout.closeDrawer(GravityCompat.START) }, 100)
+        Utils.hideKeyboard(navigationView, this)
+        Handler().postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
 
         return when (item.itemId) {
             R.id.search_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
-                if (currentFragment !is SearchFragment)
-                    showFragment(SearchFragment())
+                if (currentFragment !is MainSearchFragment)
+                    showFragment(MainSearchFragment())
                 true
             }
             R.id.favorites_item -> {
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onWordClick(word: String) {
-        showFragment(SearchFragment.newInstance(word))
+        showFragment(MainSearchFragment.newInstance(word))
     }
 
     override fun onLetterClick(letter: String) {
@@ -88,12 +88,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         popularWordsFragment.showWordsByLetter(letter)
     }
 
+    fun showDetailFragment() {
+        showFragment(DetailFragment.newInstance())
+    }
+
     private fun initIU() {
         initToolbar()
-        mToggle = ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close)
-        mDrawerLayout.addDrawerListener(mToggle)
-        mNavigationView.setNavigationItemSelectedListener(this)
-        mToggle.syncState()
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        navigationView.setNavigationItemSelectedListener(this)
+        toggle.syncState()
     }
 
     private fun initToolbar() {

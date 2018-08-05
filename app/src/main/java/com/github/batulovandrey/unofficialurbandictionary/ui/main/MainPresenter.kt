@@ -1,6 +1,5 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
-import android.util.Log
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
@@ -43,7 +42,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
                     }
                 }?.let { compositeDisposable.add(it) }
-
     }
 
     override fun getData(text: String) {
@@ -60,7 +58,11 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         dataManager.saveDefinition(definition)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
+                                .subscribe()
                     }
+
+                    dataManager.saveCurrentListOfDefinition(it)
+
                     mvpView?.hideLoading()
 
                     if (isViewAttached()) {
@@ -93,7 +95,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun filterQueries(text: String) {
-
         compositeDisposable.add(dataManager.filterQueries(text).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -112,13 +113,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun onItemClick(position: Int) {
-        dataManager.getDefinitions()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        { definitionsList -> dataManager.setActiveDefinition(definitionsList[position]) },
-                        { error -> Log.d("click", error.message) }
-                )?.let { compositeDisposable.add(it) }
+        val selectDefinition = dataManager.getSavedListOfDefinition()[position]
+        dataManager.setActiveDefinition(selectDefinition)
+        mvpView?.showDetailFragment()
     }
 
     override fun onQueryClick(position: Int) {
