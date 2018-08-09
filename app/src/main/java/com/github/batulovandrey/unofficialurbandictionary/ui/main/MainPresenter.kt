@@ -56,7 +56,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
                     it.forEach { definition ->
                         dataManager.saveDefinition(definition)
-                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe()
                     }
@@ -115,6 +114,14 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     override fun onItemClick(position: Int) {
         val selectDefinition = dataManager.getSavedListOfDefinition()[position]
         dataManager.setActiveDefinition(selectDefinition)
+        compositeDisposable.add(dataManager.getFavoritesDefinitions()
+                .subscribeOn(Schedulers.io())
+                .filter { it.contains(selectDefinition) }
+                .subscribe {
+                    if (it.isNotEmpty()) {
+                        selectDefinition.favorite = 1
+                    }
+                })
         mvpView?.showDetailFragment()
     }
 

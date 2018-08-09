@@ -10,6 +10,9 @@ import com.github.batulovandrey.unofficialurbandictionary.data.db.DbHelper;
 import com.github.batulovandrey.unofficialurbandictionary.data.network.AppNetworkHelper;
 import com.github.batulovandrey.unofficialurbandictionary.data.network.NetworkHelper;
 import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager;
+import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailMvpPresenter;
+import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailMvpView;
+import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailPresenter;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpPresenter;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpView;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainPresenter;
@@ -40,6 +43,13 @@ public class DataModule {
     MainMvpPresenter<MainMvpView> provideMainPresenter(DataManager dataManager,
                                                        CompositeDisposable disposable) {
         return new MainPresenter<>(dataManager, disposable);
+    }
+
+    @Provides
+    @Singleton
+    DetailMvpPresenter<DetailMvpView> provideDetailPresenter(DataManager dataManager,
+                                                             CompositeDisposable disposable) {
+        return new DetailPresenter<>(dataManager, disposable);
     }
 
     @Provides

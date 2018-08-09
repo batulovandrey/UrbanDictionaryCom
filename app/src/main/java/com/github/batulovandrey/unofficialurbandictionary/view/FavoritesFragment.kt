@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.presenter.FavoritesPresenter
@@ -87,14 +85,14 @@ class FavoritesFragment : Fragment(), FavoritesView, DefinitionClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        val definition = mFavoritesPresenter.favorites[position]
+        /*val definition = mFavoritesPresenter.favorites[position]
         val detailFragment = DetailFragment.newInstance(definition.defid)
         val fragmentManager = activity.supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.frame_layout, detailFragment)
         transaction.setTransition(TRANSIT_FRAGMENT_OPEN)
         transaction.addToBackStack(null)
-        transaction.commit()
+        transaction.commit()*/
     }
 
     interface OnFavoritesFragmentInteractionListener {
