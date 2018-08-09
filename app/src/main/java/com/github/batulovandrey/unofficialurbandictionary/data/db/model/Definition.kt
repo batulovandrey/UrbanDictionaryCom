@@ -13,4 +13,22 @@ data class Definition(@PrimaryKey(autoGenerate = true) var id: Long?,
                       @ColumnInfo(name = "author") var author: String,
                       @ColumnInfo(name = "word") var word: String,
                       @ColumnInfo(name = "example") var example: String,
-                      @ColumnInfo(name = "favorite") var favorite: Int = 0)
+                      @ColumnInfo(name = "favorite") var favorite: Int = 0) {
+
+    override fun equals(other: Any?): Boolean {
+
+        if (this === other) return true
+
+        if (javaClass != other?.javaClass) return false
+
+        other as Definition
+
+        return definition == other.definition &&
+                permalink == other.permalink &&
+                thumbsUp == other.thumbsUp &&
+                thumbsDown == other.thumbsDown &&
+                author == other.author &&
+                word == other.word &&
+                example == other.example
+    }
+}
