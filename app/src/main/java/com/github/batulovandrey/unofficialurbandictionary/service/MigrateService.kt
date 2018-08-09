@@ -18,6 +18,8 @@ class MigrateService : IntentService("migrateService") {
     @Inject
     lateinit var dataManager: DataManager
 
+    private lateinit var realmManager: RealmManager
+
     override fun onCreate() {
         super.onCreate()
         UrbanDictionaryApp.getNetComponent().inject(this)
@@ -26,6 +28,7 @@ class MigrateService : IntentService("migrateService") {
     override fun onHandleIntent(intent: Intent?) {
         val realmManager = RealmManager(this)
         migrateData(realmManager.realmDefinitions)
+        migrateData(realmManager.realmQueries)
     }
 
     private fun migrateData(realm: Realm) {
