@@ -19,8 +19,8 @@ interface DefinitionDao {
     @Query("delete from definitions")
     fun deleteAll()
 
-    @Query("select * from definitions where favorite = 1")
-    fun getAllFavorites(): List<Definition>
+    @Query("select * from definitions where favorite = :favorite")
+    fun getAllFavorites(favorite: Int = 1): List<Definition>
 
     @Delete
     fun delete(definition: Definition)
