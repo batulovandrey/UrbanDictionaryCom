@@ -1,10 +1,10 @@
 package com.github.batulovandrey.unofficialurbandictionary.dagger;
 
 import com.github.batulovandrey.unofficialurbandictionary.data.network.AppNetworkHelper;
-import com.github.batulovandrey.unofficialurbandictionary.model.FavoritesModel;
 import com.github.batulovandrey.unofficialurbandictionary.model.PopularWordsModel;
 import com.github.batulovandrey.unofficialurbandictionary.service.MigrateService;
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment;
+import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFragment;
 
 import javax.inject.Singleton;
@@ -19,7 +19,7 @@ import dagger.Component;
 @Component(modules = {AppModule.class, DataModule.class, NetModule.class})
 public interface NetComponent  {
 
-    void inject(FavoritesModel model);
+    void inject(FavoritesFragment fragment);
 
     void inject(PopularWordsModel model);
 

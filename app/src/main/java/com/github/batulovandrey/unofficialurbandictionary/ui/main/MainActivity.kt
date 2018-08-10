@@ -13,9 +13,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
+import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
 import com.github.batulovandrey.unofficialurbandictionary.view.AlphabetFragment
-import com.github.batulovandrey.unofficialurbandictionary.view.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.view.PopularWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.view.WordsFragment
 import kotterknife.bindView

@@ -83,23 +83,6 @@ class DetailFragment : Fragment(), DetailMvpView {
         detailPresenter.handleClick()
     }
 
-    override fun showLoading() {
-        // not implemented
-    }
-
-    override fun hideLoading() {
-        // not implemented
-    }
-
-    override fun hideKeyboard() {
-        // not implemented
-    }
-
-    override fun isNetworkConnected(): Boolean {
-        // not implemented
-        return false
-    }
-
     override fun setValuesToViews(definition: Definition) {
         wordTextView.text = definition.word
         definitionTextView.text = definition.definition

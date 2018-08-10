@@ -2,11 +2,11 @@ package com.github.batulovandrey.unofficialurbandictionary.presenter
 
 interface MvpView {
 
-    fun showLoading()
+    fun showLoading() {}
 
-    fun hideLoading()
+    fun hideLoading() {}
 
-    fun hideKeyboard()
+    fun hideKeyboard() {}
 
-    fun isNetworkConnected(): Boolean
+    fun isNetworkConnected() = false
 }

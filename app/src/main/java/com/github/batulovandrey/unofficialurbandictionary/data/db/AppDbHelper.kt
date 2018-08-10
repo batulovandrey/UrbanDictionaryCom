@@ -73,4 +73,8 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
     override fun saveQuery(savedUserQuery: SavedUserQuery): Completable {
         return Completable.fromAction { queryDataDao?.insert(savedUserQuery) }
     }
+
+    override fun deleteFavoritesDefinitions(): Completable {
+        return Completable.fromAction { definitionDataDao?.deleteAllFavorites() }
+    }
 }
