@@ -83,7 +83,9 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
     }
 
     override fun getSavedListOfDefinition(): List<Definition> {
-        return currentListOfDefinition
+        if (::currentListOfDefinition.isInitialized)
+            return currentListOfDefinition
+        else return emptyList()
     }
 
     override fun deleteFavoritesDefinitions(): Completable {

@@ -111,11 +111,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun showFragment(fragment: Fragment) {
         val handler = Handler()
         handler.post({
+            val isSearchFragment = fragment is MainSearchFragment
+
             val manager = supportFragmentManager
             val transaction = manager.beginTransaction()
-            transaction.replace(R.id.frame_layout, fragment)
+
+
+            if (!isSearchFragment) {
+                transaction.addToBackStack(null)
+                transaction.hide(manager.findFragmentById(R.id.frame_layout))
+                transaction.add(R.id.frame_layout, fragment)
+            } else {
+                transaction.replace(R.id.frame_layout, fragment)
+            }
+
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            transaction.addToBackStack(null)
             transaction.commit()
         })
     }

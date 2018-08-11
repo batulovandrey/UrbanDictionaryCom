@@ -32,12 +32,6 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
 
     private lateinit var query: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        UrbanDictionaryApp.getNetComponent().inject(this)
-        presenter.onAttach(this)
-    }
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_search, container, false)
@@ -46,6 +40,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         userQueriesRecyclerView = view.findViewById(R.id.user_queries_recycler_view)
         progressBar = view.findViewById(R.id.progress_bar)
         hintTextView = view.findViewById(R.id.hint_text_view)
+        UrbanDictionaryApp.getNetComponent().inject(this)
         return view
     }
 
@@ -64,6 +59,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         initSearchView()
+        presenter.onAttach(this)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

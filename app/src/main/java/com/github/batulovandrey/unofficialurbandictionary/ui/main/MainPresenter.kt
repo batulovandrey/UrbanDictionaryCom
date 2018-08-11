@@ -25,6 +25,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     private var definitionAdapter: DefinitionAdapter? = null
     private var queriesAdapter: QueriesAdapter? = null
 
+    override fun onAttach(mvpView: V) {
+        super.onAttach(mvpView)
+        if (dataManager.getSavedListOfDefinition().isNotEmpty()) {
+            definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
+            mvpView.setDefinitionAdapter(definitionAdapter!!)
+            mvpView.showDefinitions()
+        }
+    }
+
     override fun onViewInitialized() {
         dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
