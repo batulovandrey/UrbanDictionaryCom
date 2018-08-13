@@ -14,18 +14,15 @@ import android.view.MenuItem
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
+import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
-import com.github.batulovandrey.unofficialurbandictionary.view.AlphabetFragment
-import com.github.batulovandrey.unofficialurbandictionary.view.PopularWordsFragment
-import com.github.batulovandrey.unofficialurbandictionary.view.WordsFragment
 import kotterknife.bindView
 
 /**
  * @author Andrey Batulov on 22/12/2017
  */
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-        AlphabetFragment.OnLetterClickListener, WordsFragment.OnWordClickListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
@@ -64,8 +61,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.popular_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
-                if (currentFragment !is PopularWordsFragment)
-                    showFragment(PopularWordsFragment())
+                if (currentFragment !is TopWordsFragment)
+                    showFragment(TopWordsFragment())
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -82,14 +79,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onWordClick(word: String) {
+    fun redirectToSearchFragment(word: String) {
         showFragment(MainSearchFragment.newInstance(word))
-    }
-
-    override fun onLetterClick(letter: String) {
-        val manager = supportFragmentManager
-        val popularWordsFragment = manager.findFragmentById(R.id.frame_layout) as PopularWordsFragment
-        popularWordsFragment.showWordsByLetter(letter)
     }
 
     fun showDetailFragment() {

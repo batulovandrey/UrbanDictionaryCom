@@ -5,6 +5,7 @@ import android.content.Context;
 import com.github.batulovandrey.unofficialurbandictionary.data.AppDataManager;
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager;
 import com.github.batulovandrey.unofficialurbandictionary.data.PopularWords;
+import com.github.batulovandrey.unofficialurbandictionary.data.WordsRepository;
 import com.github.batulovandrey.unofficialurbandictionary.data.db.AppDbHelper;
 import com.github.batulovandrey.unofficialurbandictionary.data.db.DbHelper;
 import com.github.batulovandrey.unofficialurbandictionary.data.network.AppNetworkHelper;
@@ -19,6 +20,9 @@ import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.Favorites
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpPresenter;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainMvpView;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainPresenter;
+import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsMvpPresenter;
+import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsMvpView;
+import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsPresenter;
 
 import javax.inject.Singleton;
 
@@ -63,6 +67,14 @@ public class DataModule {
     }
 
     @Provides
+    @Singleton
+    TopWordsMvpPresenter<TopWordsMvpView> provideTopWordsPresenter(WordsRepository repository,
+                                                                   DataManager dataManager,
+                                                                   CompositeDisposable compositeDisposable) {
+        return new TopWordsPresenter<>(repository, dataManager, compositeDisposable);
+    }
+
+    @Provides
     CompositeDisposable provideDisposable() {
         return new CompositeDisposable();
     }
@@ -84,5 +96,11 @@ public class DataModule {
     DataManager provideDataManager(DbHelper dbHelper,
                                    NetworkHelper networkHelper) {
         return new AppDataManager(dbHelper, networkHelper);
+    }
+
+    @Provides
+    @Singleton
+    WordsRepository provideWordsRepository(PopularWords words) {
+        return new WordsRepository(words);
     }
 }
