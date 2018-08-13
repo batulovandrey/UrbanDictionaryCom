@@ -56,7 +56,7 @@ class AlphabetFragment : Fragment(), AlphabetClickListener {
         mListener = null
     }
 
-    override fun onItemClick(position: Int) {
+    override fun onLetterClick(position: Int) {
         mListener!!.onLetterClick(mAlphabetList[position])
     }
 

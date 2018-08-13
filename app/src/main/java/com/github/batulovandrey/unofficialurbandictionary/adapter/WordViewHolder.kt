@@ -24,6 +24,6 @@ class WordViewHolder internal constructor(itemView: View, private val mClickList
     }
 
     override fun onClick(view: View) {
-        mClickListener.onItemClick(layoutPosition)
+        mClickListener.onWordClick(layoutPosition)
     }
 }
