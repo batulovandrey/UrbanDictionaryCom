@@ -1,7 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.utils
 
-import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
-import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.DefinitionResponse
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.UserQuery
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import io.realm.RealmResults

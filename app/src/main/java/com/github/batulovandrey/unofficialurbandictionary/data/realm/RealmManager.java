@@ -1,4 +1,4 @@
-package com.github.batulovandrey.unofficialurbandictionary.realm;
+package com.github.batulovandrey.unofficialurbandictionary.data.realm;
 
 import android.content.Context;
 

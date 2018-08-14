@@ -3,10 +3,10 @@ package com.github.batulovandrey.unofficialurbandictionary.service
 import android.app.IntentService
 import android.content.Intent
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
-import com.github.batulovandrey.unofficialurbandictionary.bean.DefinitionResponse
-import com.github.batulovandrey.unofficialurbandictionary.bean.UserQuery
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
-import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.DefinitionResponse
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.UserQuery
+import com.github.batulovandrey.unofficialurbandictionary.data.realm.RealmManager
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToUserQueriesList
 import io.reactivex.schedulers.Schedulers

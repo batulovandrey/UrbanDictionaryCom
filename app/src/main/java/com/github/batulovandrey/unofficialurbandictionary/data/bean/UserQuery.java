@@ -1,4 +1,4 @@
-package com.github.batulovandrey.unofficialurbandictionary.bean;
+package com.github.batulovandrey.unofficialurbandictionary.data.bean;
 
 import io.realm.RealmObject;
 

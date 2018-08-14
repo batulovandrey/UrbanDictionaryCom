@@ -1,6 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.data
 
-import com.github.batulovandrey.unofficialurbandictionary.bean.BaseResponse
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.BaseResponse
 import com.github.batulovandrey.unofficialurbandictionary.data.db.DbHelper
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery

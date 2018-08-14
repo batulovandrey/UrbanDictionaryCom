@@ -1,6 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.api
 
-import com.github.batulovandrey.unofficialurbandictionary.bean.BaseResponse
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.BaseResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
