@@ -18,13 +18,13 @@ import static junit.framework.Assert.assertEquals;
  */
 public class BaseResponseTest {
 
-    private static final String DIRECTORY = "app/src/test/resources";
+    private static final String DIRECTORY = "src/test/resources";
     private static final String FILE_NAME = "base_definition_response.json";
 
     private BaseResponse mExpected;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mExpected = getExpectedBaseResponse();
     }
 

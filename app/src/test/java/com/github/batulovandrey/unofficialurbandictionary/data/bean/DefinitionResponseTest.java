@@ -17,13 +17,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class DefinitionResponseTest {
 
-    private static final String DIRECTORY = "app/src/test/resources";
+    private static final String DIRECTORY = "src/test/resources";
     private static final String FILE_NAME = "definition_response.json";
 
     private DefinitionResponse mExpectedDefinitionResponse;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mExpectedDefinitionResponse = initExpectedDefinitionResponse();
     }
 
