@@ -1,4 +1,4 @@
-package com.github.batulovandrey.unofficialurbandictionary.presenter
+package com.github.batulovandrey.unofficialurbandictionary.ui
 
 interface MvpView {
 

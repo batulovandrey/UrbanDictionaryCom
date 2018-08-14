@@ -1,7 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.detail
 
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MvpView
+import com.github.batulovandrey.unofficialurbandictionary.ui.MvpView
 
 interface DetailMvpView: MvpView {
 

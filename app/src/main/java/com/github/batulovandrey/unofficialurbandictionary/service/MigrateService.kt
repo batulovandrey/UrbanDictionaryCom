@@ -18,8 +18,6 @@ class MigrateService : IntentService("migrateService") {
     @Inject
     lateinit var dataManager: DataManager
 
-    private lateinit var realmManager: RealmManager
-
     override fun onCreate() {
         super.onCreate()
         UrbanDictionaryApp.getNetComponent().inject(this)

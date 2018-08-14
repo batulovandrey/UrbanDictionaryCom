@@ -1,6 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.presenter
 
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
+import com.github.batulovandrey.unofficialurbandictionary.ui.MvpView
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -8,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
  * onAttach() and onDetach()
  */
 open class BasePresenter<V : MvpView>(val dataManager: DataManager,
-                                 val compositeDisposable: CompositeDisposable) : MvpPresenter<V> {
+                                      val compositeDisposable: CompositeDisposable) : MvpPresenter<V> {
 
     var mvpView: V? = null
         private set

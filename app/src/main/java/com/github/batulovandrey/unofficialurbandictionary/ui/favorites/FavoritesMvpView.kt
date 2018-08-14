@@ -1,7 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.favorites
 
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MvpView
+import com.github.batulovandrey.unofficialurbandictionary.ui.MvpView
 
 interface FavoritesMvpView: MvpView {
 

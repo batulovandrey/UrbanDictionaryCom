@@ -2,7 +2,7 @@ package com.github.batulovandrey.unofficialurbandictionary.ui.top
 
 import com.github.batulovandrey.unofficialurbandictionary.adapter.AlphabetAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.WordAdapter
-import com.github.batulovandrey.unofficialurbandictionary.presenter.MvpView
+import com.github.batulovandrey.unofficialurbandictionary.ui.MvpView
 
 interface TopWordsMvpView: MvpView {
 

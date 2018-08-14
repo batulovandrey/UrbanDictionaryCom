@@ -46,7 +46,7 @@ class UrbanDatabaseTest {
                 "word",
                 "example")
         definitionDao.insert(definition)
-        val definitions = definitionDao.getAll().blockingFirst()
+        val definitions = definitionDao.getAll()
         val result = definitions[0]
         assertThat(definition, equalTo(result))
     }
