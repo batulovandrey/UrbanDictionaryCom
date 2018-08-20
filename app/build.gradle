@@ -67,6 +67,11 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.11'
     kapt 'com.google.dagger:dagger-compiler:2.11'
 
+    // firebase
+    implementation 'com.google.firebase:firebase-auth:16.0.3'
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -89,3 +94,4 @@ repositories {
 }
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jetbrains.kotlin.kapt'
+apply plugin: 'com.google.gms.google-services'
