@@ -11,11 +11,15 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
 
 /**
@@ -27,12 +31,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var interstitial: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initIU()
         showFragment(MainSearchFragment())
+
+        MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
+        loadAd()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -77,7 +85,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when {
             drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
             currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
-            else -> showAlertDialog()
+            else -> {
+                if (interstitial.isLoaded) {
+                    interstitial.show()
+                }
+                showAlertDialog()
+            }
         }
     }
 
@@ -120,12 +133,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.commit()
     }
 
+    private fun loadAd() {
+        val request = AdRequest.Builder()
+                .build()
+
+        interstitial = InterstitialAd(this).apply {
+            adUnitId = BuildConfig.AD_MOB_UNIT_ID
+            loadAd(request)
+        }
+    }
+
     private fun showAlertDialog() {
         AlertDialog.Builder(this)
                 .setTitle(R.string.exit)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.yeap, { _, _ -> finish() })
-                .setNegativeButton(R.string.nope, { dialogInterface, _ -> dialogInterface.dismiss() })
+                .setNegativeButton(R.string.nope, { dialogInterface, _ -> dialogInterface.dismiss(); loadAd() })
                 .show()
     }
 }
