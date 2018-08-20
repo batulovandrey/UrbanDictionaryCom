@@ -44,25 +44,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         Utils.hideKeyboard(navigationView, this)
-        Handler().postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
+        val handler = Handler()
+        handler.postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
 
         return when (item.itemId) {
             R.id.search_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is MainSearchFragment)
-                    showFragment(MainSearchFragment())
+                    handler.post { showFragment(MainSearchFragment()) }
                 true
             }
             R.id.favorites_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is FavoritesFragment)
-                    showFragment(FavoritesFragment())
+                    handler.post { showFragment(FavoritesFragment()) }
                 return true
             }
             R.id.popular_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is TopWordsFragment)
-                    showFragment(TopWordsFragment())
+                    handler.post { showFragment(TopWordsFragment()) }
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -72,10 +73,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         val manager = supportFragmentManager
         val currentFragment = manager.findFragmentById(R.id.frame_layout)
-        if (currentFragment is DetailFragment) {
-            supportFragmentManager.popBackStack()
-        } else {
-            showAlertDialog()
+
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+            currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
+            else -> showAlertDialog()
         }
     }
 
@@ -100,25 +102,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showFragment(fragment: Fragment) {
-        val handler = Handler()
-        handler.post({
-            val isSearchFragment = fragment is MainSearchFragment
+        val isSearchFragment = fragment is MainSearchFragment
 
-            val manager = supportFragmentManager
-            val transaction = manager.beginTransaction()
+        val manager = supportFragmentManager
+        val transaction = manager.beginTransaction()
 
 
-            if (!isSearchFragment) {
-                transaction.addToBackStack(null)
-                transaction.hide(manager.findFragmentById(R.id.frame_layout))
-                transaction.add(R.id.frame_layout, fragment)
-            } else {
-                transaction.replace(R.id.frame_layout, fragment)
-            }
+        if (!isSearchFragment) {
+            transaction.addToBackStack(null)
+            transaction.hide(manager.findFragmentById(R.id.frame_layout))
+            transaction.add(R.id.frame_layout, fragment)
+        } else {
+            transaction.replace(R.id.frame_layout, fragment)
+        }
 
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            transaction.commit()
-        })
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        transaction.commit()
     }
 
     private fun showAlertDialog() {
