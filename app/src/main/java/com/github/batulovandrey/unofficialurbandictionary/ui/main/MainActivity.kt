@@ -19,6 +19,8 @@ import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragme
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
 
@@ -31,17 +33,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var interstitial: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.UrbanTheme)
         super.onCreate(savedInstanceState)
+
+        MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
+        loadAd()
+
         setContentView(R.layout.activity_main)
         initIU()
         showFragment(MainSearchFragment())
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
-
-        MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -150,6 +155,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.commit()
     }
 
+    private fun loadAd() {
+        val request = AdRequest.Builder()
+                .build()
+
+        interstitial = InterstitialAd(this).apply {
+            adUnitId = BuildConfig.AD_MOB_UNIT_ID
+            loadAd(request)
+        }
+    }
 
     private fun showAlertDialog() {
         AlertDialog.Builder(this)
