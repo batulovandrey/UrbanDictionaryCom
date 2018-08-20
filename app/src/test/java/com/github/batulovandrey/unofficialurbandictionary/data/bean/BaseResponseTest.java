@@ -30,17 +30,20 @@ public class BaseResponseTest {
 
     @Test
     public void testParseObject() {
-        Gson gson = new Gson();
         try {
-            String file = DIRECTORY + File.separator + FILE_NAME;
-            BaseResponse baseResponse = gson.fromJson(new FileReader(file), BaseResponse.class);
+            BaseResponse baseResponse = getBaseResponse();
             assertEquals(mExpected, baseResponse);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private BaseResponse getExpectedBaseResponse() {
+    public BaseResponse getBaseResponse() throws FileNotFoundException {
+        String file = DIRECTORY + File.separator + FILE_NAME;
+        return new Gson().fromJson(new FileReader(file), BaseResponse.class);
+    }
+
+    public BaseResponse getExpectedBaseResponse() {
         return new BaseResponse(getTags(), "exact", getDefinitionResponses());
     }
 
