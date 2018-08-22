@@ -13,5 +13,9 @@
             android:id="@+id/popular_item"
             android:icon="@drawable/popular_list"
             android:title="@string/popular" />
+        <item
+            android:id="@+id/cached_item"
+            android:icon="@drawable/popular_list"
+            android:title="@string/popular" />
     </group>
 </menu>

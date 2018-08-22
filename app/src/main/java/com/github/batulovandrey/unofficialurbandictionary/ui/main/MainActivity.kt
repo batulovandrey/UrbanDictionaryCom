@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
@@ -74,6 +75,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is TopWordsFragment)
                     handler.post { showFragment(TopWordsFragment()) }
+                return true
+            }
+            R.id.cached_item -> {
+                val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+                if (currentFragment !is CachedFragment)
+                    handler.post { showFragment(CachedFragment()) }
                 return true
             }
             else -> super.onOptionsItemSelected(item)

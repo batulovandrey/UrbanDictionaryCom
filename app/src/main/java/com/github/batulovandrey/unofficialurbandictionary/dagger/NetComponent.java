@@ -3,6 +3,7 @@ package com.github.batulovandrey.unofficialurbandictionary.dagger;
 import com.github.batulovandrey.unofficialurbandictionary.data.WordsRepository;
 import com.github.batulovandrey.unofficialurbandictionary.data.network.AppNetworkHelper;
 import com.github.batulovandrey.unofficialurbandictionary.service.MigrateService;
+import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment;
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment;
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment;
 import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFragment;
@@ -35,4 +36,6 @@ public interface NetComponent  {
     void inject(@NotNull WordsRepository repository);
 
     void inject(@NotNull TopWordsFragment fragment);
+
+    void inject(@NotNull CachedFragment fragment);
 }
