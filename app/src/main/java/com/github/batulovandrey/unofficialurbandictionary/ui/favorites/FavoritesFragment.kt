@@ -3,11 +3,13 @@ package com.github.batulovandrey.unofficialurbandictionary.ui.favorites
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.R
@@ -24,6 +26,7 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     private lateinit var favoritesDefinitionsRecyclerView: RecyclerView
     private lateinit var emptyFavTextView: TextView
     private lateinit var clearFavFAB: FloatingActionButton
+    private lateinit var relativeLayout: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +35,11 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_favorites, container, false)
+        val view = inflater!!.inflate(R.layout.fragment_list, container, false)
         favoritesDefinitionsRecyclerView = view.findViewById(R.id.definitions_recycler_view)
         emptyFavTextView = view.findViewById(R.id.empty_fav_text_view)
         clearFavFAB = view.findViewById(R.id.clear_favorites_action_button)
+        relativeLayout = view.findViewById(R.id.relative_layout)
         return view
     }
 
@@ -66,11 +70,13 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     override fun showData() {
         favoritesDefinitionsRecyclerView.visibility = View.VISIBLE
         emptyFavTextView.visibility = View.GONE
+        relativeLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
     }
 
     override fun showPlaceHolder() {
         favoritesDefinitionsRecyclerView.visibility = View.GONE
         emptyFavTextView.visibility = View.VISIBLE
+        relativeLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.colorWhite))
     }
 
     override fun showDetailFragment() {

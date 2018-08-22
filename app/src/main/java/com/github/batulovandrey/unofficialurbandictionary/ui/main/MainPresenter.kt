@@ -27,7 +27,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun onAttach(mvpView: V) {
         super.onAttach(mvpView)
-        dataManager.clearMap()
         if (dataManager.getSavedListOfDefinition().isNotEmpty()) {
             definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
             mvpView.setDefinitionAdapter(definitionAdapter!!)
@@ -55,6 +54,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun getData(text: String) {
+        dataManager.clearMap()
         mvpView?.showLoading()
         compositeDisposable.add(dataManager.getData(text)
                 .subscribeOn(Schedulers.io())
