@@ -37,15 +37,30 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
 
     override fun clearList() {
         compositeDisposable.add(
-                dataManager.deleteAllDefinitions()
+                dataManager.getFavoritesDefinitions()
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { mvpView?.showPlaceHolder() }
-        )
+                        .flatMapIterable { it }
+                        .doOnNext { it.favorite = 0 }
+                        .map { dataManager.saveDefinition(it).subscribe()}
+                        .subscribe {
+                            dataManager.deleteFavoritesDefinitions()
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe { mvpView?.showPlaceHolder() }
+                        })
     }
 
     override fun onItemClick(position: Int) {
-        dataManager.setActiveDefinition(definitionAdapter.getDefinitionByPosition(position))
+        val selectDefinition = definitionAdapter.getDefinitionByPosition(position)
+        val id = dataManager.getDefinitionId(selectDefinition)
+
+        compositeDisposable.add(dataManager.getDefinitionById(id)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ definition ->
+                    definition?.let { dataManager.setActiveDefinition(it) }
+                },
+                        { _ ->
+                            dataManager.setActiveDefinition(selectDefinition)
+                        }))
         mvpView?.showDetailFragment()
     }
 }

@@ -130,9 +130,12 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
         compositeDisposable.add(dataManager.getDefinitionById(id)
                 .subscribeOn(Schedulers.io())
-                .subscribe { definition ->
+                .subscribe({ definition ->
                     definition?.let { dataManager.setActiveDefinition(it) }
-                })
+                },
+                        { _ ->
+                            dataManager.setActiveDefinition(selectDefinition)
+                        }))
 
         mvpView?.showDetailFragment()
     }

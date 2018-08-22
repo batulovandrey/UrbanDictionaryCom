@@ -30,4 +30,7 @@ interface DefinitionDao {
 
     @Query("delete from definitions where favorite = :favorite")
     fun deleteAllFavorites(favorite: Int = 1)
+
+    @Query("delete from definitions where favorite = :favorite")
+    fun deleteCachedDefinitions(favorite: Int = 0)
 }

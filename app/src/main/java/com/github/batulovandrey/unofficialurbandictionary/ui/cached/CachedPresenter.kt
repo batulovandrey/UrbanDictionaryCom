@@ -20,11 +20,14 @@ class CachedPresenter<V : CachedMvpView> @Inject constructor(dataManager: DataMa
     override fun loadData() {
         compositeDisposable.add(
                 dataManager.getDefinitions()
-                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe {
-                            if (it.isNotEmpty()) {
-                                definitionAdapter = DefinitionAdapter(it, this)
+                        .flatMapIterable { it }
+                        .filter { it.favorite == 0 }
+                        .toList()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { list ->
+                            if (list.isNotEmpty()) {
+                                definitionAdapter = DefinitionAdapter(list, this)
                                 mvpView?.setDefinitionAdapter(definitionAdapter)
                                 mvpView?.showData()
                             } else {
@@ -36,7 +39,7 @@ class CachedPresenter<V : CachedMvpView> @Inject constructor(dataManager: DataMa
 
     override fun clearCache() {
         compositeDisposable.add(
-                dataManager.deleteAllDefinitions()
+                dataManager.deleteCachedDefinitions()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe { mvpView?.showPlaceHolder() }
@@ -44,7 +47,17 @@ class CachedPresenter<V : CachedMvpView> @Inject constructor(dataManager: DataMa
     }
 
     override fun onItemClick(position: Int) {
-        dataManager.setActiveDefinition(definitionAdapter.getDefinitionByPosition(position))
+        val selectDefinition = definitionAdapter.getDefinitionByPosition(position)
+        val id = dataManager.getDefinitionId(selectDefinition)
+
+        compositeDisposable.add(dataManager.getDefinitionById(id)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ definition ->
+                    definition?.let { dataManager.setActiveDefinition(it) }
+                },
+                        { _ ->
+                            dataManager.setActiveDefinition(selectDefinition)
+                        }))
         mvpView?.showDetailFragment()
     }
 }

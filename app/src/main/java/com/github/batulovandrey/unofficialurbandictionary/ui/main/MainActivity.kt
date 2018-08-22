@@ -125,7 +125,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun checkFragmentFromBackStack() {
         val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
-        if (fragment is FavoritesFragment) fragment.onResume()
+        if (fragment is FavoritesFragment || fragment is CachedFragment) {
+            fragment.onResume()
+        }
     }
 
     private fun showFragment(fragment: Fragment) {

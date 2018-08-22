@@ -47,6 +47,10 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
         return dbHelper.deleteAllDefinitions()
     }
 
+    override fun deleteCachedDefinitions(): Completable {
+        return dbHelper.deleteCachedDefinitions()
+    }
+
     override fun getQueries(): Observable<List<SavedUserQuery>> {
         return dbHelper.getQueries()
     }

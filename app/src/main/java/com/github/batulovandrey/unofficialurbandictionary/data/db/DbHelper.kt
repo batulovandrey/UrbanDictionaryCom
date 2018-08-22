@@ -35,4 +35,6 @@ interface DbHelper {
     fun saveQuery(savedUserQuery: SavedUserQuery): Completable
 
     fun deleteFavoritesDefinitions(): Completable
+
+    fun deleteCachedDefinitions(): Completable
 }

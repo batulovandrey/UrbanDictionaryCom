@@ -82,4 +82,8 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
     override fun deleteFavoritesDefinitions(): Completable {
         return Completable.fromAction { definitionDataDao?.deleteAllFavorites() }
     }
+
+    override fun deleteCachedDefinitions(): Completable {
+        return Completable.fromAction{ definitionDataDao?.deleteCachedDefinitions() }
+    }
 }
