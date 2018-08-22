@@ -45,6 +45,11 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         clearFavFAB.setOnClickListener { showAlertDialog() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        favoritesPresenter.loadData()
+    }
+
     override fun showAlertDialog() {
         AlertDialog.Builder(context)
                 .setTitle("Clear list of favorites")

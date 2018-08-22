@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initIU()
         showFragment(MainSearchFragment())
 
+        supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
+
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
         loadAd()
     }
@@ -114,19 +116,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    private fun checkFragmentFromBackStack() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+        if (fragment is FavoritesFragment) fragment.onResume()
+    }
+
     private fun showFragment(fragment: Fragment) {
-        val isSearchFragment = fragment is MainSearchFragment
+        val isNeedReplace = fragment is MainSearchFragment
 
         val manager = supportFragmentManager
         val transaction = manager.beginTransaction()
 
 
-        if (!isSearchFragment) {
+        if (isNeedReplace) {
+            transaction.replace(R.id.frame_layout, fragment)
+        } else {
             transaction.addToBackStack(null)
             transaction.hide(manager.findFragmentById(R.id.frame_layout))
             transaction.add(R.id.frame_layout, fragment)
-        } else {
-            transaction.replace(R.id.frame_layout, fragment)
         }
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

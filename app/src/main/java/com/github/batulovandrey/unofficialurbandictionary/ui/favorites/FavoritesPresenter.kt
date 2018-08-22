@@ -17,11 +17,6 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
 
     private lateinit var definitionAdapter: DefinitionAdapter
 
-    override fun onAttach(mvpView: V) {
-        super.onAttach(mvpView)
-        loadData()
-    }
-
     override fun loadData() {
         compositeDisposable.add(
                 dataManager.getFavoritesDefinitions()
@@ -33,6 +28,8 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                                     definitionAdapter = DefinitionAdapter(it, this)
                                     mvpView?.setDefinitionAdapter(definitionAdapter)
                                     mvpView?.showData()
+                                } else {
+                                    mvpView?.showPlaceHolder()
                                 }
                             }
                         })
