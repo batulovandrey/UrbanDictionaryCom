@@ -8,6 +8,7 @@ import com.github.batulovandrey.unofficialurbandictionary.data.network.NetworkHe
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +16,7 @@ import javax.inject.Singleton
 class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
                                          private val networkHelper: NetworkHelper) : DataManager {
 
-    private lateinit var currentListOfDefinition: List<Definition>
+    private val currentMapOfDefinition = TreeMap<Long, Definition>()
     private lateinit var activeDefinition: Definition
 
     override fun setActiveDefinition(definition: Definition) {
@@ -28,6 +29,10 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
 
     override fun saveDefinitionToFavorites(definition: Definition): Completable {
         return dbHelper.saveDefinitionToFavorites(definition)
+    }
+
+    override fun getDefinitionById(id: Long?): Single<Definition?> {
+        return dbHelper.getDefinitionById(id)
     }
 
     override fun deleteDefinition(definition: Definition): Completable {
@@ -58,7 +63,7 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
         return dbHelper.getFavoritesDefinitions()
     }
 
-    override fun saveDefinition(definition: Definition): Completable {
+    override fun saveDefinition(definition: Definition): Single<Long> {
         return dbHelper.saveDefinition(definition)
     }
 
@@ -78,17 +83,27 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
         return dbHelper.saveQuery(savedUserQuery);
     }
 
-    override fun saveCurrentListOfDefinition(list: List<Definition>?) {
-        list?.let { currentListOfDefinition = it }
-    }
-
     override fun getSavedListOfDefinition(): List<Definition> {
-        if (::currentListOfDefinition.isInitialized)
-            return currentListOfDefinition
-        else return emptyList()
+        return currentMapOfDefinition.values.toList()
     }
 
     override fun deleteFavoritesDefinitions(): Completable {
         return dbHelper.deleteFavoritesDefinitions()
+    }
+
+    override fun putDefinitionToMap(id: Long, definition: Definition) {
+        currentMapOfDefinition[id] = definition
+    }
+
+    override fun getDefinitionId(definition: Definition): Long {
+        for((key, value) in currentMapOfDefinition) {
+            if (value == definition)
+                return key
+        }
+        return -1
+    }
+
+    override fun clearMap() {
+        currentMapOfDefinition.clear()
     }
 }

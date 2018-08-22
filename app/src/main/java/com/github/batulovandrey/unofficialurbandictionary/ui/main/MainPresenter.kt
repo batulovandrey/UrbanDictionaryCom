@@ -27,6 +27,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun onAttach(mvpView: V) {
         super.onAttach(mvpView)
+        dataManager.clearMap()
         if (dataManager.getSavedListOfDefinition().isNotEmpty()) {
             definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
             mvpView.setDefinitionAdapter(definitionAdapter!!)
@@ -57,19 +58,22 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         mvpView?.showLoading()
         compositeDisposable.add(dataManager.getData(text)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { Single.fromCallable { it.definitionResponses } }
+                .flatMap {
+                    Single.fromCallable { it.definitionResponses }
+                            .subscribeOn(Schedulers.io())
+                }
                 .toObservable()
                 .map { it.convertToDefinitionList() }
-                .subscribe {
-
+                .doOnNext {
                     it.forEach { definition ->
                         dataManager.saveDefinition(definition)
                                 .subscribeOn(Schedulers.io())
-                                .subscribe()
+                                .subscribe { id ->
+                                    dataManager.putDefinitionToMap(id, definition)
+                                }
                     }
-
-                    dataManager.saveCurrentListOfDefinition(it)
+                }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
 
                     mvpView?.hideLoading()
 
@@ -122,15 +126,14 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun onItemClick(position: Int) {
         val selectDefinition = dataManager.getSavedListOfDefinition()[position]
-        dataManager.setActiveDefinition(selectDefinition)
-        compositeDisposable.add(dataManager.getFavoritesDefinitions()
+        val id = dataManager.getDefinitionId(selectDefinition)
+
+        compositeDisposable.add(dataManager.getDefinitionById(id)
                 .subscribeOn(Schedulers.io())
-                .filter { it.contains(selectDefinition) }
-                .subscribe {
-                    if (it.isNotEmpty()) {
-                        selectDefinition.favorite = 1
-                    }
+                .subscribe { definition ->
+                    definition?.let { dataManager.setActiveDefinition(it) }
                 })
+
         mvpView?.showDetailFragment()
     }
 

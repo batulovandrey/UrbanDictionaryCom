@@ -13,8 +13,11 @@ interface DefinitionDao {
     @Query("select * from definitions")
     fun getAll(): List<Definition>
 
+    @Query("select * from definitions where id =:id")
+    fun getDefinitionById(id: Long?): Definition
+
     @Insert(onConflict = REPLACE)
-    fun insert(definition: Definition)
+    fun insert(definition: Definition): Long
 
     @Query("delete from definitions")
     fun deleteAll()

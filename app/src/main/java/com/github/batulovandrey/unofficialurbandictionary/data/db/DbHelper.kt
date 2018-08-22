@@ -4,14 +4,17 @@ import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definiti
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 
 interface DbHelper {
 
     fun getDefinitions(): Observable<List<Definition>>
 
+    fun getDefinitionById(id: Long?): Single<Definition?>
+
     fun getFavoritesDefinitions(): Observable<List<Definition>>
 
-    fun saveDefinition(definition: Definition): Completable
+    fun saveDefinition(definition: Definition): Single<Long>
 
     fun saveDefinitionToFavorites(definition: Definition): Completable
 

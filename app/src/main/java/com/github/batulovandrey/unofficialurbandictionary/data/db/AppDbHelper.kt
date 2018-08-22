@@ -6,6 +6,7 @@ import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definiti
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,12 +21,16 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
         return Observable.fromCallable { definitionDataDao?.getAll() }
     }
 
+    override fun getDefinitionById(id: Long?): Single<Definition?> {
+        return Single.fromCallable { definitionDataDao?.getDefinitionById(id) }
+    }
+
     override fun getFavoritesDefinitions(): Observable<List<Definition>> {
         return Observable.fromCallable { definitionDataDao?.getAllFavorites() }
     }
 
-    override fun saveDefinition(definition: Definition): Completable {
-        return Completable.fromAction { definitionDataDao?.insert(definition) }
+    override fun saveDefinition(definition: Definition): Single<Long> {
+        return Single.fromCallable { definitionDataDao?.insert(definition) }
     }
 
     override fun saveDefinitionToFavorites(definition: Definition): Completable {

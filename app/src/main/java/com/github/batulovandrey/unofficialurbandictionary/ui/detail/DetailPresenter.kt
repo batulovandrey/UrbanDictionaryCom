@@ -4,7 +4,10 @@ import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -22,30 +25,52 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(dataManager: DataMa
     }
 
     override fun handleClick() {
-        dataManager.getActiveDefinition()?.let {
-            if (it.favorite == 0) {
-                mvpView?.setImage(R.drawable.favorite_black, -360f)
-                it.favorite = 1
-                putToFavorites(it)
-            } else {
-                mvpView?.setImage(R.drawable.favorite_white, 360f)
-                it.favorite = 0
-                removeFromFavorites(it)
-            }
+        val activeDefinition = dataManager.getActiveDefinition()
+        activeDefinition?.let {
+            compositeDisposable.add(Single.just(activeDefinition)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ definition: Definition? ->
+
+                        activeDefinition.favorite = when (activeDefinition.favorite) {
+                            0 -> 1
+                            else -> 0
+                        }
+
+                        when (activeDefinition.favorite) {
+
+                            0 -> removeFromFavorites(activeDefinition)
+                            1 -> putToFavorites(activeDefinition)
+
+                        }
+                    }))
         }
     }
 
     override fun putToFavorites(definition: Definition) {
-        compositeDisposable.add(
+        compositeDisposable.addAll(deleteDefinition(definition),
                 dataManager.saveDefinitionToFavorites(definition)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe())
+                        .subscribe {
+                            mvpView?.setImage(R.drawable.favorite_black, -360f)
+                        })
     }
 
     override fun removeFromFavorites(definition: Definition) {
-        compositeDisposable.add(
-                dataManager.saveDefinition(definition)
+        compositeDisposable.addAll(deleteDefinition(definition),
+                dataManager.deleteDefinitionFromFavorites(definition)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe())
+                        .subscribe {
+                            mvpView?.setImage(R.drawable.favorite_white, 360f)
+                        }
+        )
+    }
+
+    private fun deleteDefinition(definition: Definition): Disposable {
+        return dataManager.deleteDefinition(definition)
+                .subscribeOn(Schedulers.io())
+                .subscribe()
     }
 }
