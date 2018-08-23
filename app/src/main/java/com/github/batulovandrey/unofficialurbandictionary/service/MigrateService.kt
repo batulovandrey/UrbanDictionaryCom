@@ -26,6 +26,7 @@ class MigrateService : IntentService("migrateService") {
     override fun onHandleIntent(intent: Intent?) {
         val realmManager = RealmManager(this)
         migrateData(realmManager.realmDefinitions)
+        migrateData(realmManager.realmFavorites)
         migrateData(realmManager.realmQueries)
     }
 
