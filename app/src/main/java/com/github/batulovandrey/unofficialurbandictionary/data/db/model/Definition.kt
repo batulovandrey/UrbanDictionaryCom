@@ -15,6 +15,21 @@ data class Definition(@PrimaryKey(autoGenerate = true) var id: Long?,
                       @ColumnInfo(name = "example") var example: String,
                       @ColumnInfo(name = "favorite") var favorite: Int = 0) {
 
+    override fun hashCode(): Int {
+        var hash = 17
+
+        hash *= 31 * definition.hashCode()
+        hash *= 31 * permalink.hashCode()
+        hash *= 31 * thumbsUp
+        hash *= 31 * thumbsDown
+        hash += 31 * author.hashCode()
+        hash *= 31 * word.hashCode()
+        hash *= 31 * example.hashCode()
+        hash += 31 * favorite
+
+        return hash
+    }
+
     override fun equals(other: Any?): Boolean {
 
         if (this === other) return true
