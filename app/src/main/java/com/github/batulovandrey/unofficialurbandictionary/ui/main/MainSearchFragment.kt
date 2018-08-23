@@ -61,6 +61,14 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         initSearchView()
         presenter.onAttach(this)
+        definitionsRecyclerView.setOnTouchListener { v, event ->
+            hideKeyboard()
+            false
+        }
+        userQueriesRecyclerView.setOnTouchListener { v, event ->
+            hideKeyboard()
+            false
+        }
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
