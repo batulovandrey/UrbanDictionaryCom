@@ -25,4 +25,6 @@ class WordAdapter(private val mWords: List<String>, private val mClickListener: 
     override fun getItemCount(): Int {
         return mWords.size
     }
+
+    fun getWord(position: Int) = mWords[position]
 }
