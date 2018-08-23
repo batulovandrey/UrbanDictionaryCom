@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var interstitial: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.UrbanTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initIU()
