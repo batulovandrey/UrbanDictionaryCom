@@ -29,4 +29,6 @@ interface MainMvpView: MvpView {
     fun showFavoritesFragment()
 
     fun showDetailFragment()
+
+    fun showSnackbar()
 }

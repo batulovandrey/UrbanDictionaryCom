@@ -1,5 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
+import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
@@ -75,7 +76,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                                 }
                     }
                 }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
 
                     mvpView?.hideLoading()
                     mvpView?.hideKeyboard()
@@ -86,14 +87,30 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         mvpView?.showDefinitions()
                     }
 
-                })
+                },
+                        {
+                            mvpView?.showToast(R.string.error)
+                            mvpView?.hideKeyboard()
+                            mvpView?.hideLoading()
+                            mvpView?.showSnackbar()
+                        }))
     }
 
     override fun saveUserQuery(query: String) {
-        compositeDisposable.add(
-                dataManager.saveQuery(SavedUserQuery(null, query))
-                        .subscribeOn(Schedulers.io())
-                        .subscribe())
+        compositeDisposable.add(dataManager.getAllQueries()
+                .subscribeOn(Schedulers.io())
+                .flatMapIterable { it }
+                .filter { it.text.toLowerCase() == query.toLowerCase() }
+                .toList()
+                .toObservable()
+                .subscribe {
+                    if (it.isEmpty()) {
+                        dataManager.saveQuery(SavedUserQuery(null, query))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe()
+                    }
+                }
+        )
     }
 
     override fun showSearch() {

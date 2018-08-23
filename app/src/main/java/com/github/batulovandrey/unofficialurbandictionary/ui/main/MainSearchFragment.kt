@@ -3,6 +3,7 @@ package com.github.batulovandrey.unofficialurbandictionary.ui.main
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -54,6 +55,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         }
 
         searchView.clearFocus()
+        hideKeyboard()
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -136,6 +138,10 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
 
     override fun isNetworkConnected(): Boolean {
         return true
+    }
+
+    override fun showSnackbar() {
+        Snackbar.make(searchView, getString(R.string.no_internet), Snackbar.LENGTH_LONG).show()
     }
 
     private fun initSearchView() {
