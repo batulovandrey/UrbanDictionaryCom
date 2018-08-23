@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -97,14 +98,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val currentFragment = manager.findFragmentById(R.id.frame_layout)
 
         when {
-            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-            currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
-            else -> {
+            drawerLayout.isDrawerOpen(GravityCompat.START) ->
+                drawerLayout.closeDrawer(GravityCompat.START)
+
+            currentFragment is MainSearchFragment -> {
                 if (interstitial.isLoaded) {
                     interstitial.show()
                 }
                 showAlertDialog()
             }
+
+            currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
+
+            else -> supportFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
         }
     }
 
@@ -139,14 +145,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val isNeedReplace = fragment is MainSearchFragment
 
         val manager = supportFragmentManager
+        val currentFragment = manager.findFragmentById(R.id.frame_layout)
         val transaction = manager.beginTransaction()
-
 
         if (isNeedReplace) {
             transaction.replace(R.id.frame_layout, fragment)
         } else {
             transaction.addToBackStack(null)
-            transaction.hide(manager.findFragmentById(R.id.frame_layout))
+            transaction.hide(currentFragment)
             transaction.add(R.id.frame_layout, fragment)
         }
 
