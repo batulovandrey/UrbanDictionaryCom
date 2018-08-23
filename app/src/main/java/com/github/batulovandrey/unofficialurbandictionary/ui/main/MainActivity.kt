@@ -1,5 +1,7 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
+import android.content.Context
+import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
@@ -18,6 +20,7 @@ import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragme
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
@@ -157,8 +160,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         interstitial = InterstitialAd(this).apply {
             adUnitId = BuildConfig.AD_MOB_UNIT_ID
+            adListener = object : AdListener() {
+                override fun onAdOpened() {
+                    muteSound()
+                }
+
+                override fun onAdClosed() {
+                    unmuteSound()
+                }
+            }
             loadAd(request)
         }
+    }
+
+    private fun muteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        manager.setStreamMute(AudioManager.STREAM_MUSIC, true)
+    }
+
+    private fun unmuteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
     }
 
     private fun showAlertDialog() {
