@@ -32,4 +32,9 @@ class QueriesAdapter(private val queries: List<SavedUserQuery>,
     fun getQuery(position: Int): SavedUserQuery {
         return queries[position]
     }
+
+    fun removeQuery(position: Int) {
+        (queries as MutableList).removeAt(position)
+        notifyItemChanged(position)
+    }
 }

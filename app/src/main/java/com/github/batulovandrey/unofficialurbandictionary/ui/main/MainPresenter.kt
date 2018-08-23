@@ -45,6 +45,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         definitionAdapter = DefinitionAdapter(it, this)
                         definitionAdapter?.let { adapter -> mvpView?.setDefinitionAdapter(adapter) }
                         mvpView?.showDefinitions()
+                        mvpView?.hideKeyboard()
 
                     } else {
 
@@ -77,6 +78,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                 .subscribe {
 
                     mvpView?.hideLoading()
+                    mvpView?.hideKeyboard()
 
                     if (isViewAttached()) {
                         definitionAdapter = DefinitionAdapter(it, this)
@@ -156,11 +158,21 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     override fun onQueryClick(position: Int) {
         val userQuery = queriesAdapter?.getQuery(position)
         val text = userQuery?.text
-        text?.let { dataManager.getData(it) }
+        text?.let {
+            getData(text)
+        }
     }
 
     override fun deleteQueryFromRealm(position: Int) {
         val userQuery = queriesAdapter?.getQuery(position)
-        userQuery?.let { dataManager.deleteQuery(it) }
+        userQuery?.let {
+            dataManager.deleteQuery(it)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe {
+                        queriesAdapter?.removeQuery(position)
+                        mvpView?.setQueriesAdapter(queriesAdapter!!)
+                    }
+        }
     }
 }

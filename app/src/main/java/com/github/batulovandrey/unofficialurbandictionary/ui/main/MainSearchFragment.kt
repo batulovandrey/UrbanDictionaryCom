@@ -65,7 +65,6 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         if (!query.isNullOrEmpty()) {
             presenter.getData(query!!)
             presenter.saveUserQuery(query)
-            Utils.hideKeyboard(userQueriesRecyclerView, context)
             return true
         }
         return false
@@ -131,7 +130,9 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         progressBar.visibility = View.GONE
     }
 
-    override fun hideKeyboard() {}
+    override fun hideKeyboard() {
+        Utils.hideKeyboard(searchView, context)
+    }
 
     override fun isNetworkConnected(): Boolean {
         return true
