@@ -193,8 +193,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AlertDialog.Builder(this)
                 .setTitle(R.string.exit)
                 .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.yeap, { _, _ -> finish() })
-                .setNegativeButton(R.string.nope, { dialogInterface, _ -> dialogInterface.dismiss(); loadAd() })
+                .setPositiveButton(R.string.yes, { _, _ -> finish() })
+                .setNegativeButton(R.string.no, { dialogInterface, _ -> dialogInterface.dismiss(); loadAd() })
                 .show()
     }
 }
