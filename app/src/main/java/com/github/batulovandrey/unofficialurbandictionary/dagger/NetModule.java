@@ -1,17 +1,13 @@
 package com.github.batulovandrey.unofficialurbandictionary.dagger;
 
-import android.app.Application;
-
-import com.github.batulovandrey.unofficialurbandictionary.data.PopularWords;
-import com.github.batulovandrey.unofficialurbandictionary.realm.RealmManager;
-import com.github.batulovandrey.unofficialurbandictionary.service.UrbanDictionaryService;
+import com.github.batulovandrey.unofficialurbandictionary.api.UrbanDictionaryService;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -29,23 +25,11 @@ public class NetModule {
 
     @Provides
     @Singleton
-    RealmManager provideRealmManager(Application application) {
-        return new RealmManager(application.getApplicationContext());
-    }
-
-    @Provides
-    @Singleton
-    PopularWords providePopularWords(Application application) {
-        return new PopularWords(application.getApplicationContext());
-    }
-
-    @Provides
-    @Singleton
     Retrofit provideRetrofit() {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 

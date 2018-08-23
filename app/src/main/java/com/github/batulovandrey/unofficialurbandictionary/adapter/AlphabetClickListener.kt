@@ -6,5 +6,5 @@ package com.github.batulovandrey.unofficialurbandictionary.adapter
 
 interface AlphabetClickListener {
 
-    fun onItemClick(position: Int)
+    fun onLetterClick(position: Int)
 }

@@ -6,5 +6,5 @@ package com.github.batulovandrey.unofficialurbandictionary.adapter
 
 interface WordClickListener {
 
-    fun onItemClick(position: Int)
+    fun onWordClick(position: Int)
 }

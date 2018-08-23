@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.batulovandrey.unofficialurbandictionary.view.SearchFragment">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context="com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFragment">
 
     <android.support.v7.widget.SearchView
         android:id="@+id/search_view"
