@@ -49,7 +49,6 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
 
         if (arguments != null && arguments.containsKey(EXTRA_QUERY)) {
             query = arguments.getString(EXTRA_QUERY)
-            presenter.getData(query)
             initializeQueryToServer(query)
             arguments = null
         }
@@ -65,6 +64,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (!query.isNullOrEmpty()) {
             presenter.getData(query!!)
+            presenter.saveUserQuery(query)
             Utils.hideKeyboard(userQueriesRecyclerView, context)
             return true
         }

@@ -5,6 +5,7 @@ import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClic
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesClickListener
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
+import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
 import io.reactivex.Single
@@ -86,6 +87,13 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                 })
     }
 
+    override fun saveUserQuery(query: String) {
+        compositeDisposable.add(
+                dataManager.saveQuery(SavedUserQuery(null, query))
+                        .subscribeOn(Schedulers.io())
+                        .subscribe())
+    }
+
     override fun showSearch() {
         mvpView?.closeNavigationDrawer()
         mvpView?.showSearchFragment()
@@ -107,8 +115,13 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun filterQueries(text: String) {
-        compositeDisposable.add(dataManager.filterQueries(text).subscribeOn(Schedulers.io())
+        compositeDisposable.add(dataManager.getAllQueries()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMapIterable { it }
+                .filter { it.text.toLowerCase().contains(text.toLowerCase()) }
+                .toList()
+                .toObservable()
                 .subscribe {
                     if (isViewAttached()) {
 

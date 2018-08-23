@@ -26,7 +26,7 @@ interface DbHelper {
 
     fun getQueries(): Observable<List<SavedUserQuery>>
 
-    fun filterQueries(text: String): Observable<List<SavedUserQuery>>
+    fun getAllQueries(): Observable<List<SavedUserQuery>>
 
     fun deleteQuery(query: SavedUserQuery): Completable
 

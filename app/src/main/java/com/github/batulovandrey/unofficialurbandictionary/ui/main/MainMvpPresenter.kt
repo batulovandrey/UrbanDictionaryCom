@@ -19,4 +19,6 @@ interface MainMvpPresenter<V: MainMvpView>: MvpPresenter<V> {
     fun filterQueries(text: String)
 
     fun getData(text: String)
+
+    fun saveUserQuery(query: String)
 }

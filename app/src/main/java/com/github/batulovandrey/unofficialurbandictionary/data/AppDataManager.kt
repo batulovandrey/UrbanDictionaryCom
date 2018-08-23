@@ -71,8 +71,8 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
         return dbHelper.saveDefinition(definition)
     }
 
-    override fun filterQueries(text: String): Observable<List<SavedUserQuery>> {
-        return dbHelper.filterQueries(text)
+    override fun getAllQueries(): Observable<List<SavedUserQuery>> {
+        return dbHelper.getAllQueries()
     }
 
     override fun deleteQuery(query: SavedUserQuery): Completable {

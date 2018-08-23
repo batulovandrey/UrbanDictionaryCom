@@ -63,8 +63,8 @@ class AppDbHelper @Inject constructor(@ApplicationContext context: Context) : Db
         return Observable.fromCallable { queryDataDao?.getAll() }
     }
 
-    override fun filterQueries(text: String): Observable<List<SavedUserQuery>> {
-        return Observable.fromCallable { queryDataDao?.getAll()?.filter { it.text.contains(text) } }
+    override fun getAllQueries(): Observable<List<SavedUserQuery>> {
+        return Observable.fromCallable { queryDataDao?.getAll() }
     }
 
     override fun deleteQuery(query: SavedUserQuery): Completable {
