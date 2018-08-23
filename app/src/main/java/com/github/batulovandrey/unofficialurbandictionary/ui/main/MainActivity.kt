@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)) {
+            Utils.hideKeyboard(navigationView, this)
             return true
         }
         return super.onOptionsItemSelected(item)
