@@ -37,6 +37,7 @@ class CachedFragment : Fragment(), CachedMvpView {
         val view = inflater!!.inflate(R.layout.fragment_list, container, false)
         cachedDefinitionsRecyclerView = view.findViewById(R.id.definitions_recycler_view)
         emptyCacheTextView = view.findViewById(R.id.empty_fav_text_view)
+        emptyCacheTextView.setText(R.string.empty_cached_list)
         clearCacheFAB = view.findViewById(R.id.clear_favorites_action_button)
         relativeLayout = view.findViewById(R.id.relative_layout)
         return view
@@ -79,6 +80,8 @@ class CachedFragment : Fragment(), CachedMvpView {
                 .setMessage("All items from cache list will be removed. Are you sure?")
                 .setPositiveButton("yes") { _, _ ->
                     cachedPresenter.clearCache()
-                }.show()
+                }
+                .setNegativeButton("no") { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 }

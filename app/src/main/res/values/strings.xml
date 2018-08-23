@@ -8,6 +8,7 @@
     <string name="clear_favorites">clear favorites</string>
     <string name="list_clear">list of favorites is clear now</string>
     <string name="empty_favorites_list">your list of favorites is empty</string>
+    <string name="empty_cached_list">your cache list is empty</string>
     <string name="search">search</string>
     <string name="open">open</string>
     <string name="close">close</string>

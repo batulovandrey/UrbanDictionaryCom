@@ -60,7 +60,9 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
                 .setMessage("All items from favorite list will be removed. Are you sure?")
                 .setPositiveButton("yes") { _, _ ->
                     favoritesPresenter.clearList()
-                }.show()
+                }
+                .setNegativeButton("no") { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
     override fun showToast(resId: Int) {
