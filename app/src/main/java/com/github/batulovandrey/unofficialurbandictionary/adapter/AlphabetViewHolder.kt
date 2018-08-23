@@ -20,6 +20,6 @@ class AlphabetViewHolder internal constructor(itemView: View, private val mClick
     }
 
     override fun onClick(view: View) {
-        mClickListener.onItemClick(layoutPosition)
+        mClickListener.onLetterClick(layoutPosition)
     }
 }
