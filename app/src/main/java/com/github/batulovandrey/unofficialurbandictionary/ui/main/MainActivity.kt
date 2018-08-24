@@ -1,9 +1,12 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
+import android.content.Context
+import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -18,6 +21,7 @@ import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragme
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
@@ -94,14 +98,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val currentFragment = manager.findFragmentById(R.id.frame_layout)
 
         when {
-            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-            currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
-            else -> {
+            drawerLayout.isDrawerOpen(GravityCompat.START) ->
+                drawerLayout.closeDrawer(GravityCompat.START)
+
+            currentFragment is MainSearchFragment -> {
                 if (interstitial.isLoaded) {
                     interstitial.show()
                 }
                 showAlertDialog()
             }
+
+            currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
+
+            else -> supportFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
         }
     }
 
@@ -136,14 +145,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val isNeedReplace = fragment is MainSearchFragment
 
         val manager = supportFragmentManager
+        val currentFragment = manager.findFragmentById(R.id.frame_layout)
         val transaction = manager.beginTransaction()
-
 
         if (isNeedReplace) {
             transaction.replace(R.id.frame_layout, fragment)
         } else {
             transaction.addToBackStack(null)
-            transaction.hide(manager.findFragmentById(R.id.frame_layout))
+            transaction.hide(currentFragment)
             transaction.add(R.id.frame_layout, fragment)
         }
 
@@ -157,16 +166,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         interstitial = InterstitialAd(this).apply {
             adUnitId = BuildConfig.AD_MOB_UNIT_ID
+            adListener = object : AdListener() {
+                override fun onAdOpened() {
+                    muteSound()
+                }
+
+                override fun onAdClosed() {
+                    unmuteSound()
+                }
+            }
             loadAd(request)
         }
+    }
+
+    private fun muteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        manager.setStreamMute(AudioManager.STREAM_MUSIC, true)
+    }
+
+    private fun unmuteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
     }
 
     private fun showAlertDialog() {
         AlertDialog.Builder(this)
                 .setTitle(R.string.exit)
                 .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.yeap, { _, _ -> finish() })
-                .setNegativeButton(R.string.nope, { dialogInterface, _ -> dialogInterface.dismiss(); loadAd() })
+                .setPositiveButton(R.string.yes, { _, _ -> finish() })
+                .setNegativeButton(R.string.no, { dialogInterface, _ -> dialogInterface.dismiss(); loadAd() })
                 .show()
     }
 }
