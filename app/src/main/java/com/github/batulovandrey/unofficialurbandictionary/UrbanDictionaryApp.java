@@ -2,12 +2,15 @@ package com.github.batulovandrey.unofficialurbandictionary;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.JobIntentService;
 
 import com.github.batulovandrey.unofficialurbandictionary.dagger.AppModule;
 import com.github.batulovandrey.unofficialurbandictionary.dagger.DaggerNetComponent;
 import com.github.batulovandrey.unofficialurbandictionary.dagger.DataModule;
 import com.github.batulovandrey.unofficialurbandictionary.dagger.NetComponent;
 import com.github.batulovandrey.unofficialurbandictionary.dagger.NetModule;
+import com.github.batulovandrey.unofficialurbandictionary.service.MigrateJobIntentService;
 import com.github.batulovandrey.unofficialurbandictionary.service.MigrateService;
 
 /**
@@ -33,6 +36,11 @@ public class UrbanDictionaryApp extends Application {
                 .dataModule(new DataModule())
                 .build();
 
-        startService(new Intent(this, MigrateService.class));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            startService(new Intent(this, MigrateService.class));
+        } else {
+            JobIntentService.enqueueWork(this.getApplicationContext(),
+                    MigrateJobIntentService.class, MigrateJobIntentService.JOB_ID, new Intent());
+        }
     }
 }
