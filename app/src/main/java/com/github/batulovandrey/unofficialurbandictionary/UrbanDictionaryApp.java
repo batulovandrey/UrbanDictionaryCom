@@ -1,8 +1,8 @@
 package com.github.batulovandrey.unofficialurbandictionary;
 
-import android.app.Application;
 import android.content.Intent;
 import android.os.Build;
+import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.JobIntentService;
 
 import com.github.batulovandrey.unofficialurbandictionary.dagger.AppModule;
@@ -17,7 +17,7 @@ import com.github.batulovandrey.unofficialurbandictionary.service.MigrateService
  * @author Andrey Batulov on 30/10/2017
  */
 
-public class UrbanDictionaryApp extends Application {
+public class UrbanDictionaryApp extends MultiDexApplication {
 
     private static final String BASE_URL = "http://api.urbandictionary.com/";
     private static NetComponent sNetComponent;
