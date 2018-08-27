@@ -8,8 +8,8 @@ android {
         applicationId "com.github.batulovandrey.unofficialurbandictionary"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 19
-        versionName "2.4.7"
+        versionCode 21
+        versionName "2.4.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -78,6 +78,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-ads:15.0.1'
+
+    // muiltidex for support android 4
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
