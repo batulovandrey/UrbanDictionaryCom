@@ -59,6 +59,11 @@ class DetailFragment : Fragment(), DetailMvpView {
         adView.loadAd(request)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        detailPresenter.onDetach()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.sharing_menu, menu)
     }

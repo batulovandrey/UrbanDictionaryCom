@@ -71,6 +71,11 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDetach()
+    }
+
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (!query.isNullOrEmpty()) {
             presenter.getData(query!!)
