@@ -110,7 +110,8 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
     override fun showQueries() {
         userQueriesRecyclerView.visibility = View.VISIBLE
         definitionsRecyclerView.visibility = View.GONE
-        hintTextView.visibility = View.GONE    }
+        hintTextView.visibility = View.GONE
+    }
 
     override fun setDefinitionAdapter(definitionAdapter: DefinitionAdapter) {
         definitionsRecyclerView.adapter = definitionAdapter

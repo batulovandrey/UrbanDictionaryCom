@@ -51,7 +51,7 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
 
     override fun onItemClick(position: Int) {
         val selectDefinition = definitionAdapter.getDefinitionByPosition(position)
-        val id = dataManager.getDefinitionId(selectDefinition)
+        val id = selectDefinition.id
 
         compositeDisposable.add(dataManager.getDefinitionById(id)
                 .subscribeOn(Schedulers.io())

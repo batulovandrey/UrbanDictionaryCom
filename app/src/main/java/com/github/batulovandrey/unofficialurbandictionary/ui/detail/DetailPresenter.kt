@@ -30,7 +30,7 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(dataManager: DataMa
             compositeDisposable.add(Single.just(activeDefinition)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe({ definition: Definition? ->
+                    .subscribe { _: Definition? ->
 
                         activeDefinition.favorite = when (activeDefinition.favorite) {
                             0 -> 1
@@ -43,7 +43,7 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(dataManager: DataMa
                             1 -> putToFavorites(activeDefinition)
 
                         }
-                    }))
+                    })
         }
     }
 

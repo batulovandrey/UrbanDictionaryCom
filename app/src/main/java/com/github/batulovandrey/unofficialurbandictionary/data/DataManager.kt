@@ -10,11 +10,9 @@ interface DataManager : DbHelper, NetworkHelper {
 
     fun getActiveDefinition(): Definition?
 
-    fun putDefinitionToMap(id: Long, definition: Definition)
+    fun putDefinitionToSavedList(definition: Definition)
 
     fun clearMap()
-
-    fun getDefinitionId(definition: Definition): Long
 
     fun getSavedListOfDefinition(): List<Definition>
 }

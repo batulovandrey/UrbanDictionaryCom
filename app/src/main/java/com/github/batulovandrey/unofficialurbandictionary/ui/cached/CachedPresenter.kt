@@ -48,7 +48,7 @@ class CachedPresenter<V : CachedMvpView> @Inject constructor(dataManager: DataMa
 
     override fun onItemClick(position: Int) {
         val selectDefinition = definitionAdapter.getDefinitionByPosition(position)
-        val id = dataManager.getDefinitionId(selectDefinition)
+        val id = selectDefinition.id
 
         compositeDisposable.add(dataManager.getDefinitionById(id)
                 .subscribeOn(Schedulers.io())
