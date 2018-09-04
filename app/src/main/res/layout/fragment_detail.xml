@@ -43,9 +43,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_below="@id/author_text_view"
+            android:contentDescription="@string/thumbs_up_down"
             android:padding="8dp"
-            android:src="@drawable/thumbs_up_down"
-            android:contentDescription="@string/thumbs_up_down" />
+            android:src="@drawable/thumbs_up_down" />
 
         <TextView
             android:id="@+id/thumbs_down_text_view"
@@ -86,9 +86,24 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/permalink_text_view"
             android:layout_centerHorizontal="true"
+            android:contentDescription="@string/favorites"
             android:padding="4dp"
-            tools:src="@drawable/favorite_white"
-            android:contentDescription="@string/favorites" />
+            tools:src="@drawable/favorite_white" />
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:focusable="false"
+            android:descendantFocusability="blocksDescendants"
+            android:layout_below="@id/fav_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
+            ads:adUnitId="ca-app-pub-5862949534463205/4738270020"
+            ads:adSize="BANNER">
+
+        </com.google.android.gms.ads.AdView>
 
     </RelativeLayout>
 

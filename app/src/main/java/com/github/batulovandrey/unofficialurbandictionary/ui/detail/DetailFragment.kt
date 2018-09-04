@@ -10,10 +10,14 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.TextView
+import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -28,6 +32,7 @@ class DetailFragment : Fragment(), DetailMvpView {
     private val thumbsDownTextView: TextView by bindView(R.id.thumbs_down_text_view)
     private val permalinkTextView: TextView by bindView(R.id.permalink_text_view)
     private val favImageView: ImageView by bindView(R.id.fav_image_view)
+    private val adView: AdView by bindView(R.id.adView)
 
     @Inject
     lateinit var detailPresenter: DetailPresenter<DetailMvpView>
@@ -35,6 +40,7 @@ class DetailFragment : Fragment(), DetailMvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        MobileAds.initialize(activity, BuildConfig.AD_MOB_ID)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -47,6 +53,10 @@ class DetailFragment : Fragment(), DetailMvpView {
         super.onViewCreated(view, savedInstanceState)
         detailPresenter.onAttach(this)
         favImageView.setOnClickListener { clickToFavoriteIcon() }
+
+        val request = AdRequest.Builder()
+                .build()
+        adView.loadAd(request)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
