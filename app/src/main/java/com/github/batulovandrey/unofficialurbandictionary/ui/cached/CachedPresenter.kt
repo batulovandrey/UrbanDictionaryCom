@@ -47,17 +47,21 @@ class CachedPresenter<V : CachedMvpView> @Inject constructor(dataManager: DataMa
     }
 
     override fun onItemClick(position: Int) {
-        val selectDefinition = definitionAdapter.getDefinitionByPosition(position)
-        val id = selectDefinition.id
+        var selectDefinition = definitionAdapter.getDefinitionByPosition(position)
 
-        compositeDisposable.add(dataManager.getDefinitionById(id)
+        compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
-                .subscribe({ definition ->
-                    definition?.let { dataManager.setActiveDefinition(it) }
-                },
-                        { _ ->
+                .map {
+                    for (definition in it) {
+                        if (definition == selectDefinition) {
+                            selectDefinition = definition
                             dataManager.setActiveDefinition(selectDefinition)
-                        }))
-        mvpView?.showDetailFragment()
+                        }
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    mvpView?.showDetailFragment()
+                })
     }
 }

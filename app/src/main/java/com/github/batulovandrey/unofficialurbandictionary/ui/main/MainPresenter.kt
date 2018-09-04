@@ -77,11 +77,11 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                                     if (it.contains(definition)) {
                                         dataManager.putDefinitionToSavedList(definition)
                                     } else {
-                                        dataManager.saveDefinition(definition)
+                                        compositeDisposable.add(dataManager.saveDefinition(definition)
                                                 .subscribeOn(Schedulers.io())
                                                 .subscribe { _ ->
                                                     dataManager.putDefinitionToSavedList(definition)
-                                                }
+                                                })
                                     }
                                 }
                     }
@@ -96,7 +96,8 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
                     definitionAdapter?.let { adapter ->
                         adapter.notifyDataSetChanged()
-                        mvpView?.setDefinitionAdapter(adapter) }
+                        mvpView?.setDefinitionAdapter(adapter)
+                    }
                     mvpView?.showDefinitions()
 
                 },
@@ -169,19 +170,22 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun onItemClick(position: Int) {
-        val selectDefinition = dataManager.getSavedListOfDefinition()[position]
-        val id = selectDefinition.id
+        var selectDefinition = dataManager.getSavedListOfDefinition()[position]
 
-        compositeDisposable.add(dataManager.getDefinitionById(id)
+        compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
-                .subscribe({ definition ->
-                    definition?.let { dataManager.setActiveDefinition(it) }
-                },
-                        { _ ->
+                .map {
+                    for (definition in it) {
+                        if (definition == selectDefinition) {
+                            selectDefinition = definition
                             dataManager.setActiveDefinition(selectDefinition)
-                        }))
-
-        mvpView?.showDetailFragment()
+                        }
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    mvpView?.showDetailFragment()
+                })
     }
 
     override fun onQueryClick(position: Int) {

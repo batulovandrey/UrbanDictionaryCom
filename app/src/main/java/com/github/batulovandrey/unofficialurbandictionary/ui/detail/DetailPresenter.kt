@@ -26,24 +26,17 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(dataManager: DataMa
 
     override fun handleClick() {
         val activeDefinition = dataManager.getActiveDefinition()
-        activeDefinition?.let {
-            compositeDisposable.add(Single.just(activeDefinition)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe { _: Definition? ->
 
-                        activeDefinition.favorite = when (activeDefinition.favorite) {
-                            0 -> 1
-                            else -> 0
-                        }
+        activeDefinition!!.favorite = when (activeDefinition.favorite) {
+            0 -> 1
+            else -> 0
+        }
 
-                        when (activeDefinition.favorite) {
+        when (activeDefinition.favorite) {
 
-                            0 -> removeFromFavorites(activeDefinition)
-                            1 -> putToFavorites(activeDefinition)
+            0 -> removeFromFavorites(activeDefinition)
+            1 -> putToFavorites(activeDefinition)
 
-                        }
-                    })
         }
     }
 
