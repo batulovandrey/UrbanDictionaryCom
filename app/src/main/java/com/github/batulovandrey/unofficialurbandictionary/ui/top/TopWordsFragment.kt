@@ -34,6 +34,11 @@ class TopWordsFragment : Fragment(), TopWordsMvpView {
         topWordPresenter.onAttach(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        topWordPresenter.onDetach()
+    }
+
     override fun setWordAdapter(wordAdapter: WordAdapter) {
         wordsRecyclerView.adapter = wordAdapter
     }

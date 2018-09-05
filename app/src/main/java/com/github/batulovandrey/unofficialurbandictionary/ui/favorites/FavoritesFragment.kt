@@ -54,6 +54,11 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         favoritesPresenter.loadData()
     }
 
+    override fun onDestroy() {
+        favoritesPresenter.onDetach()
+        super.onDestroy()
+    }
+
     override fun showAlertDialog() {
         AlertDialog.Builder(context)
                 .setTitle("Clear list of favorites")

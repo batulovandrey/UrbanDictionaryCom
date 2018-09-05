@@ -50,17 +50,18 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
     }
 
     override fun onItemClick(position: Int) {
-        val selectDefinition = definitionAdapter.getDefinitionByPosition(position)
-        val id = dataManager.getDefinitionId(selectDefinition)
+        var selectDefinition = definitionAdapter.getDefinitionByPosition(position)
 
-        compositeDisposable.add(dataManager.getDefinitionById(id)
+        compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
-                .subscribe({ definition ->
-                    definition?.let { dataManager.setActiveDefinition(it) }
-                },
-                        { _ ->
-                            dataManager.setActiveDefinition(selectDefinition)
-                        }))
-        mvpView?.showDetailFragment()
+                .map {
+                    val definition = it.findLast { item -> item == selectDefinition }
+                    selectDefinition = definition!!
+                    dataManager.setActiveDefinition(selectDefinition)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    mvpView?.showDetailFragment()
+                })
     }
 }

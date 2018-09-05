@@ -26,28 +26,30 @@
 
     <TextView
         android:id="@+id/hint_text_view"
-        android:text="@string/hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:visibility="visible"
         android:padding="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:text="@string/hint"
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_queries_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/search_view"
+        android:contentDescription="@string/queries"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/definitions_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_view"
+        android:contentDescription="@string/definitions"
         android:visibility="invisible"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:visibility="visible" />

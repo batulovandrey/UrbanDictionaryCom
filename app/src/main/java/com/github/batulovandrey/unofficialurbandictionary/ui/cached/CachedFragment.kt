@@ -54,6 +54,11 @@ class CachedFragment : Fragment(), CachedMvpView {
         cachedPresenter.loadData()
     }
 
+    override fun onDestroy() {
+        cachedPresenter.onDetach()
+        super.onDestroy()
+    }
+
     override fun setDefinitionAdapter(adapter: DefinitionAdapter) {
         cachedDefinitionsRecyclerView.adapter = adapter
     }
