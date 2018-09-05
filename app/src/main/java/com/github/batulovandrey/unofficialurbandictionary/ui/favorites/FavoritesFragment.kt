@@ -55,8 +55,8 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         favoritesPresenter.onDetach()
+        super.onDestroy()
     }
 
     override fun showAlertDialog() {

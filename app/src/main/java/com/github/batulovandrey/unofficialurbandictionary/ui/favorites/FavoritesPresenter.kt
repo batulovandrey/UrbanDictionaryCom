@@ -55,12 +55,9 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
         compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
                 .map {
-                    for (definition in it) {
-                        if (definition == selectDefinition) {
-                            selectDefinition = definition
-                            dataManager.setActiveDefinition(selectDefinition)
-                        }
-                    }
+                    val definition = it.findLast { item -> item == selectDefinition }
+                    selectDefinition = definition!!
+                    dataManager.setActiveDefinition(selectDefinition)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {

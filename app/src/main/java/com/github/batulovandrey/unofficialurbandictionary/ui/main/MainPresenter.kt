@@ -59,6 +59,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun getData(text: String) {
         dataManager.clearMap()
+        compositeDisposable.clear()
         mvpView?.showLoading()
         compositeDisposable.add(dataManager.getData(text)
                 .subscribeOn(Schedulers.io())
@@ -175,12 +176,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
                 .map {
-                    for (definition in it) {
-                        if (definition == selectDefinition) {
-                            selectDefinition = definition
-                            dataManager.setActiveDefinition(selectDefinition)
-                        }
-                    }
+                    val definition = it.findLast { item -> item == selectDefinition }
+                    selectDefinition = definition!!
+                    dataManager.setActiveDefinition(selectDefinition)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {

@@ -12,12 +12,14 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
 
 /**
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showFragment(MainSearchFragment())
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
+
+        MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

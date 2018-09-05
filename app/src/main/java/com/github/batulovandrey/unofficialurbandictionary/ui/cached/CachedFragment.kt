@@ -55,8 +55,8 @@ class CachedFragment : Fragment(), CachedMvpView {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         cachedPresenter.onDetach()
+        super.onDestroy()
     }
 
     override fun setDefinitionAdapter(adapter: DefinitionAdapter) {

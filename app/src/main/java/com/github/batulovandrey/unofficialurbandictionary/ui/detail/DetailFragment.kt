@@ -10,14 +10,12 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.TextView
-import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -40,7 +38,6 @@ class DetailFragment : Fragment(), DetailMvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        MobileAds.initialize(activity, BuildConfig.AD_MOB_ID)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -60,8 +57,8 @@ class DetailFragment : Fragment(), DetailMvpView {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         detailPresenter.onDetach()
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
