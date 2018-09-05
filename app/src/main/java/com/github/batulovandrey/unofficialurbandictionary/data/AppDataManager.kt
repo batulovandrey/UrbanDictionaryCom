@@ -6,17 +6,18 @@ import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definiti
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.data.network.NetworkHelper
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 @Singleton
 class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
                                          private val networkHelper: NetworkHelper) : DataManager {
 
-    private val currentMapOfDefinition = TreeMap<Long, Definition>()
+    private val currentMapOfDefinition = ArrayList<Definition>()
     private lateinit var activeDefinition: Definition
 
     override fun setActiveDefinition(definition: Definition) {
@@ -79,7 +80,7 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
         return dbHelper.deleteQuery(query)
     }
 
-    override fun getData(query: String): Single<BaseResponse> {
+    override fun getData(query: String): Flowable<BaseResponse> {
         return networkHelper.getData(query)
     }
 
@@ -88,23 +89,15 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
     }
 
     override fun getSavedListOfDefinition(): List<Definition> {
-        return currentMapOfDefinition.values.toList()
+        return currentMapOfDefinition
     }
 
     override fun deleteFavoritesDefinitions(): Completable {
         return dbHelper.deleteFavoritesDefinitions()
     }
 
-    override fun putDefinitionToMap(id: Long, definition: Definition) {
-        currentMapOfDefinition[id] = definition
-    }
-
-    override fun getDefinitionId(definition: Definition): Long {
-        for((key, value) in currentMapOfDefinition) {
-            if (value == definition)
-                return key
-        }
-        return -1
+    override fun putDefinitionToSavedList(definition: Definition) {
+        currentMapOfDefinition.add(definition)
     }
 
     override fun clearMap() {

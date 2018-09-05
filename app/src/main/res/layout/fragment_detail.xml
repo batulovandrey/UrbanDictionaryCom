@@ -1,21 +1,21 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context="com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/word_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:padding="12dp"
+            android:padding="16dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
             android:textColor="@color/colorPrimaryDark"
             tools:text="some word" />
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/definition_text_view"
-            android:gravity="right"
+            android:gravity="end"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold"
             tools:text="some author" />
@@ -43,9 +43,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_below="@id/author_text_view"
+            android:contentDescription="@string/thumbs_up_down"
             android:padding="8dp"
-            android:src="@drawable/thumbs_up_down"
-            android:contentDescription="@string/thumbs_up_down" />
+            android:src="@drawable/thumbs_up_down" />
 
         <TextView
             android:id="@+id/thumbs_down_text_view"
@@ -76,6 +76,7 @@
             android:layout_below="@id/thumbs_up_text_view"
             android:autoLink="web"
             android:gravity="center_horizontal"
+            android:padding="8dp"
             android:textColor="@color/colorPrimaryDark"
             android:textIsSelectable="true"
             tools:text="some permalink" />
@@ -86,9 +87,25 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/permalink_text_view"
             android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/favorites"
             android:padding="4dp"
-            tools:src="@drawable/favorite_white"
-            android:contentDescription="@string/favorites" />
+            tools:src="@drawable/favorite_white" />
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/fav_image_view"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentBottom="true"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="false"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-5862949534463205/4738270020">
+
+        </com.google.android.gms.ads.AdView>
 
     </RelativeLayout>
 

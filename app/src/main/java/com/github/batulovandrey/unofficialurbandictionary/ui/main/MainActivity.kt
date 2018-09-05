@@ -1,7 +1,5 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
-import android.content.Context
-import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
@@ -21,9 +19,6 @@ import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragme
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
 
@@ -36,7 +31,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
     private lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var interstitial: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.UrbanTheme)
@@ -48,7 +42,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
 
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
-        loadAd()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -102,9 +95,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 drawerLayout.closeDrawer(GravityCompat.START)
 
             currentFragment is MainSearchFragment -> {
-                if (interstitial.isLoaded) {
-                    interstitial.show()
-                }
                 showAlertDialog()
             }
 
@@ -160,41 +150,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.commit()
     }
 
-    private fun loadAd() {
-        val request = AdRequest.Builder()
-                .build()
-
-        interstitial = InterstitialAd(this).apply {
-            adUnitId = BuildConfig.AD_MOB_UNIT_ID
-            adListener = object : AdListener() {
-                override fun onAdOpened() {
-                    muteSound()
-                }
-
-                override fun onAdClosed() {
-                    unmuteSound()
-                }
-            }
-            loadAd(request)
-        }
-    }
-
-    private fun muteSound() {
-        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        manager.setStreamMute(AudioManager.STREAM_MUSIC, true)
-    }
-
-    private fun unmuteSound() {
-        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
-    }
 
     private fun showAlertDialog() {
         AlertDialog.Builder(this)
                 .setTitle(R.string.exit)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.yes, { _, _ -> finish() })
-                .setNegativeButton(R.string.no, { dialogInterface, _ -> dialogInterface.dismiss(); loadAd() })
+                .setNegativeButton(R.string.no, { dialogInterface, _ -> dialogInterface.dismiss() })
                 .show()
     }
 }

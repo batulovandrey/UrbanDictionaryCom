@@ -6,6 +6,7 @@
     <string name="favorites">favorites</string>
     <string name="popular">popular words</string>
     <string name="clear_favorites">clear favorites</string>
+    <string name="clear_list">clear list</string>
     <string name="list_clear">list of favorites is clear now</string>
     <string name="empty_favorites_list">your list of favorites is empty</string>
     <string name="empty_cached_list">your cache list is empty</string>
@@ -23,4 +24,6 @@
     <string name="share">Share</string>
     <string name="cache">cache</string>
     <string name="no_internet">no internet connection</string>
+    <string name="definitions">definitions</string>
+    <string name="queries">queries</string>
 </resources>

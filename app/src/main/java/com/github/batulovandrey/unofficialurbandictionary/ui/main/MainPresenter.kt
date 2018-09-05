@@ -9,7 +9,8 @@ import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
-import io.reactivex.Single
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -58,34 +59,47 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun getData(text: String) {
         dataManager.clearMap()
+        compositeDisposable.clear()
         mvpView?.showLoading()
         compositeDisposable.add(dataManager.getData(text)
                 .subscribeOn(Schedulers.io())
                 .flatMap {
-                    Single.fromCallable { it.definitionResponses }
+                    Flowable.fromCallable { it.definitionResponses }
                             .subscribeOn(Schedulers.io())
                 }
                 .toObservable()
-                .map { it.convertToDefinitionList() }
-                .doOnNext {
+                .flatMap { Observable.fromArray(it.convertToDefinitionList()) }
+                .map {
                     it.forEach { definition ->
-                        dataManager.saveDefinition(definition)
+
+                        dataManager.getDefinitions()
                                 .subscribeOn(Schedulers.io())
-                                .subscribe { id ->
-                                    dataManager.putDefinitionToMap(id, definition)
+                                .subscribe {
+                                    if (it.contains(definition)) {
+                                        dataManager.putDefinitionToSavedList(definition)
+                                    } else {
+                                        compositeDisposable.add(dataManager.saveDefinition(definition)
+                                                .subscribeOn(Schedulers.io())
+                                                .subscribe { _ ->
+                                                    dataManager.putDefinitionToSavedList(definition)
+                                                })
+                                    }
                                 }
                     }
-                }.observeOn(AndroidSchedulers.mainThread())
+
+                    definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
 
                     mvpView?.hideLoading()
                     mvpView?.hideKeyboard()
 
-                    if (isViewAttached()) {
-                        definitionAdapter = DefinitionAdapter(it, this)
-                        definitionAdapter?.let { adapter -> mvpView?.setDefinitionAdapter(adapter) }
-                        mvpView?.showDefinitions()
+                    definitionAdapter?.let { adapter ->
+                        adapter.notifyDataSetChanged()
+                        mvpView?.setDefinitionAdapter(adapter)
                     }
+                    mvpView?.showDefinitions()
 
                 },
                         {
@@ -157,19 +171,19 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun onItemClick(position: Int) {
-        val selectDefinition = dataManager.getSavedListOfDefinition()[position]
-        val id = dataManager.getDefinitionId(selectDefinition)
+        var selectDefinition = dataManager.getSavedListOfDefinition()[position]
 
-        compositeDisposable.add(dataManager.getDefinitionById(id)
+        compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
-                .subscribe({ definition ->
-                    definition?.let { dataManager.setActiveDefinition(it) }
-                },
-                        { _ ->
-                            dataManager.setActiveDefinition(selectDefinition)
-                        }))
-
-        mvpView?.showDetailFragment()
+                .map {
+                    val definition = it.findLast { item -> item == selectDefinition }
+                    selectDefinition = definition!!
+                    dataManager.setActiveDefinition(selectDefinition)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    mvpView?.showDetailFragment()
+                })
     }
 
     override fun onQueryClick(position: Int) {
