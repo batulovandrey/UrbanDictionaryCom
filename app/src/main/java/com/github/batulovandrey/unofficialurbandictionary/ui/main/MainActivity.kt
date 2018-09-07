@@ -28,10 +28,13 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author Andrey Batulov on 22/12/2017
  */
+
+val ADS_COUNT = AtomicInteger(1)
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -120,6 +123,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun showDetailFragment() {
         showFragment(DetailFragment())
+
+        if (ADS_COUNT.get() % 5 == 0) {
+
+            if (interstitial.isLoaded) {
+                interstitial.show()
+            } else {
+                loadAd()
+                ADS_COUNT.decrementAndGet()
+            }
+        }
     }
 
     private fun initIU() {
