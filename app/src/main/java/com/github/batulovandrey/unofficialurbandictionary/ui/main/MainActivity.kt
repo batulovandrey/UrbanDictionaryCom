@@ -2,6 +2,8 @@ package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
 import android.content.Context
 import android.media.AudioManager
+import android.media.AudioManager.*
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
@@ -179,12 +181,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun muteSound() {
         val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        manager.setStreamMute(AudioManager.STREAM_MUSIC, true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.adjustStreamVolume(STREAM_MUSIC, ADJUST_MUTE, 0)
+        } else {
+            manager.setStreamMute(STREAM_MUSIC, true)
+        }
     }
 
     private fun unmuteSound() {
         val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.adjustStreamVolume(STREAM_MUSIC, ADJUST_UNMUTE, 0)
+        } else {
+            manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
+        }
     }
 
     private fun showAlertDialog() {
