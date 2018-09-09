@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="themes_array">
+        <item>standart theme</item>
+        <item>dark theme</item>
+    </string-array>
+</resources>

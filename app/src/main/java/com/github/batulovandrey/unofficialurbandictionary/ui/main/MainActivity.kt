@@ -16,8 +16,10 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
@@ -52,7 +54,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setContentView(R.layout.activity_main)
         initIU()
-        showFragment(MainSearchFragment())
+
+        val fragment = supportFragmentManager.findFragmentById(R.id.container)
+        if (fragment == null) {
+            showFragment(MainSearchFragment())
+        }
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
     }
@@ -93,6 +99,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is CachedFragment)
                     handler.post { showFragment(CachedFragment()) }
+                return true
+            }
+            R.id.settings_item -> {
+//                val fragment = SettingsDialogFragment()
+//                fragment.show(supportFragmentManager, getString(R.string.settings))
+                Toast.makeText(this, "coming soon", Toast.LENGTH_SHORT).show()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
