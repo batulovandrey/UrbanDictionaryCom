@@ -17,5 +17,9 @@
             android:id="@+id/cached_item"
             android:icon="@drawable/favorite_white"
             android:title="@string/cache" />
+        <item
+            android:id="@+id/settings_item"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
     </group>
 </menu>

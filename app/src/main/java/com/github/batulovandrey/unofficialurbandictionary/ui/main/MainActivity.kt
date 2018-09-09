@@ -1,5 +1,9 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
+import android.content.Context
+import android.media.AudioManager
+import android.media.AudioManager.*
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
@@ -12,36 +16,51 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author Andrey Batulov on 22/12/2017
  */
+
+val ADS_COUNT = AtomicInteger(1)
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var interstitial: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.UrbanTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        initIU()
-        showFragment(MainSearchFragment())
-
-        supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
 
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
+        loadAd()
+
+        setContentView(R.layout.activity_main)
+        initIU()
+
+        val fragment = supportFragmentManager.findFragmentById(R.id.container)
+        if (fragment == null) {
+            showFragment(MainSearchFragment())
+        }
+
+        supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -82,6 +101,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     handler.post { showFragment(CachedFragment()) }
                 return true
             }
+            R.id.settings_item -> {
+//                val fragment = SettingsDialogFragment()
+//                fragment.show(supportFragmentManager, getString(R.string.settings))
+                Toast.makeText(this, "coming soon", Toast.LENGTH_SHORT).show()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -110,6 +135,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun showDetailFragment() {
         showFragment(DetailFragment())
+
+        if (ADS_COUNT.get() % 5 == 0) {
+
+            if (interstitial.isLoaded) {
+                interstitial.show()
+            } else {
+                loadAd()
+                ADS_COUNT.decrementAndGet()
+            }
+        }
     }
 
     private fun initIU() {
@@ -150,6 +185,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.commit()
     }
 
+    private fun loadAd() {
+        val request = AdRequest.Builder()
+                .build()
+
+        interstitial = InterstitialAd(this).apply {
+            adUnitId = BuildConfig.AD_MOB_UNIT_ID
+            adListener = object : AdListener() {
+                override fun onAdOpened() {
+                    muteSound()
+                }
+
+                override fun onAdClosed() {
+                    unmuteSound()
+                }
+            }
+            loadAd(request)
+        }
+    }
+
+    private fun muteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.adjustStreamVolume(STREAM_MUSIC, ADJUST_MUTE, 0)
+        } else {
+            manager.setStreamMute(STREAM_MUSIC, true)
+        }
+    }
+
+    private fun unmuteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.adjustStreamVolume(STREAM_MUSIC, ADJUST_UNMUTE, 0)
+        } else {
+            manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
+        }
+    }
 
     private fun showAlertDialog() {
         AlertDialog.Builder(this)

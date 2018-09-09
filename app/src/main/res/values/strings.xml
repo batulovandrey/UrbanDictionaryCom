@@ -26,4 +26,6 @@
     <string name="no_internet">no internet connection</string>
     <string name="definitions">definitions</string>
     <string name="queries">queries</string>
+    <string name="settings">settings</string>
+    <string name="theme">theme</string>
 </resources>

@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha17'
+        classpath 'com.android.tools.build:gradle:3.2.0-rc02'
         classpath 'io.realm:realm-gradle-plugin:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.0.1'

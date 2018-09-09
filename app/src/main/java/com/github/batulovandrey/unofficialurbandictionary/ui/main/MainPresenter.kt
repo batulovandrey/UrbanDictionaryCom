@@ -58,6 +58,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun getData(text: String) {
+        ADS_COUNT.incrementAndGet()
         dataManager.clearMap()
         compositeDisposable.clear()
         mvpView?.showLoading()

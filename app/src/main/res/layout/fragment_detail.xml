@@ -92,21 +92,6 @@
             android:padding="4dp"
             tools:src="@drawable/favorite_white" />
 
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/fav_image_view"
-            android:layout_marginBottom="16dp"
-            android:layout_alignParentBottom="true"
-            android:descendantFocusability="blocksDescendants"
-            android:focusable="false"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-5862949534463205/4738270020">
-
-        </com.google.android.gms.ads.AdView>
-
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>
