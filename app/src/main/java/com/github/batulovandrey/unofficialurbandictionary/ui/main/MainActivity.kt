@@ -134,16 +134,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun showDetailFragment() {
         showFragment(DetailFragment())
-
-        if (ADS_COUNT.get() % 5 == 0) {
-
-            if (interstitial.isLoaded) {
-                interstitial.show()
-            } else {
-                loadAd()
-                ADS_COUNT.decrementAndGet()
-            }
-        }
     }
 
     fun openDrawer() {
@@ -186,6 +176,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         transaction.commit()
+
+        if (ADS_COUNT.get() % 5 != 0) {
+            return
+        }
+
+        if (interstitial.isLoaded) {
+            interstitial.show()
+        } else {
+            loadAd()
+            ADS_COUNT.decrementAndGet()
+        }
     }
 
     private fun loadAd() {
