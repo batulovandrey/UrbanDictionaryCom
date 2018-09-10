@@ -8,6 +8,7 @@
     android:padding="20dp">
 
     <ImageView
+        android:id="@+id/rate_iv"
         android:background="@drawable/black_white_gradient"
         android:layout_width="75dp"
         android:layout_height="75dp"
