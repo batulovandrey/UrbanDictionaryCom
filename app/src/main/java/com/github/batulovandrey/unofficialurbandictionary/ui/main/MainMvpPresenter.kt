@@ -21,4 +21,6 @@ interface MainMvpPresenter<V: MainMvpView>: MvpPresenter<V> {
     fun getData(text: String)
 
     fun saveUserQuery(query: String)
+
+    fun getRandom()
 }

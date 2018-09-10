@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,11 +8,13 @@
     android:focusableInTouchMode="true"
     tools:context="com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFragment">
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search_view"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background" />
+        android:layout_height="wrap_content">
+
+    <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
+
+    </android.support.design.widget.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -28,6 +31,7 @@
         android:id="@+id/hint_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="245dp"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="16dp"
@@ -35,23 +39,25 @@
         android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/user_queries_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/toolbar"
         android:contentDescription="@string/queries"
         android:visibility="gone"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/definitions_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/toolbar"
         android:contentDescription="@string/definitions"
         android:visibility="invisible"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:visibility="visible" />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

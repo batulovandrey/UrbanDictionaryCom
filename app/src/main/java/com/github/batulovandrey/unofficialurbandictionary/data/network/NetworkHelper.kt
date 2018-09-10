@@ -1,9 +1,11 @@
 package com.github.batulovandrey.unofficialurbandictionary.data.network
 
 import com.github.batulovandrey.unofficialurbandictionary.data.bean.BaseResponse
-import io.reactivex.Flowable
+import io.reactivex.Single
 
 interface NetworkHelper {
 
-    fun getData(query: String): Flowable<BaseResponse>
+    fun getData(query: String): Single<BaseResponse>
+
+    fun getRandom(): Single<BaseResponse>
 }

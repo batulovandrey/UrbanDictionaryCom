@@ -7,9 +7,8 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +29,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
     private lateinit var userQueriesRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var hintTextView: TextView
+    private lateinit var toolbarIcon: ImageView
 
     private lateinit var query: String
 
@@ -41,6 +41,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         userQueriesRecyclerView = view.findViewById(R.id.user_queries_recycler_view)
         progressBar = view.findViewById(R.id.progress_bar)
         hintTextView = view.findViewById(R.id.hint_text_view)
+        toolbarIcon = view.findViewById(R.id.toolbar_icon)
         UrbanDictionaryApp.getNetComponent().inject(this)
         return view
     }
@@ -52,6 +53,8 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
             query = arguments.getString(EXTRA_QUERY)
             initializeQueryToServer(query)
             arguments = null
+        } else {
+            presenter.getRandom()
         }
 
         searchView.clearFocus()
@@ -69,6 +72,14 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
             hideKeyboard()
             false
         }
+
+        toolbarIcon.setOnClickListener {
+            (activity as MainActivity).openDrawer()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.main_menu, menu)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
