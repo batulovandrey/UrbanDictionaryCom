@@ -13,4 +13,7 @@ interface UrbanDictionaryService {
 
     @GET("/v0/define")
     fun getDefineRx(@Query("term") term: String): Single<BaseResponse>
+
+    @GET("v0/random")
+    fun getRandomDefine(): Single<BaseResponse>
 }

@@ -18,6 +18,10 @@
             android:icon="@drawable/favorite_white"
             android:title="@string/cache" />
         <item
+            android:id="@+id/random_item"
+            android:icon="@drawable/ic_random"
+            android:title="@string/random" />
+        <item
             android:id="@+id/settings_item"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />

@@ -53,6 +53,8 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
             query = arguments.getString(EXTRA_QUERY)
             initializeQueryToServer(query)
             arguments = null
+        } else {
+            presenter.getRandom()
         }
 
         searchView.clearFocus()

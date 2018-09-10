@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.search_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is MainSearchFragment)
-                    handler.post { showFragment(MainSearchFragment()) }
+                    supportFragmentManager.popBackStack()
                 true
             }
             R.id.favorites_item -> {
@@ -98,6 +98,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is CachedFragment)
                     handler.post { showFragment(CachedFragment()) }
+                return true
+            }
+            R.id.random_item -> {
+                handler.post { showFragment(MainSearchFragment()) }
                 return true
             }
             R.id.settings_item -> {
@@ -177,7 +181,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         transaction.commit()
 
-        if (ADS_COUNT.get() % 5 != 0) {
+        if (ADS_COUNT.get() % 4 != 0) {
             return
         }
 

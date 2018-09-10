@@ -1,11 +1,13 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
+import android.util.Log
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesClickListener
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
+import com.github.batulovandrey.unofficialurbandictionary.data.bean.BaseResponse
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
@@ -58,21 +60,28 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun getData(text: String) {
+        loadData(dataManager.getData(text))
+    }
+
+    override fun getRandom() {
+        loadData(dataManager.getRandom())
+    }
+
+    fun loadData(single: Single<BaseResponse>) {
         ADS_COUNT.incrementAndGet()
         dataManager.clearMap()
         compositeDisposable.clear()
         mvpView?.showLoading()
-        compositeDisposable.add(dataManager.getData(text)
-                .subscribeOn(Schedulers.io())
+
+        compositeDisposable.add(single
                 .flatMap {
                     Single.fromCallable { it.definitionResponses }
-                            .subscribeOn(Schedulers.io())
                 }
                 .toObservable()
                 .flatMap { Observable.fromArray(it.convertToDefinitionList()) }
                 .map { list ->
                     list.forEach { definition ->
-
+                        Log.d("mainthread", Thread.currentThread().name)
                         dataManager.getDefinitions()
                                 .subscribe {
                                     if (it.contains(definition)) {
@@ -84,9 +93,11 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                                                 })
                                     }
                                 }
+                        Log.d("mainthread2", Thread.currentThread().name)
                     }
 
                     definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
+                    Log.d("mainthread3", Thread.currentThread().name)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -99,7 +110,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         mvpView?.setDefinitionAdapter(adapter)
                     }
                     mvpView?.showDefinitions()
-
+                    Log.d("mainthread4", Thread.currentThread().name)
                 },
                         {
                             mvpView?.showToast(R.string.error)

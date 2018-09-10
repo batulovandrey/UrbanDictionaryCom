@@ -102,4 +102,8 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
     override fun clearMap() {
         currentMapOfDefinition.clear()
     }
+
+    override fun getRandom(): Single<BaseResponse> {
+        return networkHelper.getRandom()
+    }
 }

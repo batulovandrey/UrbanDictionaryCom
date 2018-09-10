@@ -6,4 +6,6 @@ import io.reactivex.Single
 interface NetworkHelper {
 
     fun getData(query: String): Single<BaseResponse>
+
+    fun getRandom(): Single<BaseResponse>
 }
