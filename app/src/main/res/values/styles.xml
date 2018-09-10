@@ -1,14 +1,18 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:editTextColor">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorWhite</item>
+        <item name="searchViewStyle">@style/SearchViewTheme</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="UrbanTheme" parent="AppTheme" >
+        <item name="colorPrimaryDark">@color/colorWhite</item>
         <item name="colorPrimary">@color/background</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowDisablePreview">true</item>
@@ -16,6 +20,13 @@
 
     <style name="AppTheme.Launcher" parent="UrbanTheme">
         <item name="android:windowBackground">@xml/launch_screen</item>
+    </style>
+
+    <style name="SearchViewTheme" parent="Widget.AppCompat.SearchView">
+        <item name="closeIcon">@drawable/abc_ic_clear_material_white</item>
+        <item name="searchIcon">@drawable/abc_search_api_material_white</item>
+        <item name="searchHintIcon">@drawable/abc_search_api_material_white</item>
+        <item name="goIcon">@drawable/abc_search_api_material_white</item>
     </style>
 
 </resources>
