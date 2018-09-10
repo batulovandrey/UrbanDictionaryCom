@@ -1,8 +1,10 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,10 +18,10 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
-import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
@@ -30,6 +32,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotterknife.bindView
+import org.codechimp.apprater.AppRater
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var interstitial: InterstitialAd
+    private lateinit var rateIV: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.UrbanTheme)
@@ -59,6 +63,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (fragment == null) {
             showFragment(MainSearchFragment())
         }
+
+        AppRater.app_launched(this)
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
     }
@@ -80,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.search_item -> {
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is MainSearchFragment)
-                    handler.post { showFragment(MainSearchFragment()) }
+                    supportFragmentManager.popBackStack()
                 true
             }
             R.id.favorites_item -> {
@@ -99,6 +105,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
                 if (currentFragment !is CachedFragment)
                     handler.post { showFragment(CachedFragment()) }
+                return true
+            }
+            R.id.random_item -> {
+                handler.post { showFragment(MainSearchFragment()) }
                 return true
             }
             R.id.settings_item -> {
@@ -135,16 +145,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun showDetailFragment() {
         showFragment(DetailFragment())
+    }
 
-        if (ADS_COUNT.get() % 5 == 0) {
-
-            if (interstitial.isLoaded) {
-                interstitial.show()
-            } else {
-                loadAd()
-                ADS_COUNT.decrementAndGet()
-            }
-        }
+    fun openDrawer() {
+        drawerLayout.openDrawer(GravityCompat.START)
     }
 
     private fun initIU() {
@@ -153,6 +157,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.addDrawerListener(toggle)
         navigationView.setNavigationItemSelectedListener(this)
         toggle.syncState()
+        rateIV = navigationView.getHeaderView(0).findViewById(R.id.rate_iv)
+        rateIV.setOnClickListener {
+            AppRater.showRateDialog(this)
+        }
     }
 
     private fun initToolbar() {
@@ -183,6 +191,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         transaction.commit()
+
+        if (ADS_COUNT.get() % 4 != 0) {
+            return
+        }
+
+        if (interstitial.isLoaded) {
+            interstitial.show()
+        } else {
+            loadAd()
+            ADS_COUNT.decrementAndGet()
+        }
     }
 
     private fun loadAd() {

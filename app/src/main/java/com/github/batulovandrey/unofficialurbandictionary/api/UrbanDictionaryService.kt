@@ -1,7 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.api
 
 import com.github.batulovandrey.unofficialurbandictionary.data.bean.BaseResponse
-import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,5 +12,8 @@ import retrofit2.http.Query
 interface UrbanDictionaryService {
 
     @GET("/v0/define")
-    fun getDefineRx(@Query("term") term: String): Flowable<BaseResponse>
+    fun getDefineRx(@Query("term") term: String): Single<BaseResponse>
+
+    @GET("v0/random")
+    fun getRandomDefine(): Single<BaseResponse>
 }

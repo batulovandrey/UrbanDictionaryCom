@@ -6,7 +6,6 @@ import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definiti
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.data.network.NetworkHelper
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -80,7 +79,7 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
         return dbHelper.deleteQuery(query)
     }
 
-    override fun getData(query: String): Flowable<BaseResponse> {
+    override fun getData(query: String): Single<BaseResponse> {
         return networkHelper.getData(query)
     }
 
@@ -102,5 +101,9 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
 
     override fun clearMap() {
         currentMapOfDefinition.clear()
+    }
+
+    override fun getRandom(): Single<BaseResponse> {
+        return networkHelper.getRandom()
     }
 }
