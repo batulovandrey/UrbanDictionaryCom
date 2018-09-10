@@ -9,8 +9,8 @@ import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
-import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -65,22 +65,20 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         compositeDisposable.add(dataManager.getData(text)
                 .subscribeOn(Schedulers.io())
                 .flatMap {
-                    Flowable.fromCallable { it.definitionResponses }
+                    Single.fromCallable { it.definitionResponses }
                             .subscribeOn(Schedulers.io())
                 }
                 .toObservable()
                 .flatMap { Observable.fromArray(it.convertToDefinitionList()) }
-                .map {
-                    it.forEach { definition ->
+                .map { list ->
+                    list.forEach { definition ->
 
                         dataManager.getDefinitions()
-                                .subscribeOn(Schedulers.io())
                                 .subscribe {
                                     if (it.contains(definition)) {
                                         dataManager.putDefinitionToSavedList(definition)
                                     } else {
                                         compositeDisposable.add(dataManager.saveDefinition(definition)
-                                                .subscribeOn(Schedulers.io())
                                                 .subscribe { _ ->
                                                     dataManager.putDefinitionToSavedList(definition)
                                                 })
