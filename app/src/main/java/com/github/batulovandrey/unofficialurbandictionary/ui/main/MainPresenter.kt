@@ -81,7 +81,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                 .flatMap { Observable.fromArray(it.convertToDefinitionList()) }
                 .map { list ->
                     list.forEach { definition ->
-                        Log.d("mainthread", Thread.currentThread().name)
                         dataManager.getDefinitions()
                                 .subscribe {
                                     if (it.contains(definition)) {
@@ -93,11 +92,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                                                 })
                                     }
                                 }
-                        Log.d("mainthread2", Thread.currentThread().name)
                     }
 
                     definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
-                    Log.d("mainthread3", Thread.currentThread().name)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -110,7 +107,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         mvpView?.setDefinitionAdapter(adapter)
                     }
                     mvpView?.showDefinitions()
-                    Log.d("mainthread4", Thread.currentThread().name)
                 },
                         {
                             mvpView?.showToast(R.string.error)
@@ -118,6 +114,17 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                             mvpView?.hideLoading()
                             mvpView?.showSnackbar()
                         }))
+    }
+
+    override fun showData() {
+        if (definitionAdapter != null) {
+            mvpView?.hideLoading()
+            mvpView?.hideKeyboard()
+
+            mvpView?.showDefinitions()
+        } else {
+            getRandom()
+        }
     }
 
     override fun saveUserQuery(query: String) {

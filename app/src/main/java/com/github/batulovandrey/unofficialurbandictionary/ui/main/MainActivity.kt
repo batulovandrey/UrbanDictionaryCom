@@ -1,16 +1,13 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.*
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -84,9 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return when (item.itemId) {
             R.id.search_item -> {
-                val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
-                if (currentFragment !is MainSearchFragment)
-                    supportFragmentManager.popBackStack()
+                    clearBackStack()
                 true
             }
             R.id.favorites_item -> {
@@ -108,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.random_item -> {
-                handler.post { showFragment(MainSearchFragment()) }
+                handler.post { showFragment(MainSearchFragment.newInstance("")) }
                 return true
             }
             R.id.settings_item -> {
@@ -135,7 +130,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
 
-            else -> supportFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
+            else -> {
+                clearBackStack()
+            }
+        }
+    }
+
+    private fun clearBackStack() {
+        val count = supportFragmentManager.backStackEntryCount
+
+        for (i in 0 until count) {
+            supportFragmentManager.popBackStack()
         }
     }
 
@@ -178,15 +183,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val isNeedReplace = fragment is MainSearchFragment
 
         val manager = supportFragmentManager
-        val currentFragment = manager.findFragmentById(R.id.frame_layout)
         val transaction = manager.beginTransaction()
 
         if (isNeedReplace) {
             transaction.replace(R.id.frame_layout, fragment)
         } else {
             transaction.addToBackStack(null)
-            transaction.hide(currentFragment)
-            transaction.add(R.id.frame_layout, fragment)
+            transaction.replace(R.id.frame_layout, fragment)
         }
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
