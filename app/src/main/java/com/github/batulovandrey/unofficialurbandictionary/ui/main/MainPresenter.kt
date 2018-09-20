@@ -1,6 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
-import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
@@ -43,7 +43,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     if (isViewAttached()) {
 
                         definitionAdapter = DefinitionAdapter(it, this)
@@ -53,10 +53,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
                     } else {
 
+                        Crashlytics.log("view is not attached")
                         return@subscribe
-
                     }
-                }?.let { compositeDisposable.add(it) }
+                },
+                        {
+                            Crashlytics.log(it.message)
+                            mvpView?.hideKeyboard()
+                            mvpView?.showQueries()
+                        })?.let { compositeDisposable.add(it) }
     }
 
     override fun getData(text: String) {
@@ -67,7 +72,130 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         loadData(dataManager.getRandom())
     }
 
-    fun loadData(single: Single<BaseResponse>) {
+    override fun showData() {
+        if (definitionAdapter != null) {
+            mvpView?.hideLoading()
+            mvpView?.hideKeyboard()
+
+            mvpView?.showDefinitions()
+        } else {
+            getRandom()
+        }
+    }
+
+    override fun saveUserQuery(query: String) {
+        compositeDisposable.add(dataManager.getAllQueries()
+                .subscribeOn(Schedulers.io())
+                .flatMapIterable { it }
+                .filter { it.text.toLowerCase() == query.toLowerCase() }
+                .toList()
+                .toObservable()
+                .subscribe({ list ->
+                    if (list.isEmpty()) {
+                        dataManager.saveQuery(SavedUserQuery(null, query))
+                                .subscribeOn(Schedulers.io())
+                                .subscribe()
+                    }
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        })
+        )
+    }
+
+    override fun showSearch() {
+        mvpView?.closeNavigationDrawer()
+        mvpView?.showSearchFragment()
+    }
+
+    override fun showPopularWords() {
+        mvpView?.closeNavigationDrawer()
+        mvpView?.showPopularWordsFragment()
+    }
+
+    override fun showFavorites() {
+        mvpView?.closeNavigationDrawer()
+        mvpView?.showFavoritesFragment()
+    }
+
+    override fun showDetail() {
+        mvpView?.closeNavigationDrawer()
+        mvpView?.showDetailFragment()
+    }
+
+    override fun filterQueries(text: String) {
+        compositeDisposable.add(dataManager.getAllQueries()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapIterable { it }
+                .filter { it.text.toLowerCase().contains(text.toLowerCase()) }
+                .toList()
+                .toObservable()
+                .subscribe({
+                    if (isViewAttached()) {
+
+                        queriesAdapter = QueriesAdapter(it, this)
+                        queriesAdapter?.let { adapter -> mvpView?.setQueriesAdapter(adapter) }
+                        mvpView?.showQueries()
+
+                    } else {
+
+                        return@subscribe
+
+                    }
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        }))
+    }
+
+    override fun onItemClick(position: Int) {
+        var selectDefinition = dataManager.getSavedListOfDefinition()[position]
+
+        compositeDisposable.add(dataManager.getDefinitions()
+                .subscribeOn(Schedulers.io())
+                .map { list ->
+                    val definition = list.findLast { item -> item == selectDefinition }
+                    definition?.let {
+                        selectDefinition = definition
+                        dataManager.setActiveDefinition(selectDefinition)
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mvpView?.showDetailFragment()
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        }))
+    }
+
+    override fun onQueryClick(position: Int) {
+        val userQuery = queriesAdapter?.getQuery(position)
+        val text = userQuery?.text
+        text?.let {
+            getData(text)
+        }
+    }
+
+    override fun deleteQueryFromRealm(position: Int) {
+        val userQuery = queriesAdapter?.getQuery(position)
+        userQuery?.let { query ->
+            compositeDisposable.add(
+                    dataManager.deleteQuery(query)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                queriesAdapter?.removeQuery(position)
+                                mvpView?.setQueriesAdapter(queriesAdapter!!)
+                            },
+                                    {
+                                        Crashlytics.log(it.message)
+                                    }))
+        }
+    }
+
+    private fun loadData(single: Single<BaseResponse>) {
         ADS_COUNT.incrementAndGet()
         dataManager.clearMap()
         compositeDisposable.clear()
@@ -109,118 +237,11 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                     mvpView?.showDefinitions()
                 },
                         {
+                            Crashlytics.log("error load data")
                             mvpView?.showToast(R.string.error)
                             mvpView?.hideKeyboard()
                             mvpView?.hideLoading()
                             mvpView?.showSnackbar()
                         }))
-    }
-
-    override fun showData() {
-        if (definitionAdapter != null) {
-            mvpView?.hideLoading()
-            mvpView?.hideKeyboard()
-
-            mvpView?.showDefinitions()
-        } else {
-            getRandom()
-        }
-    }
-
-    override fun saveUserQuery(query: String) {
-        compositeDisposable.add(dataManager.getAllQueries()
-                .subscribeOn(Schedulers.io())
-                .flatMapIterable { it }
-                .filter { it.text.toLowerCase() == query.toLowerCase() }
-                .toList()
-                .toObservable()
-                .subscribe {
-                    if (it.isEmpty()) {
-                        dataManager.saveQuery(SavedUserQuery(null, query))
-                                .subscribeOn(Schedulers.io())
-                                .subscribe()
-                    }
-                }
-        )
-    }
-
-    override fun showSearch() {
-        mvpView?.closeNavigationDrawer()
-        mvpView?.showSearchFragment()
-    }
-
-    override fun showPopularWords() {
-        mvpView?.closeNavigationDrawer()
-        mvpView?.showPopularWordsFragment()
-    }
-
-    override fun showFavorites() {
-        mvpView?.closeNavigationDrawer()
-        mvpView?.showFavoritesFragment()
-    }
-
-    override fun showDetail() {
-        mvpView?.closeNavigationDrawer()
-        mvpView?.showDetailFragment()
-    }
-
-    override fun filterQueries(text: String) {
-        compositeDisposable.add(dataManager.getAllQueries()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMapIterable { it }
-                .filter { it.text.toLowerCase().contains(text.toLowerCase()) }
-                .toList()
-                .toObservable()
-                .subscribe {
-                    if (isViewAttached()) {
-
-                        queriesAdapter = QueriesAdapter(it, this)
-                        queriesAdapter?.let { adapter -> mvpView?.setQueriesAdapter(adapter) }
-                        mvpView?.showQueries()
-
-                    } else {
-
-                        return@subscribe
-
-                    }
-                })
-    }
-
-    override fun onItemClick(position: Int) {
-        var selectDefinition = dataManager.getSavedListOfDefinition()[position]
-
-        compositeDisposable.add(dataManager.getDefinitions()
-                .subscribeOn(Schedulers.io())
-                .map {
-                    val definition = it.findLast { item -> item == selectDefinition }
-                    selectDefinition = definition!!
-                    dataManager.setActiveDefinition(selectDefinition)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    mvpView?.showDetailFragment()
-                })
-    }
-
-    override fun onQueryClick(position: Int) {
-        val userQuery = queriesAdapter?.getQuery(position)
-        val text = userQuery?.text
-        text?.let {
-            getData(text)
-        }
-    }
-
-    override fun deleteQueryFromRealm(position: Int) {
-        val userQuery = queriesAdapter?.getQuery(position)
-        userQuery?.let {
-            dataManager.deleteQuery(it)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe {
-                        queriesAdapter?.removeQuery(position)
-                        mvpView?.setQueriesAdapter(queriesAdapter!!)
-                    }
-        }
     }
 }

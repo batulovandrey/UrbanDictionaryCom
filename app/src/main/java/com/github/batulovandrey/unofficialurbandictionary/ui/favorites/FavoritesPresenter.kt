@@ -1,5 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.favorites
 
+import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
@@ -22,17 +23,22 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                 dataManager.getFavoritesDefinitions()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe {
+                        .subscribe({
                             if (isViewAttached()) {
                                 if (it.isNotEmpty()) {
                                     definitionAdapter = DefinitionAdapter(it, this)
                                     mvpView?.setDefinitionAdapter(definitionAdapter)
                                     mvpView?.showData()
                                 } else {
+                                    Crashlytics.log("view is not attached")
                                     mvpView?.showPlaceHolder()
                                 }
                             }
-                        })
+                        },
+                                {
+                                    Crashlytics.log("error load data")
+                                    mvpView?.showPlaceHolder()
+                                }))
     }
 
     override fun clearList() {
@@ -41,12 +47,22 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                         .subscribeOn(Schedulers.io())
                         .flatMapIterable { it }
                         .doOnNext { it.favorite = 0 }
-                        .map { dataManager.saveDefinition(it).subscribe()}
-                        .subscribe {
+                        .map { dataManager.saveDefinition(it).subscribe() }
+                        .subscribe({
                             dataManager.deleteFavoritesDefinitions()
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe { mvpView?.showPlaceHolder() }
-                        })
+                                    .subscribe({
+                                        mvpView?.showPlaceHolder()
+                                    },
+                                            { throwable ->
+                                                Crashlytics.log(throwable.message)
+                                                mvpView?.showPlaceHolder()
+                                            })
+                        },
+                                {
+                                    Crashlytics.log(it.message)
+                                    mvpView?.showPlaceHolder()
+                                }))
     }
 
     override fun onItemClick(position: Int) {
@@ -60,8 +76,11 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                     dataManager.setActiveDefinition(selectDefinition)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     mvpView?.showDetailFragment()
-                })
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        }))
     }
 }
