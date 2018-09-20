@@ -1,5 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.detail
 
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
 import android.graphics.ColorMatrixColorFilter
@@ -36,6 +37,11 @@ class DetailFragment : Fragment(), DetailMvpView {
     @Inject
     lateinit var detailPresenter: DetailPresenter<DetailMvpView>
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        UrbanDictionaryApp.getNetComponent().inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -43,7 +49,6 @@ class DetailFragment : Fragment(), DetailMvpView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        UrbanDictionaryApp.getNetComponent().inject(this)
         return inflater?.inflate(R.layout.fragment_detail, container, false)
     }
 
@@ -54,7 +59,9 @@ class DetailFragment : Fragment(), DetailMvpView {
     }
 
     override fun onDestroy() {
-        detailPresenter.onDetach()
+        if(::detailPresenter.isInitialized) {
+            detailPresenter.onDetach()
+        }
         super.onDestroy()
     }
 

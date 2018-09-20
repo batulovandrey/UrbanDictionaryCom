@@ -1,9 +1,9 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.cached
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -27,8 +27,8 @@ class CachedFragment : Fragment(), CachedMvpView {
     private lateinit var clearCacheFAB: FloatingActionButton
     private lateinit var relativeLayout: RelativeLayout
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
         UrbanDictionaryApp.getNetComponent().inject(this)
     }
 
@@ -51,11 +51,15 @@ class CachedFragment : Fragment(), CachedMvpView {
 
     override fun onResume() {
         super.onResume()
-        cachedPresenter.loadData()
+        if (::cachedPresenter.isInitialized) {
+            cachedPresenter.loadData()
+        }
     }
 
     override fun onDestroy() {
-        cachedPresenter.onDetach()
+        if (::cachedPresenter.isInitialized) {
+            cachedPresenter.onDetach()
+        }
         super.onDestroy()
     }
 
@@ -66,13 +70,11 @@ class CachedFragment : Fragment(), CachedMvpView {
     override fun showData() {
         cachedDefinitionsRecyclerView.visibility = View.VISIBLE
         emptyCacheTextView.visibility = View.GONE
-        relativeLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
     }
 
     override fun showPlaceHolder() {
         emptyCacheTextView.visibility = View.VISIBLE
         cachedDefinitionsRecyclerView.visibility = View.GONE
-        relativeLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.colorWhite))
     }
 
     override fun showDetailFragment() {
