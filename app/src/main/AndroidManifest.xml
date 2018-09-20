@@ -32,6 +32,10 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b6f8a0ae2d86403b35c3cf82333138ba5bb97d1a"
+            />
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -43,10 +47,22 @@
         <service android:name=".service.MigrateJobIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="b6f8a0ae2d86403b35c3cf82333138ba5bb97d1a"
-            />
+
+        <service android:name=".service.UrbanDictionaryMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/search" />
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/colorAccent" />
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="@string/default_notification_channel_id"/>
+        </service>
     </application>
 
 </manifest>
