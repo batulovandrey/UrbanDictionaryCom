@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-        android:textColor="@color/colorPrimaryDark"
+        style="?textViewStyleGeneral"
         tools:text="some word"/>
 
     <View

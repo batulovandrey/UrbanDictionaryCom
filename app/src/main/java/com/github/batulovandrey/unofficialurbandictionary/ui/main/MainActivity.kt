@@ -16,13 +16,14 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
+import com.github.batulovandrey.unofficialurbandictionary.utils.ThemesManager
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var rateIV: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.UrbanTheme)
+        ThemesManager(this).setTheme()
         super.onCreate(savedInstanceState)
 
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
@@ -107,9 +108,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.settings_item -> {
-//                val fragment = SettingsDialogFragment()
-//                fragment.show(supportFragmentManager, getString(R.string.settings))
-                Toast.makeText(this, "coming soon", Toast.LENGTH_SHORT).show()
+                val fragment = SettingsDialogFragment()
+                fragment.show(supportFragmentManager, getString(R.string.settings))
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val transaction = manager.beginTransaction()
 
         if (isNeedReplace) {
+            clearBackStack()
             transaction.replace(R.id.frame_layout, fragment)
         } else {
             transaction.addToBackStack(null)

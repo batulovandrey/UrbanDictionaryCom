@@ -29,4 +29,6 @@
     <string name="settings">settings</string>
     <string name="theme">theme</string>
     <string name="random">random</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
