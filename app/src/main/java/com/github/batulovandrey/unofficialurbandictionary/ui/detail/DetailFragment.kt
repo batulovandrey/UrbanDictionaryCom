@@ -2,8 +2,10 @@ package com.github.batulovandrey.unofficialurbandictionary.ui.detail
 
 import android.content.Intent
 import android.content.Intent.*
+import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -14,6 +16,8 @@ import android.widget.TextView
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
+import com.github.batulovandrey.unofficialurbandictionary.utils.DARK_THEME
+import com.github.batulovandrey.unofficialurbandictionary.utils.ThemesManager
 import kotterknife.bindView
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -67,7 +71,8 @@ class DetailFragment : Fragment(), DetailMvpView {
     }
 
     override fun setImage(resId: Int, degrees: Float) {
-        favImageView.setImageResource(resId)
+        convertResToDrawable(resId)
+
         val executorService = Executors.newScheduledThreadPool(1)
         val animation = RotateAnimation(0f,
                 degrees,
@@ -97,10 +102,30 @@ class DetailFragment : Fragment(), DetailMvpView {
         thumbsDownTextView.text = definition.thumbsDown.toString()
         permalinkTextView.text = definition.permalink
 
-        favImageView.setImageResource(if (definition.favorite == 0)
-            R.drawable.favorite_white
+        if (definition.favorite == 0)
+            convertResToDrawable(R.drawable.favorite_white)
         else
-            R.drawable.favorite_black)
+            convertResToDrawable(R.drawable.favorite_black)
+    }
+
+    /**
+     * this method is needed to convert res to drawable,
+     * it checks the current theme to see is need
+     * to invert the color of image or not
+     */
+    private fun convertResToDrawable(resId: Int) {
+        val drawable = ContextCompat.getDrawable(activity, resId)
+
+        if (ThemesManager(activity).getTheme() == DARK_THEME) {
+            val negative = floatArrayOf(-1.0f, 0f, 0f, 0f, 255f, // red
+                    0f, -1.0f, 0f, 0f, 255f, // green
+                    0f, 0f, -1.0f, 0f, 255f, // blue
+                    0f, 0f, 0f, 1.0f, 0f  // alpha
+            )
+            drawable.colorFilter = ColorMatrixColorFilter(negative)
+        }
+
+        favImageView.setImageDrawable(drawable)
     }
 
     private fun shareDefinition() {
