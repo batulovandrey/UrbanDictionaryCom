@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ImageView
+import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
@@ -29,6 +30,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import io.fabric.sdk.android.Fabric
 import kotterknife.bindView
 import org.codechimp.apprater.AppRater
 import java.util.concurrent.atomic.AtomicInteger
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ThemesManager(this).setTheme()
         super.onCreate(savedInstanceState)
 
+        Fabric.with(this, Crashlytics());
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
         loadAd()
 

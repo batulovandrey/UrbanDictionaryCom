@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'realm-android'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
@@ -81,6 +82,11 @@ dependencies {
 
     // muiltidex for support android 4
     implementation 'com.android.support:multidex:1.0.3'
+
+    // crashlytics
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+        transitive = true;
+    }
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'

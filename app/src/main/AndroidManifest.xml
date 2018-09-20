@@ -43,6 +43,10 @@
         <service android:name=".service.MigrateJobIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b6f8a0ae2d86403b35c3cf82333138ba5bb97d1a"
+            />
     </application>
 
 </manifest>
