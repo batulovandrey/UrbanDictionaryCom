@@ -51,10 +51,19 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
 
         if (arguments != null && arguments.containsKey(EXTRA_QUERY)) {
             query = arguments.getString(EXTRA_QUERY)
-            initializeQueryToServer(query)
+
+            if (query.isNotEmpty()) {
+                initializeQueryToServer(query)
+            } else {
+                presenter.getRandom()
+            }
+
             arguments = null
+
         } else {
-            presenter.getRandom()
+
+            presenter.showData()
+
         }
 
         searchView.clearFocus()
@@ -92,8 +101,14 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        presenter.filterQueries(newText)
-        return true
+        if (!searchView.hasFocus()) return false
+
+        return if (newText.isNotEmpty()) {
+            presenter.filterQueries(newText)
+            true
+        } else {
+            false
+        }
     }
 
     override fun showToast(resId: Int) {
@@ -116,6 +131,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         definitionsRecyclerView.visibility = View.VISIBLE
         userQueriesRecyclerView.visibility = View.GONE
         hintTextView.visibility = View.GONE
+        searchView.clearFocus()
     }
 
     override fun showQueries() {

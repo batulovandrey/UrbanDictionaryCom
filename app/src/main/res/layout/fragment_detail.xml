@@ -12,16 +12,17 @@
 
         <TextView
             android:id="@+id/word_text_view"
+            style="?textViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="16dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-            android:textColor="@color/colorPrimaryDark"
             tools:text="some word" />
 
         <TextView
             android:id="@+id/definition_text_view"
+            style="?textViewStyleGeneral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/word_text_view"
@@ -30,12 +31,11 @@
 
         <TextView
             android:id="@+id/author_text_view"
+            style="?textViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/definition_text_view"
             android:gravity="end"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
             tools:text="some author" />
 
         <ImageView
@@ -71,13 +71,13 @@
 
         <TextView
             android:id="@+id/permalink_text_view"
+            style="?textViewStyleGeneral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/thumbs_up_text_view"
             android:autoLink="web"
             android:gravity="center_horizontal"
             android:padding="8dp"
-            android:textColor="@color/colorPrimaryDark"
             android:textIsSelectable="true"
             tools:text="some permalink" />
 

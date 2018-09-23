@@ -1,6 +1,6 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
-import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
@@ -43,7 +43,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     if (isViewAttached()) {
 
                         definitionAdapter = DefinitionAdapter(it, this)
@@ -53,10 +53,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
                     } else {
 
+                        Crashlytics.log("view is not attached")
                         return@subscribe
-
                     }
-                }?.let { compositeDisposable.add(it) }
+                },
+                        {
+                            Crashlytics.log(it.message)
+                            mvpView?.hideKeyboard()
+                            mvpView?.showQueries()
+                        })?.let { compositeDisposable.add(it) }
     }
 
     override fun getData(text: String) {
@@ -67,57 +72,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         loadData(dataManager.getRandom())
     }
 
-    fun loadData(single: Single<BaseResponse>) {
-        ADS_COUNT.incrementAndGet()
-        dataManager.clearMap()
-        compositeDisposable.clear()
-        mvpView?.showLoading()
+    override fun showData() {
+        if (definitionAdapter != null) {
+            mvpView?.hideLoading()
+            mvpView?.hideKeyboard()
 
-        compositeDisposable.add(single
-                .flatMap {
-                    Single.fromCallable { it.definitionResponses }
-                }
-                .toObservable()
-                .flatMap { Observable.fromArray(it.convertToDefinitionList()) }
-                .map { list ->
-                    list.forEach { definition ->
-                        Log.d("mainthread", Thread.currentThread().name)
-                        dataManager.getDefinitions()
-                                .subscribe {
-                                    if (it.contains(definition)) {
-                                        dataManager.putDefinitionToSavedList(definition)
-                                    } else {
-                                        compositeDisposable.add(dataManager.saveDefinition(definition)
-                                                .subscribe { _ ->
-                                                    dataManager.putDefinitionToSavedList(definition)
-                                                })
-                                    }
-                                }
-                        Log.d("mainthread2", Thread.currentThread().name)
-                    }
-
-                    definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
-                    Log.d("mainthread3", Thread.currentThread().name)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-
-                    mvpView?.hideLoading()
-                    mvpView?.hideKeyboard()
-
-                    definitionAdapter?.let { adapter ->
-                        adapter.notifyDataSetChanged()
-                        mvpView?.setDefinitionAdapter(adapter)
-                    }
-                    mvpView?.showDefinitions()
-                    Log.d("mainthread4", Thread.currentThread().name)
-                },
-                        {
-                            mvpView?.showToast(R.string.error)
-                            mvpView?.hideKeyboard()
-                            mvpView?.hideLoading()
-                            mvpView?.showSnackbar()
-                        }))
+            mvpView?.showDefinitions()
+        } else {
+            getRandom()
+        }
     }
 
     override fun saveUserQuery(query: String) {
@@ -127,13 +90,16 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                 .filter { it.text.toLowerCase() == query.toLowerCase() }
                 .toList()
                 .toObservable()
-                .subscribe {
-                    if (it.isEmpty()) {
+                .subscribe({ list ->
+                    if (list.isEmpty()) {
                         dataManager.saveQuery(SavedUserQuery(null, query))
                                 .subscribeOn(Schedulers.io())
                                 .subscribe()
                     }
-                }
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        })
         )
     }
 
@@ -165,7 +131,7 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                 .filter { it.text.toLowerCase().contains(text.toLowerCase()) }
                 .toList()
                 .toObservable()
-                .subscribe {
+                .subscribe({
                     if (isViewAttached()) {
 
                         queriesAdapter = QueriesAdapter(it, this)
@@ -177,7 +143,10 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         return@subscribe
 
                     }
-                })
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        }))
     }
 
     override fun onItemClick(position: Int) {
@@ -185,15 +154,20 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
         compositeDisposable.add(dataManager.getDefinitions()
                 .subscribeOn(Schedulers.io())
-                .map {
-                    val definition = it.findLast { item -> item == selectDefinition }
-                    selectDefinition = definition!!
-                    dataManager.setActiveDefinition(selectDefinition)
+                .map { list ->
+                    val definition = list.findLast { item -> item == selectDefinition }
+                    definition?.let {
+                        selectDefinition = definition
+                        dataManager.setActiveDefinition(selectDefinition)
+                    }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     mvpView?.showDetailFragment()
-                })
+                },
+                        {
+                            Crashlytics.log(it.message)
+                        }))
     }
 
     override fun onQueryClick(position: Int) {
@@ -206,14 +180,68 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
 
     override fun deleteQueryFromRealm(position: Int) {
         val userQuery = queriesAdapter?.getQuery(position)
-        userQuery?.let {
-            dataManager.deleteQuery(it)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe {
-                        queriesAdapter?.removeQuery(position)
-                        mvpView?.setQueriesAdapter(queriesAdapter!!)
-                    }
+        userQuery?.let { query ->
+            compositeDisposable.add(
+                    dataManager.deleteQuery(query)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                queriesAdapter?.removeQuery(position)
+                                mvpView?.setQueriesAdapter(queriesAdapter!!)
+                            },
+                                    {
+                                        Crashlytics.log(it.message)
+                                    }))
         }
+    }
+
+    private fun loadData(single: Single<BaseResponse>) {
+        ADS_COUNT.incrementAndGet()
+        dataManager.clearMap()
+        compositeDisposable.clear()
+        mvpView?.showLoading()
+
+        compositeDisposable.add(single
+                .flatMap {
+                    Single.fromCallable { it.definitionResponses }
+                }
+                .toObservable()
+                .flatMap { Observable.fromArray(it.convertToDefinitionList()) }
+                .map { list ->
+                    list.forEach { definition ->
+                        dataManager.getDefinitions()
+                                .subscribe {
+                                    if (it.contains(definition)) {
+                                        dataManager.putDefinitionToSavedList(definition)
+                                    } else {
+                                        compositeDisposable.add(dataManager.saveDefinition(definition)
+                                                .subscribe { _ ->
+                                                    dataManager.putDefinitionToSavedList(definition)
+                                                })
+                                    }
+                                }
+                    }
+
+                    definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+
+                    mvpView?.hideLoading()
+                    mvpView?.hideKeyboard()
+
+                    definitionAdapter?.let { adapter ->
+                        adapter.notifyDataSetChanged()
+                        mvpView?.setDefinitionAdapter(adapter)
+                    }
+                    mvpView?.showDefinitions()
+                },
+                        {
+                            Crashlytics.log("error load data")
+                            mvpView?.showToast(R.string.error)
+                            mvpView?.hideKeyboard()
+                            mvpView?.hideLoading()
+                            mvpView?.showSnackbar()
+                        }))
     }
 }

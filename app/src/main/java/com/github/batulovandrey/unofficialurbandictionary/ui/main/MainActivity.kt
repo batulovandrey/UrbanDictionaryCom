@@ -1,16 +1,13 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.main
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.*
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -19,18 +16,21 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
+import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
+import com.github.batulovandrey.unofficialurbandictionary.utils.ThemesManager
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import io.fabric.sdk.android.Fabric
 import kotterknife.bindView
 import org.codechimp.apprater.AppRater
 import java.util.concurrent.atomic.AtomicInteger
@@ -50,9 +50,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var rateIV: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.UrbanTheme)
+        ThemesManager(this).setTheme()
         super.onCreate(savedInstanceState)
 
+        Fabric.with(this, Crashlytics());
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
         loadAd()
 
@@ -84,9 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return when (item.itemId) {
             R.id.search_item -> {
-                val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
-                if (currentFragment !is MainSearchFragment)
-                    supportFragmentManager.popBackStack()
+                    clearBackStack()
                 true
             }
             R.id.favorites_item -> {
@@ -108,13 +107,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.random_item -> {
-                handler.post { showFragment(MainSearchFragment()) }
+                handler.post { showFragment(MainSearchFragment.newInstance("")) }
                 return true
             }
             R.id.settings_item -> {
-//                val fragment = SettingsDialogFragment()
-//                fragment.show(supportFragmentManager, getString(R.string.settings))
-                Toast.makeText(this, "coming soon", Toast.LENGTH_SHORT).show()
+                val fragment = SettingsDialogFragment()
+                fragment.show(supportFragmentManager, getString(R.string.settings))
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -135,7 +133,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             currentFragment is DetailFragment -> supportFragmentManager.popBackStack()
 
-            else -> supportFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
+            else -> {
+                clearBackStack()
+            }
+        }
+    }
+
+    private fun clearBackStack() {
+        val count = supportFragmentManager.backStackEntryCount
+
+        for (i in 0 until count) {
+            supportFragmentManager.popBackStack()
         }
     }
 
@@ -178,15 +186,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val isNeedReplace = fragment is MainSearchFragment
 
         val manager = supportFragmentManager
-        val currentFragment = manager.findFragmentById(R.id.frame_layout)
         val transaction = manager.beginTransaction()
 
         if (isNeedReplace) {
+            clearBackStack()
             transaction.replace(R.id.frame_layout, fragment)
         } else {
             transaction.addToBackStack(null)
-            transaction.hide(currentFragment)
-            transaction.add(R.id.frame_layout, fragment)
+            transaction.replace(R.id.frame_layout, fragment)
         }
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
