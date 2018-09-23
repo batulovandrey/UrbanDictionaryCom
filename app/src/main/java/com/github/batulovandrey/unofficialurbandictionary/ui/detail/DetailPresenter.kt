@@ -1,10 +1,10 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.detail
 
+import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.Definition
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -45,9 +45,12 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(dataManager: DataMa
                 dataManager.saveDefinitionToFavorites(definition)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe {
+                        .subscribe({
                             mvpView?.setImage(R.drawable.favorite_black, -360f)
-                        })
+                        },
+                                {
+                                    Crashlytics.log(it.message)
+                                }))
     }
 
     override fun removeFromFavorites(definition: Definition) {
@@ -55,9 +58,12 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(dataManager: DataMa
                 dataManager.deleteDefinitionFromFavorites(definition)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe {
+                        .subscribe({
                             mvpView?.setImage(R.drawable.favorite_white, 360f)
-                        }
+                        },
+                                {
+                                    Crashlytics.log(it.message)
+                                })
         )
     }
 

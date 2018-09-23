@@ -1,9 +1,9 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui.favorites
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -28,11 +28,10 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     private lateinit var clearFavFAB: FloatingActionButton
     private lateinit var relativeLayout: RelativeLayout
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
         UrbanDictionaryApp.getNetComponent().inject(this)
     }
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_list, container, false)
@@ -51,11 +50,15 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
 
     override fun onResume() {
         super.onResume()
-        favoritesPresenter.loadData()
+        if (::favoritesPresenter.isInitialized) {
+            favoritesPresenter.loadData()
+        }
     }
 
     override fun onDestroy() {
-        favoritesPresenter.onDetach()
+        if (::favoritesPresenter.isInitialized) {
+            favoritesPresenter.onDetach()
+        }
         super.onDestroy()
     }
 
@@ -77,13 +80,11 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     override fun showData() {
         favoritesDefinitionsRecyclerView.visibility = View.VISIBLE
         emptyFavTextView.visibility = View.GONE
-        relativeLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
     }
 
     override fun showPlaceHolder() {
         favoritesDefinitionsRecyclerView.visibility = View.GONE
         emptyFavTextView.visibility = View.VISIBLE
-        relativeLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.colorWhite))
     }
 
     override fun showDetailFragment() {

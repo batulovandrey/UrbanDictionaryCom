@@ -6,10 +6,12 @@
     android:padding="4dp">
 
     <RelativeLayout
+        style="?background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            style="?textViewStyleGeneral"
             android:id="@+id/query_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
