@@ -10,6 +10,7 @@ import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.data.bean.BaseResponse
 import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUserQuery
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
+import com.github.batulovandrey.unofficialurbandictionary.ui.ADS_COUNT
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
 import io.reactivex.Observable
 import io.reactivex.Single
