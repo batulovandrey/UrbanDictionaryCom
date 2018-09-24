@@ -15,7 +15,7 @@ import android.widget.Toast
 import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
-import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainActivity
+import com.github.batulovandrey.unofficialurbandictionary.ui.MainActivity
 import javax.inject.Inject
 
 class FavoritesFragment : Fragment(), FavoritesMvpView {

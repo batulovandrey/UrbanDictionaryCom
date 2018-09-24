@@ -16,6 +16,7 @@ import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.QueriesAdapter
+import com.github.batulovandrey.unofficialurbandictionary.ui.MainActivity
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
 import javax.inject.Inject
 
