@@ -12,7 +12,7 @@ import com.github.batulovandrey.unofficialurbandictionary.R
 import com.github.batulovandrey.unofficialurbandictionary.UrbanDictionaryApp
 import com.github.batulovandrey.unofficialurbandictionary.adapter.AlphabetAdapter
 import com.github.batulovandrey.unofficialurbandictionary.adapter.WordAdapter
-import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainActivity
+import com.github.batulovandrey.unofficialurbandictionary.ui.MainActivity
 import kotterknife.bindView
 import javax.inject.Inject
 

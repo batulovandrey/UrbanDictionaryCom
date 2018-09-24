@@ -1,4 +1,4 @@
-package com.github.batulovandrey.unofficialurbandictionary.ui.main
+package com.github.batulovandrey.unofficialurbandictionary.ui
 
 import android.content.Context
 import android.media.AudioManager
@@ -19,10 +19,10 @@ import android.widget.ImageView
 import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
-import com.github.batulovandrey.unofficialurbandictionary.ui.SettingsDialogFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.cached.CachedFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.detail.DetailFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.favorites.FavoritesFragment
+import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFragment
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.ThemesManager
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
@@ -213,6 +213,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun loadAd() {
         val request = AdRequest.Builder()
+                .addTestDevice("4B2B6D802FD90E79BA0E4ED30CE2832C")
                 .build()
 
         interstitial = InterstitialAd(this).apply {
