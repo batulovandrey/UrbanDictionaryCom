@@ -1,8 +1,10 @@
 package com.github.batulovandrey.unofficialurbandictionary.ui
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -131,6 +133,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.settings_item -> {
                 val fragment = SettingsDialogFragment()
                 fragment.show(supportFragmentManager, getString(R.string.settings))
+                return true
+            }
+            R.id.policy_privacy_item -> {
+                openPrivacyPolicy()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -296,5 +302,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .setPositiveButton(R.string.yes, { _, _ -> finish() })
                 .setNegativeButton(R.string.no, { dialogInterface, _ -> dialogInterface.dismiss() })
                 .show()
+    }
+
+    private fun openPrivacyPolicy() {
+        val url = getString(R.string.policy_link)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
     }
 }
