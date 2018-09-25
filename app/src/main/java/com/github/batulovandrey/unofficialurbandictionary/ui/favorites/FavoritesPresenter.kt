@@ -5,6 +5,7 @@ import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionAdap
 import com.github.batulovandrey.unofficialurbandictionary.adapter.DefinitionClickListener
 import com.github.batulovandrey.unofficialurbandictionary.data.DataManager
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
+import io.fabric.sdk.android.Fabric
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -30,13 +31,17 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                                     mvpView?.setDefinitionAdapter(definitionAdapter)
                                     mvpView?.showData()
                                 } else {
-                                    Crashlytics.log("view is not attached")
+                                    if (Fabric.isInitialized()) {
+                                        Crashlytics.log("view is not attached")
+                                    }
                                     mvpView?.showPlaceHolder()
                                 }
                             }
                         },
                                 {
-                                    Crashlytics.log("error load data")
+                                    if (Fabric.isInitialized()) {
+                                        Crashlytics.log("error load data")
+                                    }
                                     mvpView?.showPlaceHolder()
                                 }))
     }
@@ -55,12 +60,16 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                                         mvpView?.showPlaceHolder()
                                     },
                                             { throwable ->
-                                                Crashlytics.log(throwable.message)
+                                                if (Fabric.isInitialized()) {
+                                                    Crashlytics.log(throwable.message)
+                                                }
                                                 mvpView?.showPlaceHolder()
                                             })
                         },
                                 {
-                                    Crashlytics.log(it.message)
+                                    if (Fabric.isInitialized()) {
+                                        Crashlytics.log(it.message)
+                                    }
                                     mvpView?.showPlaceHolder()
                                 }))
     }
@@ -80,7 +89,9 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                     mvpView?.showDetailFragment()
                 },
                         {
-                            Crashlytics.log(it.message)
+                            if (Fabric.isInitialized()) {
+                                Crashlytics.log(it.message)
+                            }
                         }))
     }
 }

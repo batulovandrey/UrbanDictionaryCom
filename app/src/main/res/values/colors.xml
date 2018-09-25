@@ -10,4 +10,6 @@
     <color name="colorWhite">#fff</color>
     <color name="colorNearWhite">#d9d8d8</color>
     <color name="colorGray">#6b6b6b</color>
+    <color name="colorPinky">#ffa0d1</color>
+    <color name="colorGreeny">#99f4a4</color>
 </resources>
