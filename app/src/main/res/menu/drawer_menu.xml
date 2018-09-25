@@ -25,5 +25,9 @@
             android:id="@+id/settings_item"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />
+        <item
+            android:id="@+id/policy_privacy_item"
+            android:icon="@drawable/ic_policy_privacy"
+            android:title="@string/policy_privacy" />
     </group>
 </menu>
