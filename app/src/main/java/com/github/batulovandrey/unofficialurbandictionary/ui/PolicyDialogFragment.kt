@@ -14,6 +14,18 @@ const val IS_USER_CHOICE = "user_choice"
 
 class PolicyDialogFragment : DialogFragment() {
 
+    private lateinit var onClickListener: OnClickListener
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        try {
+            onClickListener = context as OnClickListener
+        } catch (ex: ClassCastException) {
+            throw ClassCastException("$context must implement OnClickListener")
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.policy_dialog, container, false)
     }
@@ -41,5 +53,11 @@ class PolicyDialogFragment : DialogFragment() {
             putBoolean(IS_USER_CHOICE, true)
             apply()
         }
+        onClickListener.onUserChoice(value)
+    }
+
+    interface OnClickListener {
+
+        fun onUserChoice(isAccepted: Boolean)
     }
 }

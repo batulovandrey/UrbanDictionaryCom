@@ -14,8 +14,11 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.github.batulovandrey.unofficialurbandictionary.BuildConfig
 import com.github.batulovandrey.unofficialurbandictionary.R
@@ -26,6 +29,7 @@ import com.github.batulovandrey.unofficialurbandictionary.ui.main.MainSearchFrag
 import com.github.batulovandrey.unofficialurbandictionary.ui.top.TopWordsFragment
 import com.github.batulovandrey.unofficialurbandictionary.utils.ThemesManager
 import com.github.batulovandrey.unofficialurbandictionary.utils.Utils
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -41,10 +45,13 @@ import java.util.concurrent.atomic.AtomicInteger
 
 val ADS_COUNT = AtomicInteger(1)
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+        PolicyDialogFragment.OnClickListener {
 
     private val drawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
     private val navigationView: NavigationView by bindView(R.id.navigation_view)
+
+    private var isAcceptedPrivacyPolicy = false
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var interstitial: InterstitialAd
     private lateinit var rateIV: ImageView
@@ -53,9 +60,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ThemesManager(this).setTheme()
         super.onCreate(savedInstanceState)
 
-        Fabric.with(this, Crashlytics());
         MobileAds.initialize(this, BuildConfig.AD_MOB_ID)
-        loadAd()
 
         setContentView(R.layout.activity_main)
         initIU()
@@ -65,7 +70,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             showFragment(MainSearchFragment())
         }
 
-        AppRater.app_launched(this)
+        val isUserChoice = getSharedPreferences(packageName, Context.MODE_PRIVATE).getBoolean(IS_USER_CHOICE, false)
+
+        if (!isUserChoice) {
+            PolicyDialogFragment().show(supportFragmentManager, "policy")
+            findViewById<TextView>(android.R.id.message)?.movementMethod = LinkMovementMethod.getInstance()
+        }
+
+        isAcceptedPrivacyPolicy = getSharedPreferences(packageName, Context.MODE_PRIVATE).getBoolean(PRIVACY_POLICY_ACCEPTED, false)
+
+        if (isAcceptedPrivacyPolicy) {
+            initStatistics()
+        }
+
+        loadAd()
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
     }
@@ -85,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return when (item.itemId) {
             R.id.search_item -> {
-                    clearBackStack()
+                clearBackStack()
                 true
             }
             R.id.favorites_item -> {
@@ -159,6 +177,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.openDrawer(GravityCompat.START)
     }
 
+    override fun onUserChoice(isAccepted: Boolean) {
+        isAcceptedPrivacyPolicy = isAccepted
+        Log.d("loadAd isAccepted", "isAccepted = $isAcceptedPrivacyPolicy")
+        if (isAcceptedPrivacyPolicy) {
+            initStatistics()
+        }
+    }
+
     private fun initIU() {
         initToolbar()
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
@@ -173,6 +199,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initToolbar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun initStatistics() {
+        Fabric.with(this, Crashlytics())
+        AppRater.app_launched(this)
     }
 
     private fun checkFragmentFromBackStack() {
@@ -212,9 +243,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun loadAd() {
-        val request = AdRequest.Builder()
-                .addTestDevice("4B2B6D802FD90E79BA0E4ED30CE2832C")
-                .build()
+        val request =
+                if (isAcceptedPrivacyPolicy) {
+                    AdRequest.Builder()
+                            .addTestDevice("4B2B6D802FD90E79BA0E4ED30CE2832C")
+                            .build()
+                } else {
+                    val extras = Bundle()
+                    extras.putString("npa", "1")
+                    AdRequest.Builder()
+                            .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                            .build()
+                }
 
         interstitial = InterstitialAd(this).apply {
             adUnitId = BuildConfig.AD_MOB_UNIT_ID
