@@ -83,9 +83,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (isAcceptedPrivacyPolicy) {
             initStatistics()
+            loadAd()
         }
-
-        loadAd()
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
     }
@@ -236,7 +235,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         transaction.commit()
 
-        if (ADS_COUNT.get() % 4 != 0) {
+        if (ADS_COUNT.get() % 4 != 0 || !isAcceptedPrivacyPolicy) {
             return
         }
 
