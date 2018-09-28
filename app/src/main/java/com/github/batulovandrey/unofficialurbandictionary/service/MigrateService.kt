@@ -15,7 +15,7 @@ class MigrateService : IntentService("migrateService") {
 
     override fun onCreate() {
         super.onCreate()
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     override fun onHandleIntent(intent: Intent?) {

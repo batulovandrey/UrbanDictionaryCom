@@ -39,7 +39,7 @@ class DetailFragment : Fragment(), DetailMvpView {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

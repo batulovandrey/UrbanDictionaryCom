@@ -13,7 +13,7 @@ class AppNetworkHelper : NetworkHelper {
     lateinit var service: UrbanDictionaryService
 
     init {
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     override fun getData(query: String): Single<BaseResponse> {

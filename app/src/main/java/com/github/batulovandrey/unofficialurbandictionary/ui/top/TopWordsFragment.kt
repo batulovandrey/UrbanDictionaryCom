@@ -31,7 +31,7 @@ class TopWordsFragment : Fragment(), TopWordsMvpView {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {

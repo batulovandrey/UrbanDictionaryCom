@@ -83,9 +83,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (isAcceptedPrivacyPolicy) {
             initStatistics()
+            loadAd()
         }
-
-        loadAd()
 
         supportFragmentManager.addOnBackStackChangedListener { checkFragmentFromBackStack() }
     }
@@ -165,6 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun clearBackStack() {
         val count = supportFragmentManager.backStackEntryCount
+        if (count <= 0) return
 
         for (i in 0 until count) {
             supportFragmentManager.popBackStack()
@@ -236,15 +236,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         transaction.commit()
 
-        if (ADS_COUNT.get() % 4 != 0) {
+        if (ADS_COUNT.get() % 4 != 0 || !isAcceptedPrivacyPolicy) {
             return
         }
 
-        if (interstitial.isLoaded) {
-            interstitial.show()
-        } else {
-            loadAd()
-            ADS_COUNT.decrementAndGet()
+        if (::interstitial.isInitialized) {
+            if (interstitial.isLoaded) {
+                interstitial.show()
+            } else {
+                loadAd()
+                ADS_COUNT.decrementAndGet()
+            }
         }
     }
 
@@ -308,6 +310,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val url = getString(R.string.policy_link)
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
-        startActivity(intent)
+        if (intent.resolveActivityInfo(packageManager, intent.flags).exported) {
+            startActivity(intent)
+        }
     }
 }

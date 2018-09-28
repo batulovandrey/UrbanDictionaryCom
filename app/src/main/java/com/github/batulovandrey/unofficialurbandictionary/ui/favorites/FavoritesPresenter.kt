@@ -28,13 +28,17 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                             if (isViewAttached()) {
                                 if (it.isNotEmpty()) {
                                     definitionAdapter = DefinitionAdapter(it, this)
-                                    mvpView?.setDefinitionAdapter(definitionAdapter)
-                                    mvpView?.showData()
+                                    if (isViewAttached()) {
+                                        mvpView?.setDefinitionAdapter(definitionAdapter)
+                                        mvpView?.showData()
+                                    }
                                 } else {
                                     if (Fabric.isInitialized()) {
                                         Crashlytics.log("view is not attached")
                                     }
-                                    mvpView?.showPlaceHolder()
+                                    if (isViewAttached()) {
+                                        mvpView?.showPlaceHolder()
+                                    }
                                 }
                             }
                         },
@@ -42,7 +46,9 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                                     if (Fabric.isInitialized()) {
                                         Crashlytics.log("error load data")
                                     }
-                                    mvpView?.showPlaceHolder()
+                                    if (isViewAttached()) {
+                                        mvpView?.showPlaceHolder()
+                                    }
                                 }))
     }
 
@@ -57,20 +63,26 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                             dataManager.deleteFavoritesDefinitions()
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe({
-                                        mvpView?.showPlaceHolder()
+                                        if (isViewAttached()) {
+                                            mvpView?.showPlaceHolder()
+                                        }
                                     },
                                             { throwable ->
                                                 if (Fabric.isInitialized()) {
                                                     Crashlytics.log(throwable.message)
                                                 }
-                                                mvpView?.showPlaceHolder()
+                                                if (isViewAttached()) {
+                                                    mvpView?.showPlaceHolder()
+                                                }
                                             })
                         },
                                 {
                                     if (Fabric.isInitialized()) {
                                         Crashlytics.log(it.message)
                                     }
-                                    mvpView?.showPlaceHolder()
+                                    if (isViewAttached()) {
+                                        mvpView?.showPlaceHolder()
+                                    }
                                 }))
     }
 
@@ -86,7 +98,9 @@ class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(dataManager: 
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    mvpView?.showDetailFragment()
+                    if (isViewAttached()) {
+                        mvpView?.showDetailFragment()
+                    }
                 },
                         {
                             if (Fabric.isInitialized()) {
