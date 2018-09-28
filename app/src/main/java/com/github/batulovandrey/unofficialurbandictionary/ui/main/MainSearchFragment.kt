@@ -43,7 +43,7 @@ class MainSearchFragment : Fragment(), SearchView.OnQueryTextListener, MainMvpVi
         progressBar = view.findViewById(R.id.progress_bar)
         hintTextView = view.findViewById(R.id.hint_text_view)
         toolbarIcon = view.findViewById(R.id.toolbar_icon)
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
         return view
     }
 

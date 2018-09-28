@@ -15,7 +15,7 @@ class MigrateJobIntentService: JobIntentService() {
 
     override fun onCreate() {
         super.onCreate()
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     override fun onHandleWork(intent: Intent) {

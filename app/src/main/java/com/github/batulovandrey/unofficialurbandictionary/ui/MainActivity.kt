@@ -164,6 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun clearBackStack() {
         val count = supportFragmentManager.backStackEntryCount
+        if (count <= 0) return
 
         for (i in 0 until count) {
             supportFragmentManager.popBackStack()
@@ -307,6 +308,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val url = getString(R.string.policy_link)
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
-        startActivity(intent)
+        if (intent.resolveActivityInfo(packageManager, intent.flags).exported) {
+            startActivity(intent)
+        }
     }
 }
