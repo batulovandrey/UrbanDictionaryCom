@@ -240,11 +240,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return
         }
 
-        if (interstitial.isLoaded) {
-            interstitial.show()
-        } else {
-            loadAd()
-            ADS_COUNT.decrementAndGet()
+        if (::interstitial.isInitialized) {
+            if (interstitial.isLoaded) {
+                interstitial.show()
+            } else {
+                loadAd()
+                ADS_COUNT.decrementAndGet()
+            }
         }
     }
 
