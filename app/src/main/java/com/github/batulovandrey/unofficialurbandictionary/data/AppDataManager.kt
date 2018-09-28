@@ -24,7 +24,9 @@ class AppDataManager @Inject constructor(private val dbHelper: DbHelper,
     }
 
     override fun getActiveDefinition(): Definition? {
-        return activeDefinition
+        return if (::activeDefinition.isInitialized)
+            activeDefinition
+        else null
     }
 
     override fun saveDefinitionToFavorites(definition: Definition): Completable {
