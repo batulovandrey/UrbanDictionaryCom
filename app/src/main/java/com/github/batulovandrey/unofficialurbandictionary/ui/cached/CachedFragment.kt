@@ -29,7 +29,7 @@ class CachedFragment : Fragment(), CachedMvpView {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

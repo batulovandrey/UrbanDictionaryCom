@@ -12,6 +12,7 @@ import com.github.batulovandrey.unofficialurbandictionary.data.db.model.SavedUse
 import com.github.batulovandrey.unofficialurbandictionary.presenter.BasePresenter
 import com.github.batulovandrey.unofficialurbandictionary.ui.ADS_COUNT
 import com.github.batulovandrey.unofficialurbandictionary.utils.convertToDefinitionList
+import io.fabric.sdk.android.Fabric
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,8 +36,10 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
         super.onAttach(mvpView)
         if (dataManager.getSavedListOfDefinition().isNotEmpty()) {
             definitionAdapter = DefinitionAdapter(dataManager.getSavedListOfDefinition(), this)
-            mvpView.setDefinitionAdapter(definitionAdapter!!)
-            mvpView.showDefinitions()
+            if (isViewAttached()) {
+                mvpView.setDefinitionAdapter(definitionAdapter!!)
+                mvpView.showDefinitions()
+            }
         }
     }
 
@@ -53,15 +56,20 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                         mvpView?.hideKeyboard()
 
                     } else {
-
-                        Crashlytics.log("view is not attached")
+                        if (Fabric.isInitialized()) {
+                                    Crashlytics.log("view is not attached")
+                                }
                         return@subscribe
                     }
                 },
                         {
-                            Crashlytics.log(it.message)
-                            mvpView?.hideKeyboard()
-                            mvpView?.showQueries()
+                            if (Fabric.isInitialized()) {
+                                Crashlytics.log(it.message)
+                            }
+                            if (isViewAttached()) {
+                                mvpView?.hideKeyboard()
+                                mvpView?.showQueries()
+                            }
                         })?.let { compositeDisposable.add(it) }
     }
 
@@ -74,13 +82,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
     }
 
     override fun showData() {
-        if (definitionAdapter != null) {
-            mvpView?.hideLoading()
-            mvpView?.hideKeyboard()
+        if (isViewAttached()) {
+            if (definitionAdapter != null) {
+                mvpView?.hideLoading()
+                mvpView?.hideKeyboard()
 
-            mvpView?.showDefinitions()
-        } else {
-            getRandom()
+                mvpView?.showDefinitions()
+            } else {
+                getRandom()
+            }
         }
     }
 
@@ -99,7 +109,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                     }
                 },
                         {
-                            Crashlytics.log(it.message)
+                            if (Fabric.isInitialized()) {
+                                Crashlytics.log(it.message)
+                            }
                         })
         )
     }
@@ -146,7 +158,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                     }
                 },
                         {
-                            Crashlytics.log(it.message)
+                            if (Fabric.isInitialized()) {
+                                Crashlytics.log(it.message)
+                            }
                         }))
     }
 
@@ -167,7 +181,9 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                     mvpView?.showDetailFragment()
                 },
                         {
-                            Crashlytics.log(it.message)
+                            if (Fabric.isInitialized()) {
+                                Crashlytics.log(it.message)
+                            }
                         }))
     }
 
@@ -187,11 +203,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({
-                                queriesAdapter?.removeQuery(position)
-                                mvpView?.setQueriesAdapter(queriesAdapter!!)
+                                if (isViewAttached()) {
+                                    queriesAdapter?.removeQuery(position)
+                                    mvpView?.setQueriesAdapter(queriesAdapter!!)
+                                }
                             },
                                     {
-                                        Crashlytics.log(it.message)
+                                        if (Fabric.isInitialized()) {
+                                            Crashlytics.log(it.message)
+                                        }
                                     }))
         }
     }
@@ -227,22 +247,27 @@ class MainPresenter<V : MainMvpView> @Inject constructor(dataManager: DataManage
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    if (isViewAttached()) {
+                        mvpView?.hideLoading()
+                        mvpView?.hideKeyboard()
 
-                    mvpView?.hideLoading()
-                    mvpView?.hideKeyboard()
-
-                    definitionAdapter?.let { adapter ->
-                        adapter.notifyDataSetChanged()
-                        mvpView?.setDefinitionAdapter(adapter)
+                        definitionAdapter?.let { adapter ->
+                            adapter.notifyDataSetChanged()
+                            mvpView?.setDefinitionAdapter(adapter)
+                        }
+                        mvpView?.showDefinitions()
                     }
-                    mvpView?.showDefinitions()
                 },
                         {
-                            Crashlytics.log("error load data")
-                            mvpView?.showToast(R.string.error)
-                            mvpView?.hideKeyboard()
-                            mvpView?.hideLoading()
-                            mvpView?.showSnackbar()
+                            if(Fabric.isInitialized()) {
+                                Crashlytics.log("error load data: ${it.message}")
+                            }
+                            if (isViewAttached()) {
+                                mvpView?.showToast(R.string.error)
+                                mvpView?.hideKeyboard()
+                                mvpView?.hideLoading()
+                                mvpView?.showSnackbar()
+                            }
                         }))
     }
 }

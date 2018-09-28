@@ -10,7 +10,7 @@ class WordsRepository @Inject constructor(private val words: PopularWords) {
     private val dictionary: Map<String, List<String>> = words.dictionary
 
     init {
-        UrbanDictionaryApp.getNetComponent().inject(this)
+        UrbanDictionaryApp.netComponent.inject(this)
     }
 
     val alphabet: ArrayList<String>
